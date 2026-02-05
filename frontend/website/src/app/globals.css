@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&display=swap');
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0D1B2A;
+  color: #E0E6ED;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-primary to-primary-600;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #F5A623 0%, #FFD700 50%, #F5A623 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow {
+    box-shadow: 0 0 60px rgba(245, 166, 35, 0.2), 0 0 100px rgba(245, 166, 35, 0.1);
+  }
+
+  .glow-sm {
+    box-shadow: 0 0 30px rgba(245, 166, 35, 0.15);
+  }
+
+  .font-display {
+    font-family: 'Syne', sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Honeycomb pattern */
+  .honeycomb-bg {
+    background-image: url("data:image/svg+xml,%3Csvg width='56' height='100' viewBox='0 0 56 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23F5A623' stroke-opacity='0.03' stroke-width='1'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23F5A623' stroke-opacity='0.03' stroke-width='1'/%3E%3C/svg%3E");
+  }
+
+  /* Noise texture overlay */
+  .noise-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  /* Gold shimmer effect */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(245, 166, 35, 0.1), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite;
+  }
+
+  /* Stagger animations */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+
+  /* Hexagon breathing animation */
+  @keyframes hex-breathe {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+  }
+
+  @keyframes hex-breathe-center {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes hex-float {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-8px) scale(1.05);
+    }
+  }
+
+  .animate-hex-1 {
+    animation: hex-breathe 4s ease-in-out infinite;
+  }
+  .animate-hex-2 {
+    animation: hex-breathe 4s ease-in-out infinite 0.3s;
+  }
+  .animate-hex-3 {
+    animation: hex-breathe 4s ease-in-out infinite 0.6s;
+  }
+  .animate-hex-4 {
+    animation: hex-breathe 4s ease-in-out infinite 0.9s;
+  }
+  .animate-hex-center {
+    animation: hex-breathe-center 4s ease-in-out infinite 1.2s;
+  }
+  .animate-hex-float-1 {
+    animation: hex-float 5s ease-in-out infinite;
+  }
+  .animate-hex-float-2 {
+    animation: hex-float 5s ease-in-out infinite 0.5s;
+  }
+  .animate-hex-float-3 {
+    animation: hex-float 5s ease-in-out infinite 1s;
+  }
+  .animate-hex-float-4 {
+    animation: hex-float 5s ease-in-out infinite 1.5s;
+  }
+
+  /* Connection line pulse animation */
+  @keyframes line-pulse {
+    0%, 100% {
+      stroke-opacity: 0.1;
+      stroke-width: 1;
+    }
+    50% {
+      stroke-opacity: 0.6;
+      stroke-width: 2;
+    }
+  }
+
+  .animate-line-1 { animation: line-pulse 2s ease-in-out infinite; }
+  .animate-line-2 { animation: line-pulse 2s ease-in-out infinite 0.3s; }
+  .animate-line-3 { animation: line-pulse 2s ease-in-out infinite 0.6s; }
+  .animate-line-4 { animation: line-pulse 2s ease-in-out infinite 0.9s; }
+  .animate-line-5 { animation: line-pulse 2s ease-in-out infinite 1.2s; }
+  .animate-line-6 { animation: line-pulse 2s ease-in-out infinite 1.5s; }
+
+  /* Data flow animation along lines */
+  @keyframes data-flow {
+    0% {
+      stroke-dashoffset: 100;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .animate-data-flow {
+    stroke-dasharray: 8 4;
+    animation: data-flow 1.5s linear infinite;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-up {
+    animation: fade-up 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  /* Hexagon clip */
+  .hex-clip {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+}

@@ -30,6 +30,7 @@
     "dev:indexer": "pnpm --filter @auditswarm/indexer dev",
     "dev:mcp": "pnpm --filter @auditswarm/mcp dev",
     "dev:dapp": "pnpm --filter @auditswarm/dapp dev",
+    "dev:website": "pnpm --filter @auditswarm/website dev",
     "db:generate": "pnpm --filter @auditswarm/database db:generate",
     "db:migrate": "pnpm --filter @auditswarm/database db:migrate",
     "db:push": "pnpm --filter @auditswarm/database db:push",
