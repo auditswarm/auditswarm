@@ -1,0 +1,7 @@
+packages:
+  - 'backend'
+  - 'backend/apps/*'
+  - 'backend/libs/*'
+  - 'frontend/*'
+  - 'onchain/sdk'
+  - 'packages/*'

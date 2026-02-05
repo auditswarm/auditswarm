@@ -1,0 +1,32 @@
+{
+  "name": "@auditswarm/backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AuditSwarm Backend Monorepo",
+  "license": "MIT",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:api": "pnpm --filter @auditswarm/api dev",
+    "dev:indexer": "pnpm --filter @auditswarm/indexer dev",
+    "dev:workflows": "pnpm --filter @auditswarm/workflows dev",
+    "dev:mcp": "pnpm --filter @auditswarm/mcp dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "db:generate": "pnpm --filter @auditswarm/database prisma generate",
+    "db:migrate": "pnpm --filter @auditswarm/database prisma migrate dev",
+    "db:push": "pnpm --filter @auditswarm/database prisma db push",
+    "db:studio": "pnpm --filter @auditswarm/database prisma studio",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "turbo": "^2.3.0",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

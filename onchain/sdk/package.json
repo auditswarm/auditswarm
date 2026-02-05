@@ -1,0 +1,23 @@
+{
+  "name": "@auditswarm/attestation-sdk",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for AuditSwarm Attestation Program",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.29.0",
+    "@solana/web3.js": "^1.87.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "@solana/web3.js": "^1.87.0"
+  }
+}

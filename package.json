@@ -1,0 +1,49 @@
+{
+  "name": "auditswarm",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-powered crypto tax compliance with jurisdiction-specific agents and on-chain attestations",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AuditSwarm/auditswarm"
+  },
+  "keywords": [
+    "solana",
+    "crypto",
+    "tax",
+    "compliance",
+    "audit",
+    "ai",
+    "mcp",
+    "langraph"
+  ],
+  "author": "AuditSwarm Team",
+  "license": "MIT",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "dev:api": "pnpm --filter @auditswarm/api dev",
+    "dev:workflows": "pnpm --filter @auditswarm/workflows dev",
+    "dev:indexer": "pnpm --filter @auditswarm/indexer dev",
+    "dev:mcp": "pnpm --filter @auditswarm/mcp dev",
+    "dev:dapp": "pnpm --filter @auditswarm/dapp dev",
+    "db:generate": "pnpm --filter @auditswarm/database db:generate",
+    "db:migrate": "pnpm --filter @auditswarm/database db:migrate",
+    "db:push": "pnpm --filter @auditswarm/database db:push",
+    "db:studio": "pnpm --filter @auditswarm/database db:studio",
+    "anchor:build": "cd onchain && anchor build",
+    "anchor:test": "cd onchain && anchor test",
+    "anchor:deploy": "cd onchain && anchor deploy"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.0"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

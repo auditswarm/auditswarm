@@ -1,0 +1,5 @@
+packages:
+  - 'client'
+  - 'solana'
+  - 'react'
+  - 'mcp'

@@ -1,0 +1,30 @@
+[features]
+seeds = true
+skip-lint = false
+
+[programs.localnet]
+attestation = "Attest1111111111111111111111111111111111111"
+
+[programs.devnet]
+attestation = "Attest1111111111111111111111111111111111111"
+
+[programs.mainnet]
+attestation = "Attest1111111111111111111111111111111111111"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "pnpm run test"
+
+[test]
+startup_wait = 5000
+shutdown_wait = 2000
+upgradeable = false
+
+[test.validator]
+url = "https://api.devnet.solana.com"

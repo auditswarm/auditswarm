@@ -1,0 +1,384 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// User & Authentication
+// ============================================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String?   @unique
+  emailVerified DateTime?
+
+  // Profile
+  name          String?
+  avatarUrl     String?
+
+  // Settings
+  defaultJurisdiction String?
+  preferences         Json?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastLoginAt DateTime?
+
+  // Relations
+  wallets       Wallet[]
+  audits        Audit[]
+  sessions      Session[]
+  apiKeys       ApiKey[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("sessions")
+}
+
+model ApiKey {
+  id          String   @id @default(uuid())
+  userId      String
+  name        String
+  keyHash     String   @unique
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  permissions Json?
+  createdAt   DateTime @default(now())
+  revokedAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([keyHash])
+  @@map("api_keys")
+}
+
+// ============================================
+// Wallets
+// ============================================
+
+model Wallet {
+  id        String   @id @default(uuid())
+  userId    String
+  address   String
+  network   String   @default("solana")
+  label     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Metadata
+  firstTransactionAt DateTime?
+  lastTransactionAt  DateTime?
+  transactionCount   Int       @default(0)
+
+  // Relations
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  audits       AuditWallet[]
+  attestations Attestation[]
+
+  @@unique([userId, address])
+  @@index([address])
+  @@index([userId])
+  @@map("wallets")
+}
+
+// ============================================
+// Transactions (TimescaleDB hypertable)
+// ============================================
+
+model Transaction {
+  id          String   @id @default(uuid())
+  walletId    String
+  signature   String   @unique
+  type        String
+  status      String   @default("CONFIRMED")
+  timestamp   DateTime
+  slot        BigInt
+  blockTime   BigInt
+
+  // Fees
+  fee         BigInt
+  feePayer    String
+
+  // Categorization
+  category    String?
+  subcategory String?
+
+  // Value tracking
+  totalValueUsd Decimal?  @db.Decimal(20, 8)
+
+  // Cost basis
+  costBasisMethod String?
+  costBasisUsd    Decimal? @db.Decimal(20, 8)
+  gainLossUsd     Decimal? @db.Decimal(20, 8)
+  gainLossType    String?  // SHORT_TERM, LONG_TERM
+
+  // Raw data
+  rawData   Json?
+  transfers Json?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([walletId, timestamp])
+  @@index([timestamp])
+  @@index([type])
+  @@index([signature])
+  @@map("transactions")
+}
+
+// ============================================
+// Audits
+// ============================================
+
+model Audit {
+  id           String   @id @default(uuid())
+  userId       String
+  jurisdiction String
+  type         String
+  taxYear      Int
+  periodStart  DateTime?
+  periodEnd    DateTime?
+
+  // Status
+  status       String   @default("PENDING")
+  progress     Int      @default(0)
+  statusMessage String?
+
+  // Options
+  options      Json?
+
+  // Results
+  resultId     String?  @unique
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  // Error handling
+  errorMessage String?
+  errorDetails Json?
+
+  // Relations
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallets      AuditWallet[]
+  result       AuditResult?  @relation(fields: [resultId], references: [id])
+  attestations Attestation[]
+  reports      Report[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([jurisdiction])
+  @@map("audits")
+}
+
+model AuditWallet {
+  auditId  String
+  walletId String
+
+  audit  Audit  @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@id([auditId, walletId])
+  @@map("audit_wallets")
+}
+
+model AuditResult {
+  id       String @id @default(uuid())
+  auditId  String @unique
+
+  // Summary
+  totalTransactions Int
+  totalWallets      Int
+  periodStart       DateTime
+  periodEnd         DateTime
+
+  // Financial summary
+  netGainLoss       Decimal  @db.Decimal(20, 8)
+  totalIncome       Decimal  @db.Decimal(20, 8)
+  estimatedTax      Decimal  @db.Decimal(20, 8)
+  currency          String
+
+  // Detailed results
+  capitalGains      Json
+  income            Json
+  holdings          Json
+  issues            Json?
+  recommendations   Json?
+
+  // Metadata
+  metadata          Json?
+  hash              String?  // Verification hash
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  audit Audit?
+
+  @@map("audit_results")
+}
+
+// ============================================
+// Attestations
+// ============================================
+
+model Attestation {
+  id              String   @id @default(uuid())
+  walletId        String
+  auditId         String
+  jurisdiction    String
+  type            String
+  status          String   @default("PENDING")
+  taxYear         Int
+
+  // On-chain data
+  onChainAccount  String?  @unique
+  onChainSignature String?
+  onChainSlot     BigInt?
+  onChainBlockTime BigInt?
+
+  // Verification
+  hash            String?
+
+  // Timestamps
+  issuedAt        DateTime?
+  expiresAt       DateTime?
+  revokedAt       DateTime?
+  revokeReason    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  audit  Audit  @relation(fields: [auditId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@index([auditId])
+  @@index([status])
+  @@index([onChainAccount])
+  @@map("attestations")
+}
+
+// ============================================
+// Reports
+// ============================================
+
+model Report {
+  id       String @id @default(uuid())
+  auditId  String
+  type     String // PDF, CSV, XLSX, JSON
+  format   String // Form8949, ScheduleD, IN1888, etc.
+
+  // File info
+  fileName String
+  fileUrl  String?
+  fileSize Int?
+  mimeType String
+
+  // Generation
+  generatedAt DateTime @default(now())
+  expiresAt   DateTime?
+
+  // Metadata
+  metadata Json?
+
+  // Relations
+  audit Audit @relation(fields: [auditId], references: [id], onDelete: Cascade)
+
+  @@index([auditId])
+  @@map("reports")
+}
+
+// ============================================
+// Queue Jobs (for tracking)
+// ============================================
+
+model QueueJob {
+  id        String   @id @default(uuid())
+  queue     String
+  jobId     String   @unique
+  name      String
+  data      Json
+  status    String   @default("PENDING")
+  progress  Int      @default(0)
+  result    Json?
+  error     String?
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+  startedAt DateTime?
+  completedAt DateTime?
+
+  @@index([queue])
+  @@index([status])
+  @@index([jobId])
+  @@map("queue_jobs")
+}
+
+// ============================================
+// Nonces (for SIWS)
+// ============================================
+
+model Nonce {
+  id        String   @id @default(uuid())
+  nonce     String   @unique
+  walletAddress String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([nonce])
+  @@index([walletAddress])
+  @@map("nonces")
+}
+
+// ============================================
+// Payments (x402)
+// ============================================
+
+model Payment {
+  id            String   @id @default(uuid())
+  userId        String?
+  walletAddress String?
+  amount        Decimal  @db.Decimal(20, 8)
+  currency      String
+  network       String
+  txSignature   String?  @unique
+  status        String   @default("PENDING")
+  resource      String   // What was paid for
+  resourceId    String?  // Audit ID, etc.
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  confirmedAt   DateTime?
+
+  @@index([userId])
+  @@index([walletAddress])
+  @@index([status])
+  @@map("payments")
+}
