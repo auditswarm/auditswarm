@@ -23,7 +23,7 @@ export class ComplianceService {
 
   async quickCheck(dto: QuickCheckDto): Promise<QuickComplianceCheckResult> {
     const jurisdiction = getJurisdiction(dto.jurisdiction);
-    const taxYear = dto.taxYear || new Date().getFullYear();
+    const taxYear = dto.taxYear ? Number(dto.taxYear) : new Date().getFullYear();
 
     // Find wallet by address
     const wallet = await this.walletRepository.findByAddress(dto.walletAddress);

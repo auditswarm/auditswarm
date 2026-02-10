@@ -8,6 +8,10 @@ import { AuditsModule } from './audits/audits.module';
 import { ReportsModule } from './reports/reports.module';
 import { AttestationsModule } from './attestations/attestations.module';
 import { ComplianceModule } from './compliance/compliance.module';
+import { WebhooksModule } from './webhooks/webhooks.module';
+import { ClassificationsModule } from './classifications/classifications.module';
+import { ExchangeImportsModule } from './exchange-imports/exchange-imports.module';
+import { ExchangeConnectionsModule } from './exchange-connections/exchange-connections.module';
 import { DatabaseModule } from '@auditswarm/database';
 import { QueueModule } from '@auditswarm/queue';
 
@@ -15,7 +19,7 @@ import { QueueModule } from '@auditswarm/queue';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.local', '.env'],
+      envFilePath: ['../../.env.local', '../../.env'],
     }),
     ThrottlerModule.forRoot([
       {
@@ -32,6 +36,10 @@ import { QueueModule } from '@auditswarm/queue';
     ReportsModule,
     AttestationsModule,
     ComplianceModule,
+    WebhooksModule,
+    ClassificationsModule,
+    ExchangeImportsModule,
+    ExchangeConnectionsModule,
   ],
 })
 export class AppModule {}

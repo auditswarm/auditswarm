@@ -1,3 +1,8 @@
+// Enable BigInt JSON serialization (Prisma returns BigInt for slot/blockTime/fee)
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
+
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -9,8 +14,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // Security
-  app.use(helmet());
+  // Security - disable CSP for Swagger UI
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+      crossOriginEmbedderPolicy: false,
+    }),
+  );
   app.enableCors({
     origin: configService.get<string>('CORS_ORIGIN', '*'),
     credentials: true,
@@ -44,10 +54,13 @@ async function bootstrap() {
     .addTag('reports', 'Report generation and export')
     .addTag('attestations', 'On-chain attestations')
     .addTag('compliance', 'Compliance checks')
+    .addTag('webhooks', 'Helius webhook ingestion')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    jsonDocumentUrl: '/docs-json',
+  });
 
   const port = configService.get<number>('PORT', 3001);
   await app.listen(port);

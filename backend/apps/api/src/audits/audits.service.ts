@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { AuditRepository, WalletRepository } from '@auditswarm/database';
+import { AuditRepository, WalletRepository, CounterpartyWalletRepository, PendingClassificationRepository } from '@auditswarm/database';
 import { QUEUES, JOB_NAMES, AuditJobData } from '@auditswarm/queue';
 import { isJurisdictionSupported, JurisdictionCode } from '@auditswarm/common';
 import type { Audit, AuditResult } from '@prisma/client';
@@ -29,10 +29,12 @@ export class AuditsService {
   constructor(
     private auditRepository: AuditRepository,
     private walletRepository: WalletRepository,
+    private counterpartyWalletRepository: CounterpartyWalletRepository,
+    private pendingClassificationRepository: PendingClassificationRepository,
     @InjectQueue(QUEUES.AUDIT) private auditQueue: Queue,
   ) {}
 
-  async create(userId: string, dto: CreateAuditDto): Promise<Audit> {
+  async create(userId: string, dto: CreateAuditDto): Promise<Audit & { suggestions?: any[] }> {
     // Validate jurisdiction
     if (!isJurisdictionSupported(dto.jurisdiction)) {
       throw new BadRequestException(`Jurisdiction ${dto.jurisdiction} is not supported`);
@@ -46,6 +48,14 @@ export class AuditsService {
       }
     }
 
+    // Check for pending classifications that block audit creation
+    const pendingCount = await this.pendingClassificationRepository.countPendingByUserId(userId);
+    if (pendingCount > 0) {
+      throw new BadRequestException(
+        `Cannot create audit: ${pendingCount} pending transaction classification(s) need to be resolved first. Visit /classifications/pending to review.`,
+      );
+    }
+
     // Set default options
     const options = {
       costBasisMethod: dto.options?.costBasisMethod || 'FIFO',
@@ -56,6 +66,9 @@ export class AuditsService {
       includeFees: dto.options?.includeFees ?? true,
       currency: dto.options?.currency || 'USD',
     };
+
+    // Check for ghost wallet suggestions before creating audit
+    const suggestions = await this.counterpartyWalletRepository.findSuggestionsForUser(userId, 10);
 
     // Create audit record
     const audit = await this.auditRepository.create(
@@ -91,14 +104,23 @@ export class AuditsService {
       },
     });
 
-    return audit;
+    // Include suggestions in response if available
+    if (suggestions.length > 0) {
+      return { ...audit, suggestions } as any;
+    }
+
+    return audit as any;
   }
 
   async findByUserId(
     userId: string,
     options?: { take?: number; skip?: number; status?: string },
   ): Promise<Audit[]> {
-    return this.auditRepository.findByUserId(userId, options);
+    return this.auditRepository.findByUserId(userId, {
+      ...options,
+      take: options?.take != null ? Number(options.take) : undefined,
+      skip: options?.skip != null ? Number(options.skip) : undefined,
+    });
   }
 
   async findById(id: string, userId: string): Promise<Audit> {

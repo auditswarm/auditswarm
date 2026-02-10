@@ -55,14 +55,18 @@ export class ReportsService {
     };
   }
 
-  async findByAuditId(auditId: string, userId: string): Promise<Report[]> {
+  async findByAuditId(
+    auditId: string,
+    userId: string,
+    options?: { take?: number; skip?: number },
+  ): Promise<Report[]> {
     // Verify ownership
     const audit = await this.auditRepository.findById(auditId);
     if (!audit || audit.userId !== userId) {
       throw new NotFoundException('Audit not found');
     }
 
-    return this.reportRepository.findByAuditId(auditId);
+    return this.reportRepository.findByAuditId(auditId, options);
   }
 
   async findById(id: string, userId: string): Promise<Report> {
