@@ -73,7 +73,7 @@ export class EUBee extends BaseBee {
         // In production, check if originator/beneficiary info is available
         // For now, flag all transactions above threshold
         violations.push({
-          transaction: tx.signature,
+          transaction: tx.signature ?? tx.id,
           amount: valueEur,
         });
       }

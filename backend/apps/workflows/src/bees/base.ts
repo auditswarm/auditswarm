@@ -161,13 +161,18 @@ export abstract class BaseBee implements JurisdictionBee {
       transactions: [],
     };
 
-    // Process disposals
-    const disposals = transactions.filter(tx =>
-      ['SELL', 'SWAP', 'TRANSFER_OUT'].includes(tx.type),
-    );
+    // Process disposals — include exchange sell-side types
+    const disposalTypes = [
+      'SELL', 'SWAP', 'TRANSFER_OUT',
+      'EXCHANGE_TRADE', 'EXCHANGE_C2C_TRADE', 'EXCHANGE_FIAT_SELL',
+      'EXCHANGE_DUST_CONVERT', 'EXCHANGE_CONVERT',
+      'MARGIN_LIQUIDATION',
+    ];
+    const disposals = transactions.filter(tx => disposalTypes.includes(tx.type));
 
     for (const disposal of disposals) {
       for (const transfer of disposal.transfers) {
+        if (transfer.isFee) continue;
         if (transfer.direction === 'OUT' && transfer.valueUsd) {
           const lot = this.matchLot(transfer.mint, Number(transfer.amount), method);
           if (lot) {
@@ -197,7 +202,7 @@ export abstract class BaseBee implements JurisdictionBee {
               costBasis,
               gainLoss,
               type: isLongTerm ? 'LONG_TERM' : 'SHORT_TERM',
-              transactionSignature: disposal.signature,
+              transactionSignature: disposal.signature ?? disposal.id,
             });
           }
         }
@@ -235,6 +240,16 @@ export abstract class BaseBee implements JurisdictionBee {
       } else if (tx.type === 'AIRDROP' && options.includeAirdrops) {
         type = 'airdrop';
         income.airdrops += Number(tx.totalValueUsd ?? 0);
+      } else if (tx.type === 'EXCHANGE_INTEREST' && options.includeStaking) {
+        type = 'staking';
+        income.staking += Number(tx.totalValueUsd ?? 0);
+      } else if (tx.type === 'EXCHANGE_DIVIDEND' && options.includeAirdrops) {
+        type = 'airdrop';
+        income.airdrops += Number(tx.totalValueUsd ?? 0);
+      } else if (tx.type === 'MARGIN_INTEREST') {
+        // Margin interest is a deductible expense — track as negative income
+        type = 'other';
+        income.other -= Number(tx.totalValueUsd ?? 0);
       }
 
       if (type && tx.totalValueUsd) {
@@ -246,7 +261,7 @@ export abstract class BaseBee implements JurisdictionBee {
           amount: Number(tx.transfers[0]?.amount || 0),
           valueUsd: value,
           date: tx.timestamp,
-          transactionSignature: tx.signature,
+          transactionSignature: tx.signature ?? undefined,
         });
       }
     }
@@ -274,8 +289,8 @@ export abstract class BaseBee implements JurisdictionBee {
         issues.push({
           severity: 'MEDIUM',
           type: 'UNCLASSIFIED_TRANSACTION',
-          description: `Large unclassified transaction: ${tx.signature}`,
-          transaction: tx.signature,
+          description: `Large unclassified transaction: ${tx.signature ?? tx.id}`,
+          transaction: tx.signature ?? tx.id,
           recommendation: 'Review and categorize this transaction manually',
         });
       }
@@ -301,8 +316,15 @@ export abstract class BaseBee implements JurisdictionBee {
     // Calculate current holdings based on all transactions
     const holdings = new Map<string, { balance: number; costBasis: number }>();
 
+    // Deposit/withdrawal are internal transfers, not economic events
+    const transferTypes = new Set(['EXCHANGE_DEPOSIT', 'EXCHANGE_WITHDRAWAL']);
+
     for (const tx of transactions) {
+      if (transferTypes.has(tx.type)) continue;
+
       for (const transfer of tx.transfers) {
+        if (transfer.isFee) continue;
+
         const current = holdings.get(transfer.mint) || { balance: 0, costBasis: 0 };
 
         if (transfer.direction === 'IN') {
@@ -355,12 +377,20 @@ export abstract class BaseBee implements JurisdictionBee {
   protected buildCostBasisLots(transactions: Transaction[]): void {
     this.lots.clear();
 
+    const acquisitionTypes = [
+      'BUY', 'TRANSFER_IN', 'SWAP', 'REWARD', 'AIRDROP',
+      'EXCHANGE_TRADE', 'EXCHANGE_C2C_TRADE', 'EXCHANGE_FIAT_BUY',
+      'EXCHANGE_CONVERT', 'EXCHANGE_DUST_CONVERT',
+      'EXCHANGE_INTEREST', 'EXCHANGE_DIVIDEND',
+      'EXCHANGE_UNSTAKE', 'MARGIN_BORROW',
+    ];
     const acquisitions = transactions.filter(tx =>
-      ['BUY', 'TRANSFER_IN', 'SWAP', 'REWARD', 'AIRDROP'].includes(tx.type),
+      acquisitionTypes.includes(tx.type),
     );
 
     for (const tx of acquisitions) {
       for (const transfer of tx.transfers) {
+        if (transfer.isFee) continue;
         if (transfer.direction === 'IN') {
           const lots = this.lots.get(transfer.mint) || [];
           lots.push({

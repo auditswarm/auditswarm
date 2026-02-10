@@ -90,17 +90,18 @@ export class AuditProcessor extends WorkerHost {
     // Map database transactions to common Transaction type
     return transactions.map(tx => ({
       id: tx.id,
-      walletId: tx.walletId,
-      signature: tx.signature,
+      walletId: tx.walletId ?? undefined,
+      signature: tx.signature ?? undefined,
       type: tx.type as any,
       status: tx.status as any,
       timestamp: tx.timestamp,
-      slot: tx.slot,
-      blockTime: tx.blockTime,
-      fee: tx.fee,
-      feePayer: tx.feePayer,
+      slot: tx.slot ? Number(tx.slot) : undefined,
+      blockTime: tx.blockTime ? Number(tx.blockTime) : undefined,
+      fee: tx.fee ?? undefined,
+      feePayer: tx.feePayer ?? undefined,
       transfers: Array.isArray(tx.transfers) ? tx.transfers as any[] : [],
       totalValueUsd: tx.totalValueUsd ? Number(tx.totalValueUsd) : undefined,
+      source: (tx.source ?? 'ONCHAIN') as any,
       rawData: tx.rawData as Record<string, unknown>,
     }));
   }
