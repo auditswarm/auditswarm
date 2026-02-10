@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@auditswarm/common": ["../../libs/common/src"],
+      "@auditswarm/common/*": ["../../libs/common/src/*"],
+      "@auditswarm/database": ["../../libs/database/src"],
+      "@auditswarm/database/*": ["../../libs/database/src/*"],
+      "@auditswarm/queue": ["../../libs/queue/src"],
+      "@auditswarm/queue/*": ["../../libs/queue/src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test"]
+}
