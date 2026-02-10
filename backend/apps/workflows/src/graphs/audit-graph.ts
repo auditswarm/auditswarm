@@ -291,13 +291,14 @@ Format as JSON with keys: summary, recommendations (array), risks (array)`;
     };
   });
 
-  // Define edges
-  graph.addEdge(START, NODES.LOAD_TRANSACTIONS);
-  graph.addEdge(NODES.LOAD_TRANSACTIONS, NODES.VALIDATE_DATA);
-  graph.addEdge(NODES.VALIDATE_DATA, NODES.ROUTE_JURISDICTION);
+  // Define edges (type assertions needed for LangGraph 0.2.x API compat)
+  const g = graph as any;
+  g.addEdge(START, NODES.LOAD_TRANSACTIONS);
+  g.addEdge(NODES.LOAD_TRANSACTIONS, NODES.VALIDATE_DATA);
+  g.addEdge(NODES.VALIDATE_DATA, NODES.ROUTE_JURISDICTION);
 
   // Conditional routing based on jurisdiction
-  graph.addConditionalEdges(NODES.ROUTE_JURISDICTION, (state: AuditState) => {
+  g.addConditionalEdges(NODES.ROUTE_JURISDICTION, (state: AuditState) => {
     if (state.errors.length > 0) {
       return END;
     }
@@ -315,13 +316,13 @@ Format as JSON with keys: summary, recommendations (array), risks (array)`;
   });
 
   // Connect jurisdiction processors to analysis
-  graph.addEdge(NODES.PROCESS_US, NODES.ANALYZE_RESULTS);
-  graph.addEdge(NODES.PROCESS_EU, NODES.ANALYZE_RESULTS);
-  graph.addEdge(NODES.PROCESS_BR, NODES.ANALYZE_RESULTS);
+  g.addEdge(NODES.PROCESS_US, NODES.ANALYZE_RESULTS);
+  g.addEdge(NODES.PROCESS_EU, NODES.ANALYZE_RESULTS);
+  g.addEdge(NODES.PROCESS_BR, NODES.ANALYZE_RESULTS);
 
-  graph.addEdge(NODES.ANALYZE_RESULTS, NODES.GENERATE_SUMMARY);
-  graph.addEdge(NODES.GENERATE_SUMMARY, NODES.SAVE_RESULT);
-  graph.addEdge(NODES.SAVE_RESULT, END);
+  g.addEdge(NODES.ANALYZE_RESULTS, NODES.GENERATE_SUMMARY);
+  g.addEdge(NODES.GENERATE_SUMMARY, NODES.SAVE_RESULT);
+  g.addEdge(NODES.SAVE_RESULT, END);
 
   return graph.compile();
 }

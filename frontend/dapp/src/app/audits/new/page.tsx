@@ -5,6 +5,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { redirect, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import { createAudit, listWallets, type CreateAuditDto } from '@/lib/api';
 
 const JURISDICTIONS = [
   { code: 'US', name: 'United States', flag: '🇺🇸' },
@@ -23,6 +24,7 @@ export default function NewAuditPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Form state
   const [jurisdiction, setJurisdiction] = useState('');
@@ -38,12 +40,37 @@ export default function NewAuditPage() {
 
   const handleSubmit = async () => {
     setLoading(true);
+    setError(null);
     try {
-      // API call would go here
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Get user's wallets to include in audit
+      const wallets = await listWallets();
+      if (wallets.length === 0) {
+        setError('No wallets found. Please add a wallet first.');
+        return;
+      }
+
+      const dto: CreateAuditDto = {
+        walletIds: wallets.map(w => w.id),
+        jurisdiction: jurisdiction as 'US' | 'EU' | 'BR',
+        type: 'FULL_TAX_YEAR',
+        taxYear,
+        options: {
+          costBasisMethod: costBasisMethod as 'FIFO' | 'LIFO' | 'HIFO',
+          includeStaking,
+          includeAirdrops,
+          includeNFTs,
+          includeDeFi: true,
+          includeFees: true,
+          currency: jurisdiction === 'BR' ? 'BRL' : jurisdiction === 'EU' ? 'EUR' : 'USD',
+        },
+      };
+
+      await createAudit(dto);
       router.push('/audits');
-    } catch (error) {
-      console.error('Failed to create audit:', error);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to create audit';
+      setError(message);
+      console.error('Failed to create audit:', err);
     } finally {
       setLoading(false);
     }
@@ -265,6 +292,13 @@ export default function NewAuditPage() {
                 </span>
               </label>
             </div>
+
+            {/* Error */}
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-6">
+                <p className="text-red-700 dark:text-red-300 text-sm">{error}</p>
+              </div>
+            )}
 
             {/* Summary */}
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 mb-6">

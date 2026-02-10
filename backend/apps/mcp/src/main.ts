@@ -123,7 +123,7 @@ const API_BASE_URL = process.env.AUDITSWARM_API_URL || 'http://localhost:3001/v1
 const API_KEY = process.env.AUDITSWARM_API_KEY;
 
 // API client
-async function callAPI(endpoint: string, method: string = 'GET', body?: object) {
+async function callAPI(endpoint: string, method: string = 'GET', body?: object): Promise<any> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
@@ -139,7 +139,7 @@ async function callAPI(endpoint: string, method: string = 'GET', body?: object) 
   });
 
   if (response.status === 402) {
-    const paymentInfo = await response.json();
+    const paymentInfo: any = await response.json();
     return {
       error: 'payment_required',
       message: 'Payment required to complete this request',

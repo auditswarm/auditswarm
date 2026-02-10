@@ -40,6 +40,12 @@
     "rxjs": "^7.8.1",
     "tweetnacl": "^1.0.3",
     "@prisma/client": "^5.22.0",
+    "pdfkit": "^0.15.0",
+    "exceljs": "^4.4.0",
+    "@langchain/core": "^0.3.0",
+    "@langchain/langgraph": "^0.2.0",
+    "@langchain/anthropic": "^0.3.0",
+    "@coral-xyz/anchor": "^0.29.0",
     "@auditswarm/common": "workspace:*",
     "@auditswarm/database": "workspace:*",
     "@auditswarm/queue": "workspace:*",
@@ -57,6 +63,7 @@
     "ts-jest": "^29.1.1",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
+    "@types/pdfkit": "^0.13.4",
     "typescript": "^5.3.3"
   }
 }

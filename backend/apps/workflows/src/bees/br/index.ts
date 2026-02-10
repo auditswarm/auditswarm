@@ -149,7 +149,7 @@ export class BRBee extends BaseBee {
       case 'DIRPF':
         return this.generateDIRPF(result);
       default:
-        throw new Error(`Formato não suportado: ${format}`);
+        return this.generateGCAP(result);
     }
   }
 

@@ -51,7 +51,7 @@ export class EUBee extends BaseBee {
       case 'TravelRule':
         return this.generateTravelRuleReport(result);
       default:
-        throw new Error(`Unsupported format: ${format}`);
+        return this.generateDAC8Report(result);
     }
   }
 

@@ -506,7 +506,7 @@ X402_NETWORK=solana:devnet
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+We welcome contributions! Fork the repo, create a feature branch, and submit a PR.
 
 ```bash
 # Run tests

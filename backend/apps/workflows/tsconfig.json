@@ -17,6 +17,6 @@
       "@auditswarm/x402/*": ["../../libs/x402/src/*"]
     }
   },
-  "include": ["src/**/*", "../workflows/src/**/*", "../../../onchain/sdk/src/**/*"],
+  "include": ["src/**/*", "../../../onchain/sdk/src/**/*"],
   "exclude": ["node_modules", "dist", "test"]
 }

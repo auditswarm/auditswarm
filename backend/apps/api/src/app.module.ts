@@ -14,6 +14,9 @@ import { ExchangeImportsModule } from './exchange-imports/exchange-imports.modul
 import { ExchangeConnectionsModule } from './exchange-connections/exchange-connections.module';
 import { DatabaseModule } from '@auditswarm/database';
 import { QueueModule } from '@auditswarm/queue';
+import { AuditProcessor } from '../../workflows/src/processors/audit.processor';
+import { ReportProcessor } from '../../workflows/src/processors/report.processor';
+import { AttestationProcessor } from '../../workflows/src/processors/attestation.processor';
 
 @Module({
   imports: [
@@ -40,6 +43,11 @@ import { QueueModule } from '@auditswarm/queue';
     ClassificationsModule,
     ExchangeImportsModule,
     ExchangeConnectionsModule,
+  ],
+  providers: [
+    AuditProcessor,
+    ReportProcessor,
+    AttestationProcessor,
   ],
 })
 export class AppModule {}
