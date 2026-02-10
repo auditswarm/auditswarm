@@ -98,7 +98,7 @@ export interface CapitalGainTransaction {
   costBasis: number;
   gainLoss: number;
   type: 'SHORT_TERM' | 'LONG_TERM';
-  transactionSignature: string;
+  transactionSignature?: string;
 }
 
 export interface IncomeReport {
@@ -118,7 +118,7 @@ export interface IncomeEvent {
   amount: number;
   valueUsd: number;
   date: Date;
-  transactionSignature: string;
+  transactionSignature?: string;
 }
 
 export interface HoldingsReport {

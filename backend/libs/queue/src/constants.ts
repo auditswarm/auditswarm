@@ -27,6 +27,15 @@ export const JOB_NAMES = {
   INDEX_WALLET: 'index-wallet',
   INDEX_TRANSACTION: 'index-transaction',
   SYNC_WALLET: 'sync-wallet',
+  REGISTER_WEBHOOK: 'register-webhook',
+  DETECT_FUNDING_SOURCE: 'detect-funding-source',
+  CLASSIFY_TRANSACTIONS: 'classify-transactions',
+  RECALCULATE_TAX_LOTS: 'recalculate-tax-lots',
+  ANALYZE_COUNTERPARTIES: 'analyze-counterparties',
+  PROCESS_EXCHANGE_IMPORT: 'process-exchange-import',
+  SYNC_EXCHANGE_CONNECTION: 'sync-exchange-connection',
+  SYNC_EXCHANGE_PHASE: 'sync-exchange-phase',
+  RECONCILE_EXCHANGE: 'reconcile-exchange',
 
   // Notification jobs
   SEND_EMAIL: 'send-email',

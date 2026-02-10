@@ -14,9 +14,14 @@ export class ReportRepository {
     return this.prisma.report.findUnique({ where: { id } });
   }
 
-  async findByAuditId(auditId: string): Promise<Report[]> {
+  async findByAuditId(
+    auditId: string,
+    options?: { take?: number; skip?: number },
+  ): Promise<Report[]> {
     return this.prisma.report.findMany({
       where: { auditId },
+      take: options?.take ?? 50,
+      skip: options?.skip ?? 0,
       orderBy: { generatedAt: 'desc' },
     });
   }

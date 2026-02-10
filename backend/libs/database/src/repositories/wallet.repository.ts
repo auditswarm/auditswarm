@@ -31,6 +31,13 @@ export class WalletRepository {
     });
   }
 
+  async findAllActive(): Promise<Wallet[]> {
+    return this.prisma.wallet.findMany({
+      where: { isActive: true },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
   async update(id: string, data: Prisma.WalletUpdateInput): Promise<Wallet> {
     return this.prisma.wallet.update({ where: { id }, data });
   }
@@ -38,13 +45,13 @@ export class WalletRepository {
   async updateTransactionStats(
     id: string,
     lastTransactionAt: Date,
-    incrementCount: number = 1,
+    totalCount: number,
   ): Promise<Wallet> {
     return this.prisma.wallet.update({
       where: { id },
       data: {
         lastTransactionAt,
-        transactionCount: { increment: incrementCount },
+        transactionCount: totalCount,
       },
     });
   }

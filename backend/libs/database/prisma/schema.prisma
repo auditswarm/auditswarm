@@ -30,10 +30,16 @@ model User {
   lastLoginAt DateTime?
 
   // Relations
-  wallets       Wallet[]
-  audits        Audit[]
-  sessions      Session[]
-  apiKeys       ApiKey[]
+  wallets            Wallet[]
+  audits             Audit[]
+  sessions           Session[]
+  apiKeys            ApiKey[]
+  counterpartyWallets CounterpartyWallet[]
+  addressLabels          UserAddressLabel[]
+  pendingClassifications PendingClassification[]
+  portfolioSnapshots     PortfolioSnapshot[]
+  exchangeImports        ExchangeImport[]
+  exchangeConnections    ExchangeConnection[]
 
   @@map("users")
 }
@@ -90,10 +96,13 @@ model Wallet {
   transactionCount   Int       @default(0)
 
   // Relations
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
   audits       AuditWallet[]
   attestations Attestation[]
+  syncState    WalletSyncState?
+  interactions WalletInteraction[]
+  fundingSource WalletFundingSource?
 
   @@unique([userId, address])
   @@index([address])
@@ -107,21 +116,31 @@ model Wallet {
 
 model Transaction {
   id          String   @id @default(uuid())
-  walletId    String
-  signature   String   @unique
+  walletId    String?  // null for exchange-only transactions
+  signature   String?  @unique  // null for exchange transactions
   type        String
   status      String   @default("CONFIRMED")
   timestamp   DateTime
-  slot        BigInt
-  blockTime   BigInt
+  slot        BigInt?  // null for exchange transactions
+  blockTime   BigInt?  // null for exchange transactions
 
   // Fees
-  fee         BigInt
-  feePayer    String
+  fee         BigInt?  // null for exchange transactions
+  feePayer    String?  // null for exchange transactions
+
+  // Source tracking
+  source                String    @default("ONCHAIN")  // ONCHAIN, EXCHANGE, MANUAL
+  exchangeConnectionId  String?
+  exchangeName          String?   // binance, coinbase, etc.
+  externalId            String?   // exchange's own transaction ID
+
+  // Reconciliation link
+  linkedTransactionId   String?   // bidirectional link for reconciled pairs
 
   // Categorization
   category    String?
   subcategory String?
+  classificationStatus String?  // CLASSIFIED, PENDING, AUTO_RESOLVED
 
   // Value tracking
   totalValueUsd Decimal?  @db.Decimal(20, 8)
@@ -141,13 +160,24 @@ model Transaction {
   updatedAt DateTime @updatedAt
 
   // Relations
-  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  wallet              Wallet?                 @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  exchangeConnection  ExchangeConnection?     @relation(fields: [exchangeConnectionId], references: [id])
+  linkedTransaction   Transaction?            @relation("TransactionLink", fields: [linkedTransactionId], references: [id])
+  linkedBy            Transaction[]           @relation("TransactionLink")
+  enrichment          TransactionEnrichment?
+  flows               TransactionFlow[]
+  pendingClassifications PendingClassification[]
+  exchangeTransactions   ExchangeTransaction[]
 
   @@index([walletId])
   @@index([walletId, timestamp])
   @@index([timestamp])
   @@index([type])
   @@index([signature])
+  @@index([exchangeConnectionId])
+  @@index([source])
+  @@index([linkedTransactionId])
+  @@index([externalId])
   @@map("transactions")
 }
 
@@ -381,4 +411,478 @@ model Payment {
   @@index([walletAddress])
   @@index([status])
   @@map("payments")
+}
+
+// ============================================
+// Indexer: Wallet Sync State
+// ============================================
+
+model WalletSyncState {
+  id        String   @id @default(uuid())
+  walletId  String   @unique
+  status    String   @default("IDLE") // IDLE, SYNCING, COMPLETED, FAILED, PAUSED
+
+  // Cursors for resume
+  lastSignature   String?
+  oldestSignature String?
+
+  // Progress tracking
+  totalTransactionsFound   Int @default(0)
+  totalTransactionsIndexed Int @default(0)
+  progress                 Int @default(0) // 0-100
+
+  // Error tracking
+  errorMessage String?
+  errorCount   Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("wallet_sync_states")
+}
+
+// ============================================
+// Indexer: Transaction Enrichment
+// ============================================
+
+model TransactionEnrichment {
+  id            String @id @default(uuid())
+  transactionId String @unique
+
+  // Protocol info
+  protocolName      String?
+  protocolProgramId String?
+  heliusType        String?
+  heliusSource      String?
+
+  // Structured details (JSON)
+  swapDetails    Json?
+  stakingDetails Json?
+  defiDetails    Json?
+
+  // User labels
+  userLabel String?
+  userNotes String?
+
+  // AI classification (on-demand)
+  aiClassification String?
+  aiConfidence     Float?
+
+  // Flags
+  isUnknown Boolean @default(false)
+  isFailed  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([heliusType])
+  @@index([isUnknown])
+  @@index([isFailed])
+  @@map("transaction_enrichments")
+}
+
+// ============================================
+// Indexer: Counterparty Wallets (ghost wallets)
+// ============================================
+
+model CounterpartyWallet {
+  id      String @id @default(uuid())
+  address String @unique
+
+  // Labeling
+  label       String?
+  labelSource String? // AUTO_PROGRAM, AUTO_EXCHANGE, USER, FREQUENCY
+
+  // Entity classification
+  entityType     String? // EXCHANGE, DEX, LENDING, STAKING, BRIDGE, UNKNOWN
+  programId      String?
+  isKnownProgram Boolean @default(false)
+
+  // Interaction tracking
+  interactionCount Int @default(0)
+
+  // Ownership (null = ghost, set when user claims)
+  ownerId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  owner        User?               @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  interactions WalletInteraction[]
+
+  @@index([ownerId])
+  @@index([entityType])
+  @@index([interactionCount])
+  @@map("counterparty_wallets")
+}
+
+// ============================================
+// Indexer: Wallet Interactions
+// ============================================
+
+model WalletInteraction {
+  id              String @id @default(uuid())
+  walletId        String
+  counterpartyId  String
+
+  interactionCount  Int      @default(1)
+  totalValueUsd     Decimal? @db.Decimal(20, 8)
+  lastInteractionAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  wallet       Wallet             @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  counterparty CounterpartyWallet @relation(fields: [counterpartyId], references: [id], onDelete: Cascade)
+
+  @@unique([walletId, counterpartyId])
+  @@index([walletId])
+  @@index([counterpartyId])
+  @@map("wallet_interactions")
+}
+
+// ============================================
+// Indexer: Token Metadata Cache
+// ============================================
+
+model TokenMetadata {
+  id      String @id @default(uuid())
+  mint    String @unique
+
+  symbol   String?
+  name     String?
+  decimals Int     @default(0)
+  logoUrl  String?
+
+  // Source tracking
+  source     String? // HELIUS_DAS, JUPITER, MANUAL
+  isVerified Boolean @default(false)
+
+  // External IDs
+  coingeckoId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([symbol])
+  @@map("token_metadata")
+}
+
+// ============================================
+// Indexer: Webhook Registrations
+// ============================================
+
+model WebhookRegistration {
+  id              String @id @default(uuid())
+  heliusWebhookId String @unique
+
+  webhookUrl       String
+  webhookType      String  @default("enhanced") // enhanced, raw
+  accountAddresses Json    // string[]
+  transactionTypes Json?   // string[]
+
+  // Status
+  status     String @default("ACTIVE") // ACTIVE, PAUSED, FAILED, DELETED
+  authHeader String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@map("webhook_registrations")
+}
+
+// ============================================
+// Indexer: Transaction Flows (precision PnL)
+// ============================================
+
+model TransactionFlow {
+  id            String   @id @default(uuid())
+  transactionId String
+  walletId      String?  // null for exchange flows
+
+  // Token identification
+  mint          String   // SOL_MINT for native SOL, or "exchange:{SYMBOL}" for unresolved
+  decimals      Int      // 9 for SOL, 6 for most SPL
+
+  // Lossless amount (base units as string)
+  rawAmount     String   // absolute value, e.g. "1000005000", "5351482072365"
+
+  // Human-readable amount (for SQL aggregation)
+  amount        Decimal  @db.Decimal(38, 18)  // rawAmount / 10^decimals, unsigned
+  direction     String   // "IN" or "OUT"
+
+  // USD attribution (computed at indexing time)
+  valueUsd      Decimal? @db.Decimal(20, 8)
+
+  // Exchange-specific fields
+  exchangeConnectionId  String?    // null for on-chain flows
+  symbol                String?    // exchange symbol (SOL, BTC) when mint can't resolve
+  network               String?    @default("solana")  // solana, bsc, eth, etc.
+  isFee                 Boolean    @default(false)      // fee disposal flow
+  priceAtExecution      Decimal?   @db.Decimal(20, 8)   // exact price from exchange
+
+  createdAt     DateTime @default(now())
+
+  // Relations
+  transaction          Transaction         @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  exchangeConnection   ExchangeConnection? @relation(fields: [exchangeConnectionId], references: [id])
+
+  @@index([transactionId])
+  @@index([walletId, mint])
+  @@index([walletId])
+  @@index([mint])
+  @@index([exchangeConnectionId, mint])
+  @@map("transaction_flows")
+}
+
+// ============================================
+// Known Addresses (exchanges, bridges, etc.)
+// ============================================
+
+model KnownAddress {
+  id         String   @id @default(uuid())
+  address    String   @unique
+  name       String
+  label      String
+  entityType String   // EXCHANGE, BRIDGE
+  source     String   @default("SEED") // SEED, HELIUS, BIRDEYE, ADMIN
+  isVerified Boolean  @default(false)
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([entityType])
+  @@map("known_addresses")
+}
+
+// ============================================
+// User Address Labels
+// ============================================
+
+model UserAddressLabel {
+  id         String   @id @default(uuid())
+  userId     String
+  address    String
+  label      String
+  entityType String?
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, address])
+  @@index([address])
+  @@map("user_address_labels")
+}
+
+// ============================================
+// Wallet Funding Sources
+// ============================================
+
+model WalletFundingSource {
+  id                         String    @id @default(uuid())
+  walletId                   String    @unique
+  funderAddress              String
+  funderTransactionSignature String
+  funderTransactionTimestamp DateTime
+  fundedAmountLamports       BigInt
+  fundedAmountSol            Decimal   @db.Decimal(20, 9)
+  funderLabel                String?
+  funderEntityType           String?   // EXCHANGE, PERSONAL, UNKNOWN
+  depth                      Int       @default(1)
+  parentFundingSourceId      String?
+  createdAt                  DateTime  @default(now())
+
+  wallet              Wallet               @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  parentFundingSource WalletFundingSource?  @relation("FundingChain", fields: [parentFundingSourceId], references: [id])
+  childFundingSources WalletFundingSource[] @relation("FundingChain")
+
+  @@index([funderAddress])
+  @@map("wallet_funding_sources")
+}
+
+// ============================================
+// Pending Classifications
+// ============================================
+
+model PendingClassification {
+  id                String    @id @default(uuid())
+  userId            String
+  transactionId     String?
+  counterpartyId    String?
+  type              String    // TRANSACTION, COUNTERPARTY, OFFRAMP
+  status            String    @default("PENDING") // PENDING, RESOLVED, AUTO_RESOLVED
+  priority          Int       @default(0)
+  suggestedCategory String?
+  resolvedCategory  String?
+  autoResolveReason String?
+  estimatedValueUsd Decimal?  @db.Decimal(20, 8)
+  notes             String?
+  resolvedAt        DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transaction Transaction? @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([userId, status, priority])
+  @@index([transactionId])
+  @@map("pending_classifications")
+}
+
+// ============================================
+// Portfolio Snapshots (tax lot results)
+// ============================================
+
+model PortfolioSnapshot {
+  id                  String   @id @default(uuid())
+  userId              String
+  mint                String
+  method              String   // FIFO, LIFO, WAC
+  taxYear             Int
+  totalAcquired       Decimal  @db.Decimal(38, 18)
+  totalDisposed       Decimal  @db.Decimal(38, 18)
+  totalCostBasis      Decimal  @db.Decimal(20, 8)
+  totalProceeds       Decimal  @db.Decimal(20, 8)
+  realizedGainLoss    Decimal  @db.Decimal(20, 8)
+  unrealizedCostBasis Decimal  @db.Decimal(20, 8)
+  shortTermGainLoss   Decimal  @db.Decimal(20, 8)
+  longTermGainLoss    Decimal  @db.Decimal(20, 8)
+  holdingsCount       Int      @default(0)
+  remainingAmount     Decimal  @db.Decimal(38, 18)
+  isStale             Boolean  @default(false)
+  computedAt          DateTime
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mint, method, taxYear])
+  @@index([userId, taxYear])
+  @@map("portfolio_snapshots")
+}
+
+// ============================================
+// Exchange Connections (API-linked exchanges)
+// ============================================
+
+model ExchangeConnection {
+  id                String    @id @default(uuid())
+  userId            String
+  exchangeName      String    // binance, coinbase, kraken
+  encryptedApiKey   String
+  encryptedApiSecret String
+  encryptedPassphrase String? // some exchanges require passphrase
+  subAccountLabel   String?
+  status            String    @default("ACTIVE") // ACTIVE, INACTIVE, ERROR, REVOKED
+  lastSyncAt        DateTime?
+  lastError         String?
+  syncCursor        Json?     // pagination state per endpoint
+  cachedBalances    Json?     // real-time balances from exchange API { fetchedAt, balances[] }
+  permissions       String[]  @default([])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  imports      ExchangeImport[]
+  transactions Transaction[]
+  flows        TransactionFlow[]
+
+  @@unique([userId, exchangeName, subAccountLabel])
+  @@index([userId])
+  @@map("exchange_connections")
+}
+
+// ============================================
+// Exchange Imports
+// ============================================
+
+model ExchangeImport {
+  id               String   @id @default(uuid())
+  userId           String
+  exchangeName     String
+  importType       String   @default("CSV") // CSV, API
+  connectionId     String?
+  fileName         String?
+  status           String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  totalRecords     Int      @default(0)
+  matchedRecords   Int      @default(0)
+  unmatchedRecords Int      @default(0)
+  errorMessage     String?
+  metadata         Json?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  connection   ExchangeConnection?   @relation(fields: [connectionId], references: [id], onDelete: SetNull)
+  transactions ExchangeTransaction[]
+
+  @@index([userId])
+  @@index([connectionId])
+  @@map("exchange_imports")
+}
+
+// ============================================
+// Exchange Transactions
+// ============================================
+
+model ExchangeTransaction {
+  id                   String    @id @default(uuid())
+  importId             String
+  externalId           String?
+  type                 String    // TRADE, DEPOSIT, WITHDRAWAL, FEE
+  timestamp            DateTime
+  asset                String
+  amount               Decimal   @db.Decimal(38, 18)
+  priceUsd             Decimal?  @db.Decimal(20, 8)
+  totalValueUsd        Decimal?  @db.Decimal(20, 8)
+  feeAmount            Decimal?  @db.Decimal(38, 18)
+  feeAsset             String?
+  side                 String?   // BUY, SELL
+  tradePair            String?
+  matchedTransactionId String?
+  matchConfidence      Float?
+  isConfirmed          Boolean   @default(false)
+  rawData              Json?
+  createdAt            DateTime  @default(now())
+
+  exchangeImport     ExchangeImport @relation(fields: [importId], references: [id], onDelete: Cascade)
+  matchedTransaction Transaction?   @relation(fields: [matchedTransactionId], references: [id])
+
+  @@index([importId])
+  @@index([matchedTransactionId])
+  @@map("exchange_transactions")
+}
+
+// ============================================
+// Token Symbol Mappings (exchange symbol → mint)
+// ============================================
+
+model TokenSymbolMapping {
+  id        String   @id @default(uuid())
+  symbol    String   // e.g. SOL, BTC, USDC
+  network   String   // solana, bsc, eth, bitcoin, binance-internal
+  mint      String   // Solana mint address (or chain-specific address)
+  decimals  Int
+  source    String   @default("SEED")  // SEED, AUTO, ADMIN
+  isDefault Boolean  @default(false)    // preferred mapping for this symbol
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([symbol, network])
+  @@index([symbol])
+  @@index([mint])
+  @@map("token_symbol_mappings")
 }

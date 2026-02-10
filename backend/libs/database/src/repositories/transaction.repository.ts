@@ -7,10 +7,13 @@ export interface TransactionFilter {
   walletIds?: string[];
   type?: string;
   types?: string[];
+  excludeTypes?: string[];
   startDate?: Date;
   endDate?: Date;
   minValue?: number;
   maxValue?: number;
+  source?: string;                    // ONCHAIN, EXCHANGE, MANUAL
+  exchangeConnectionIds?: string[];   // filter by exchange connection
 }
 
 @Injectable()
@@ -29,11 +32,17 @@ export class TransactionRepository {
   }
 
   async findById(id: string): Promise<Transaction | null> {
-    return this.prisma.transaction.findUnique({ where: { id } });
+    return this.prisma.transaction.findUnique({
+      where: { id },
+      include: { enrichment: true },
+    });
   }
 
   async findBySignature(signature: string): Promise<Transaction | null> {
-    return this.prisma.transaction.findUnique({ where: { signature } });
+    return this.prisma.transaction.findUnique({
+      where: { signature },
+      include: { enrichment: true },
+    });
   }
 
   async findByWalletId(
@@ -50,21 +59,48 @@ export class TransactionRepository {
 
   async findByFilter(
     filter: TransactionFilter,
-    options?: { take?: number; skip?: number },
+    options?: { take?: number; skip?: number; sortBy?: string; sortOrder?: 'asc' | 'desc' },
   ): Promise<Transaction[]> {
     const where: Prisma.TransactionWhereInput = {};
 
+    // Build OR conditions for wallet + exchange sources
+    const orConditions: Prisma.TransactionWhereInput[] = [];
+
     if (filter.walletId) {
-      where.walletId = filter.walletId;
+      orConditions.push({ walletId: filter.walletId });
     }
     if (filter.walletIds?.length) {
-      where.walletId = { in: filter.walletIds };
+      orConditions.push({ walletId: { in: filter.walletIds } });
     }
+    if (filter.exchangeConnectionIds?.length) {
+      orConditions.push({ exchangeConnectionId: { in: filter.exchangeConnectionIds } });
+    }
+
+    if (orConditions.length > 1) {
+      where.OR = orConditions;
+    } else if (orConditions.length === 1) {
+      Object.assign(where, orConditions[0]);
+    }
+
+    // Source filter
+    if (filter.source) {
+      where.source = filter.source;
+    }
+
     if (filter.type) {
       where.type = filter.type;
     }
     if (filter.types?.length) {
       where.type = { in: filter.types };
+    }
+    if (filter.excludeTypes?.length) {
+      if (typeof where.type === 'string') {
+        where.type = { equals: where.type, notIn: filter.excludeTypes };
+      } else if (where.type && typeof where.type === 'object') {
+        (where.type as Record<string, unknown>).notIn = filter.excludeTypes;
+      } else {
+        where.type = { notIn: filter.excludeTypes };
+      }
     }
     if (filter.startDate || filter.endDate) {
       where.timestamp = {};
@@ -85,12 +121,25 @@ export class TransactionRepository {
       }
     }
 
+    const validSortFields = ['timestamp', 'totalValueUsd', 'type', 'fee', 'createdAt'];
+    const sortBy = validSortFields.includes(options?.sortBy ?? '') ? options!.sortBy! : 'timestamp';
+    const sortOrder = options?.sortOrder ?? 'desc';
+
     return this.prisma.transaction.findMany({
       where,
+      include: { enrichment: true },
       take: options?.take ?? 1000,
       skip: options?.skip ?? 0,
-      orderBy: { timestamp: 'asc' },
+      orderBy: { [sortBy]: sortOrder },
     });
+  }
+
+  async findExistingSignatures(signatures: string[]): Promise<string[]> {
+    const results = await this.prisma.transaction.findMany({
+      where: { signature: { in: signatures } },
+      select: { signature: true },
+    });
+    return results.filter(r => r.signature != null).map(r => r.signature!);
   }
 
   async update(id: string, data: Prisma.TransactionUpdateInput): Promise<Transaction> {

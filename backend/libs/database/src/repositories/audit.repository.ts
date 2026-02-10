@@ -95,7 +95,7 @@ export class AuditRepository {
       data: {
         status: 'FAILED',
         errorMessage,
-        errorDetails: errorDetails as Prisma.JsonValue,
+        errorDetails: errorDetails as Prisma.InputJsonValue,
         completedAt: new Date(),
       },
     });

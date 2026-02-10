@@ -1,3 +1,3 @@
 export { QueueModule } from './queue.module';
-export { QUEUES } from './constants';
+export { QUEUES, JOB_NAMES } from './constants';
 export * from './types';
