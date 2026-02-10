@@ -174,7 +174,7 @@ export class X402Service {
         return { valid: false, error: 'Facilitator verification failed' };
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as { verified?: boolean; error?: string };
       return {
         valid: result.verified === true,
         error: result.error,
