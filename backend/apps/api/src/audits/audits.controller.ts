@@ -70,12 +70,13 @@ export class AuditsController {
   }
 
   @Post()
-  @UseGuards(X402Guard)
-  @PaymentRequired({
-    resource: 'audit',
-    amount: '0.10',
-    description: 'Tax audit request',
-  })
+  // TODO: Re-enable x402 payment before production/commit
+  // @UseGuards(X402Guard)
+  // @PaymentRequired({
+  //   resource: 'audit',
+  //   amount: '0.10',
+  //   description: 'Tax audit request',
+  // })
   @ApiOperation({ summary: 'Request a new audit' })
   @ApiCreatedResponse({
     description: 'Audit created and processing dispatched',

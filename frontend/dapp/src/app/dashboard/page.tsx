@@ -796,6 +796,7 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
   const [selectedExchange, setSelectedExchange] = useState<AvailableExchange | null>(null);
   const [apiKey, setApiKey] = useState('');
   const [apiSecret, setApiSecret] = useState('');
+  const [passphrase, setPassphrase] = useState('');
   const [subAccount, setSubAccount] = useState('');
   const [showSecret, setShowSecret] = useState(false);
   const [error, setError] = useState('');
@@ -805,6 +806,8 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
     queryFn: getAvailableExchanges,
   });
 
+  const needsPassphrase = selectedExchange?.requiredCredentials?.includes('passphrase');
+
   const linkMutation = useMutation({
     mutationFn: () =>
       linkExchange({
@@ -812,6 +815,7 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
         apiKey,
         apiSecret,
         subAccountLabel: subAccount || undefined,
+        passphrase: passphrase || undefined,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['exchange-connections'] });
@@ -838,6 +842,10 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
     }
     if (!apiSecret.trim()) {
       setError('API Secret is required');
+      return;
+    }
+    if (needsPassphrase && !passphrase.trim()) {
+      setError('Passphrase is required for this exchange');
       return;
     }
 
@@ -1009,6 +1017,28 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                   </button>
                 </div>
               </div>
+
+              {/* Passphrase (required for OKX) */}
+              {needsPassphrase && (
+                <div>
+                  <label className="block text-xs text-white/40 mb-2 uppercase tracking-wider font-medium">
+                    Passphrase
+                  </label>
+                  <div className="relative">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                      <Key className="w-4 h-4 text-white/15" />
+                    </div>
+                    <input
+                      type="password"
+                      value={passphrase}
+                      onChange={(e) => setPassphrase(e.target.value)}
+                      placeholder="Enter your API passphrase..."
+                      className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/[0.04] border border-white/5 text-sm text-white/80 font-mono placeholder-white/20 focus:outline-none focus:border-primary/30 focus:bg-white/[0.06] transition-all"
+                      autoComplete="off"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Sub-account (optional) */}
               {selectedExchange.optionalCredentials?.includes('subAccountLabel') && (

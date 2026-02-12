@@ -377,6 +377,15 @@ export class ExchangeTransactionMapperService {
         record.feeAmount, 'OUT', null, record.network, true,
       ));
     }
+
+    // IN flow for the fiat received
+    if (record.quoteAsset && record.quoteAmount) {
+      const fiatResolved = await this.resolveToken(record.quoteAsset, record.network);
+      flows.push(this.createFlow(
+        connectionId, fiatResolved.mint, fiatResolved.decimals, record.quoteAsset,
+        Math.abs(record.quoteAmount), 'IN', null, record.network, false,
+      ));
+    }
   }
 
   // ---- Convert / Dust Convert: OUT source, IN target ----
@@ -402,6 +411,15 @@ export class ExchangeTransactionMapperService {
         // source is stablecoin: target price = sourceAmount / targetAmount
         sourcePriceUsd = sourcePriceUsd ?? 1.0;
         targetPriceUsd = record.quoteAmount > 0 ? (Math.abs(record.amount) / Math.abs(record.quoteAmount)) : null;
+      }
+    }
+
+    // Fallback: use fillIdxPx from OKX raw bill data (USD index price of the asset)
+    // This handles crypto→fiat converts (e.g. ETH→BRL) where neither side is USD-like
+    if (sourcePriceUsd == null) {
+      const idxPx = parseFloat(raw?.expense?.fillIdxPx || raw?.income?.fillIdxPx || '0');
+      if (idxPx > 0) {
+        sourcePriceUsd = idxPx;
       }
     }
 

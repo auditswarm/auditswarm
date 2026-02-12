@@ -20,8 +20,8 @@ export class ReportRepository {
   ): Promise<Report[]> {
     return this.prisma.report.findMany({
       where: { auditId },
-      take: options?.take ?? 50,
-      skip: options?.skip ?? 0,
+      take: Number.isFinite(options?.take) ? options!.take : 50,
+      skip: Number.isFinite(options?.skip) ? options!.skip : 0,
       orderBy: { generatedAt: 'desc' },
     });
   }

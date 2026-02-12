@@ -271,7 +271,7 @@ export default function ReportsPage() {
 
 function ReportCard({ report }: { report: Report }) {
   const queryClient = useQueryClient();
-  const config = STATUS_CONFIG[report.status];
+  const config = STATUS_CONFIG[report.status] ?? { icon: Clock, label: report.status, color: 'text-gray-400', bg: 'bg-gray-500/10' };
   const StatusIcon = config.icon;
   const FormatIcon = FORMAT_ICONS[report.format] ?? FileText;
   const date = new Date(report.createdAt);

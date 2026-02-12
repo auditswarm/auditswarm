@@ -1,6 +1,9 @@
 import { StateGraph, END, START } from '@langchain/langgraph';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { getBee, BeeOptions, BeeResult } from '../bees';
+import type { BeeContext } from '../bees/base';
+import { FxRateService } from '../services/fx-rate.service';
+import { JURISDICTIONS } from '@auditswarm/common';
 import type { Transaction, JurisdictionCode, AuditResult } from '@auditswarm/common';
 
 // State interface for the audit workflow
@@ -45,13 +48,15 @@ export function createAuditGraph(dependencies: {
   loadTransactions: (walletIds: string[], taxYear: number) => Promise<Transaction[]>;
   saveResult: (auditId: string, result: AuditResult) => Promise<void>;
   updateProgress: (auditId: string, progress: number, message: string) => Promise<void>;
+  fxService?: FxRateService;
 }) {
-  const { loadTransactions, saveResult, updateProgress } = dependencies;
+  const { loadTransactions, saveResult, updateProgress, fxService } = dependencies;
 
   // Initialize LLM for analysis
   const llm = new ChatAnthropic({
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-haiku-4-5-20251001',
     temperature: 0,
+    maxRetries: 2,
   });
 
   // Create the graph
@@ -119,12 +124,19 @@ export function createAuditGraph(dependencies: {
     };
   });
 
+  // Build BeeContext for a jurisdiction
+  const buildContext = (jurisdiction: JurisdictionCode): BeeContext | undefined => {
+    if (!fxService) return undefined;
+    const currency = JURISDICTIONS[jurisdiction]?.currency ?? 'USD';
+    return { fxService, currency };
+  };
+
   // Node: Process US jurisdiction
   graph.addNode(NODES.PROCESS_US, async (state: AuditState) => {
     await updateProgress(state.auditId, 40, 'Processing with US Tax Compliance Bee...');
 
     const bee = getBee('US');
-    const result = await bee.process(state.transactions, state.taxYear, state.options);
+    const result = await bee.process(state.transactions, state.taxYear, state.options, buildContext('US'));
 
     await updateProgress(state.auditId, 70, 'US tax calculations complete');
 
@@ -140,7 +152,7 @@ export function createAuditGraph(dependencies: {
     await updateProgress(state.auditId, 40, 'Processing with EU/MiCA Compliance Bee...');
 
     const bee = getBee('EU');
-    const result = await bee.process(state.transactions, state.taxYear, state.options);
+    const result = await bee.process(state.transactions, state.taxYear, state.options, buildContext('EU'));
 
     await updateProgress(state.auditId, 70, 'EU compliance analysis complete');
 
@@ -156,7 +168,7 @@ export function createAuditGraph(dependencies: {
     await updateProgress(state.auditId, 40, 'Processing with Brazil Tax Compliance Bee...');
 
     const bee = getBee('BR');
-    const result = await bee.process(state.transactions, state.taxYear, state.options);
+    const result = await bee.process(state.transactions, state.taxYear, state.options, buildContext('BR'));
 
     await updateProgress(state.auditId, 70, 'Brazil tax calculations complete');
 
@@ -187,6 +199,7 @@ Capital Gains:
 
 Income:
 - Staking: $${state.beeResult.income.staking}
+- Earn/Yield: $${state.beeResult.income.rewards}
 - Airdrops: $${state.beeResult.income.airdrops}
 - Total: $${state.beeResult.income.total}
 
@@ -200,15 +213,17 @@ Provide:
 
 Format as JSON with keys: summary, recommendations (array), risks (array)`;
 
-    const response = await llm.invoke(analysisPrompt);
     let analysis: { summary: string; recommendations: string[]; risks: string[] };
 
     try {
+      const response = await llm.invoke(analysisPrompt);
       analysis = JSON.parse(response.content as string);
-    } catch {
+    } catch (llmError: any) {
+      // Graceful degradation: LLM analysis is supplementary — tax calculations are already done
+      console.warn(`LLM analysis failed (non-blocking): ${llmError?.message ?? llmError}`);
       analysis = {
-        summary: 'Audit completed successfully.',
-        recommendations: state.beeResult.recommendations,
+        summary: `Audit completed for ${state.jurisdiction} jurisdiction. Review the capital gains and income sections for detailed results.`,
+        recommendations: [],
         risks: [],
       };
     }
@@ -250,7 +265,7 @@ Format as JSON with keys: summary, recommendations (array), risks (array)`;
         netGainLoss: state.beeResult.capitalGains.totalNet,
         totalIncome: state.beeResult.income.total,
         estimatedTax: state.beeResult.estimatedTax,
-        currency: state.options.currency || 'USD',
+        currency: JURISDICTIONS[state.jurisdiction]?.currency ?? 'USD',
       },
       capitalGains: state.beeResult.capitalGains,
       income: state.beeResult.income,
@@ -266,6 +281,10 @@ Format as JSON with keys: summary, recommendations (array), risks (array)`;
         processedAt: new Date(),
         processingTime: 0, // Will be calculated
       },
+      monthlyBreakdown: state.beeResult.monthlyBreakdown,
+      // US-specific fields (set by USBee.process())
+      scheduleDSummary: (state.beeResult as any).scheduleDSummary,
+      fbarReport: (state.beeResult as any).fbarReport,
     };
 
     return {

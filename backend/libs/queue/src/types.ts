@@ -4,6 +4,7 @@ export interface AuditJobData {
   auditId: string;
   userId: string;
   walletIds: string[];
+  exchangeConnectionIds?: string[];
   jurisdiction: JurisdictionCode;
   taxYear: number;
   options: {

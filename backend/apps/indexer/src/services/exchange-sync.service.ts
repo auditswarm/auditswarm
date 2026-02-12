@@ -14,7 +14,9 @@ import {
 import { decrypt } from '@auditswarm/common';
 import { ExchangeTransactionMapperService, MappingResult } from './exchange-transaction-mapper.service';
 import { BinanceConnector } from '../../../api/src/exchange-connections/connectors/binance-connector';
-import type { SyncPhaseResult } from '../../../api/src/exchange-connections/connectors/base-connector';
+import { BybitConnector } from '../../../api/src/exchange-connections/connectors/bybit-connector';
+import { OkxConnector } from '../../../api/src/exchange-connections/connectors/okx-connector';
+import type { ExchangeApiConnector, SyncPhaseResult } from '../../../api/src/exchange-connections/connectors/base-connector';
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
@@ -52,12 +54,10 @@ export class ExchangeSyncService {
 
     const apiKey = decrypt(connection.encryptedApiKey, this.encryptionKey);
     const apiSecret = decrypt(connection.encryptedApiSecret, this.encryptionKey);
+    const passphrase = (connection as any).encryptedPassphrase
+      ? decrypt((connection as any).encryptedPassphrase, this.encryptionKey) : undefined;
 
-    if (connection.exchangeName !== 'binance') {
-      throw new Error(`Exchange "${connection.exchangeName}" not supported`);
-    }
-
-    const connector = new BinanceConnector(apiKey, apiSecret);
+    const connector = this.createConnector(connection.exchangeName, apiKey, apiSecret, passphrase);
     const since = fullSync ? undefined : connection.lastSyncAt ?? undefined;
 
     const syncCursor: Record<string, any> = (connection.syncCursor as any) ?? {};
@@ -80,7 +80,7 @@ export class ExchangeSyncService {
 
       try {
         const phaseCursor = syncCursor[`phase${phase}`] ?? {};
-        const result = await connector.fetchPhase(phase, {
+        const result = await connector.fetchPhase!(phase, {
           since,
           cursor: phaseCursor,
           fullSync,
@@ -172,8 +172,10 @@ export class ExchangeSyncService {
 
     const apiKey = decrypt(connection.encryptedApiKey, this.encryptionKey);
     const apiSecret = decrypt(connection.encryptedApiSecret, this.encryptionKey);
+    const passphrase = (connection as any).encryptedPassphrase
+      ? decrypt((connection as any).encryptedPassphrase, this.encryptionKey) : undefined;
 
-    const connector = new BinanceConnector(apiKey, apiSecret);
+    const connector = this.createConnector(connection.exchangeName, apiKey, apiSecret, passphrase);
     const since = fullSync ? undefined : connection.lastSyncAt ?? undefined;
 
     const syncCursor: Record<string, any> = (connection.syncCursor as any) ?? {};
@@ -183,7 +185,7 @@ export class ExchangeSyncService {
     phaseStatus[String(phase)] = 'IN_PROGRESS';
     await this.saveSyncCursor(connectionId, syncCursor, phaseStatus);
 
-    const result = await connector.fetchPhase(phase, {
+    const result = await connector.fetchPhase!(phase, {
       since,
       cursor: phaseCursor,
       fullSync,
@@ -494,7 +496,7 @@ export class ExchangeSyncService {
   private async extractAndSaveDepositAddresses(
     connectionId: string,
     exchangeName: string,
-    connector: BinanceConnector,
+    connector: ExchangeApiConnector,
   ): Promise<string[]> {
     const addresses = new Set<string>();
     let saved = 0;
@@ -618,5 +620,19 @@ export class ExchangeSyncService {
       where: { id: connectionId },
       data: { syncCursor: syncCursor as any },
     });
+  }
+
+  private createConnector(exchangeName: string, apiKey: string, apiSecret: string, passphrase?: string): ExchangeApiConnector {
+    switch (exchangeName) {
+      case 'binance':
+        return new BinanceConnector(apiKey, apiSecret);
+      case 'bybit':
+        return new BybitConnector(apiKey, apiSecret);
+      case 'okx':
+        if (!passphrase) throw new Error('OKX requires a passphrase');
+        return new OkxConnector(apiKey, apiSecret, passphrase);
+      default:
+        throw new Error(`Exchange "${exchangeName}" is not supported`);
+    }
   }
 }

@@ -40,6 +40,13 @@ export class TransactionFlowRepository {
     });
   }
 
+  async findByTransactionIds(transactionIds: string[]): Promise<TransactionFlow[]> {
+    if (transactionIds.length === 0) return [];
+    return this.prisma.transactionFlow.findMany({
+      where: { transactionId: { in: transactionIds } },
+    });
+  }
+
   async getPortfolioAggregation(
     walletIds: string[],
     filters?: PortfolioFilter,

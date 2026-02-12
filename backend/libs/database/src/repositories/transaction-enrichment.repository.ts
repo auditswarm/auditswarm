@@ -26,8 +26,8 @@ export class TransactionEnrichmentRepository {
   async findUnknown(options?: { take?: number; skip?: number }): Promise<TransactionEnrichment[]> {
     return this.prisma.transactionEnrichment.findMany({
       where: { isUnknown: true },
-      take: options?.take ?? 100,
-      skip: options?.skip ?? 0,
+      take: Number.isFinite(options?.take) ? options!.take : 100,
+      skip: Number.isFinite(options?.skip) ? options!.skip : 0,
       orderBy: { createdAt: 'desc' },
     });
   }

@@ -405,14 +405,17 @@ export async function getPortfolioToken(
 
 // ─── Audits ─────────────────────────────────────────────────────────
 
-export type AuditStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
+export type AuditStatus = 'QUEUED' | 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
 
 export interface Audit {
   id: string;
   userId: string;
   walletId: string;
   jurisdiction: string;
+  type: string;
   taxYear: number;
+  periodStart?: string;
+  periodEnd?: string;
   status: AuditStatus;
   createdAt: string;
   updatedAt: string;
@@ -425,25 +428,122 @@ export interface AuditStatusResponse {
   errorMessage: string | null;
 }
 
+export interface CapitalGainTransaction {
+  id: string;
+  asset: string;
+  dateAcquired: string;
+  dateSold: string;
+  proceeds: number;
+  costBasis: number;
+  gainLoss: number;
+  type: 'SHORT_TERM' | 'LONG_TERM';
+  transactionSignature: string;
+}
+
+export interface CapitalGainsReport {
+  shortTermGains: number;
+  shortTermLosses: number;
+  longTermGains: number;
+  longTermLosses: number;
+  netShortTerm: number;
+  netLongTerm: number;
+  totalNet: number;
+  transactions: CapitalGainTransaction[];
+}
+
+export interface IncomeEvent {
+  id: string;
+  type: string;
+  asset: string;
+  amount: number;
+  valueUsd: number;
+  date: string;
+  transactionSignature?: string;
+}
+
+export interface IncomeReport {
+  staking: number;
+  mining: number;
+  airdrops: number;
+  rewards: number;
+  other: number;
+  total: number;
+  events: IncomeEvent[];
+}
+
+export interface HoldingAsset {
+  mint: string;
+  symbol: string;
+  balance: number;
+  valueUsd: number;
+  costBasis: number;
+  unrealizedGainLoss: number;
+}
+
+export interface HoldingsReport {
+  totalValueUsd: number;
+  assets: HoldingAsset[];
+  asOf: string;
+}
+
+export interface AuditIssue {
+  severity: 'LOW' | 'MEDIUM' | 'HIGH';
+  type: string;
+  description: string;
+  transaction?: string;
+  recommendation?: string;
+}
+
+export interface MonthlyBreakdownEntry {
+  month: number;
+  label: string;
+  salesVolume: number;
+  capitalGains: number;
+  exempt: boolean;
+  taxableGains: number;
+  threshold: number;
+}
+
+export interface MonthlyBreakdown {
+  entries: MonthlyBreakdownEntry[];
+  currency: string;
+  totalExemptGains: number;
+  totalTaxableGains: number;
+  exemptMonths: number;
+  taxableMonths: number;
+}
+
 export interface AuditResult {
   id: string;
   auditId: string;
-  jurisdiction: string;
-  taxYear: number;
-  totalIncome: number;
-  totalGains: number;
-  totalLosses: number;
-  netGainLoss: number;
-  taxableEvents: number;
-  summary: string;
-  findings: { type: string; description: string; severity: 'LOW' | 'MEDIUM' | 'HIGH' }[];
+  totalTransactions: number;
+  totalWallets: number;
+  periodStart: string;
+  periodEnd: string;
+  netGainLoss: number | string;
+  totalIncome: number | string;
+  estimatedTax: number | string;
+  currency: string;
+  capitalGains: CapitalGainsReport;
+  income: IncomeReport;
+  holdings: HoldingsReport;
+  issues: AuditIssue[] | null;
+  recommendations: string[] | null;
+  metadata: {
+    version: string;
+    beeVersion: string;
+    processedAt: string;
+    monthlyBreakdown?: MonthlyBreakdown;
+    [key: string]: unknown;
+  } | null;
+  hash: string | null;
   createdAt: string;
 }
 
 export interface CreateAuditDto {
   walletIds: string[];
   jurisdiction: 'US' | 'EU' | 'BR';
-  type: 'FULL_TAX_YEAR' | 'QUARTERLY' | 'SINGLE_WALLET' | 'MULTI_WALLET' | 'CUSTOM_PERIOD';
+  type: 'ANNUAL' | 'FULL_TAX_YEAR' | 'QUARTERLY' | 'SINGLE_WALLET' | 'MULTI_WALLET' | 'CUSTOM_PERIOD';
   taxYear: number;
   periodStart?: string;
   periodEnd?: string;
@@ -601,6 +701,7 @@ export interface LinkExchangeDto {
   apiKey: string;
   apiSecret: string;
   subAccountLabel?: string;
+  passphrase?: string;
 }
 
 export interface ExchangeConnectionResult {

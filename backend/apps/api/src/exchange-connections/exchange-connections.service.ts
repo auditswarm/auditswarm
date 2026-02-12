@@ -10,6 +10,8 @@ import { encrypt, decrypt } from '@auditswarm/common';
 import { QUEUES, JOB_NAMES } from '@auditswarm/queue';
 import { ExchangeApiConnector } from './connectors/base-connector';
 import { BinanceConnector } from './connectors/binance-connector';
+import { BybitConnector } from './connectors/bybit-connector';
+import { OkxConnector } from './connectors/okx-connector';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -29,7 +31,7 @@ export class ExchangeConnectionsService {
     }
   }
 
-  async link(userId: string, exchangeName: string, apiKey: string, apiSecret: string, subAccountLabel?: string) {
+  async link(userId: string, exchangeName: string, apiKey: string, apiSecret: string, subAccountLabel?: string, passphrase?: string) {
     const normalizedName = exchangeName.toLowerCase();
 
     // Check for existing active connection
@@ -39,7 +41,7 @@ export class ExchangeConnectionsService {
     }
 
     // Test credentials
-    const connector = this.createConnector(normalizedName, apiKey, apiSecret);
+    const connector = this.createConnector(normalizedName, apiKey, apiSecret, passphrase);
     const testResult = await connector.testConnection();
 
     if (!testResult.valid) {
@@ -52,6 +54,7 @@ export class ExchangeConnectionsService {
       exchangeName: normalizedName,
       encryptedApiKey: encrypt(apiKey, this.encryptionKey),
       encryptedApiSecret: encrypt(apiSecret, this.encryptionKey),
+      encryptedPassphrase: passphrase ? encrypt(passphrase, this.encryptionKey) : undefined,
       subAccountLabel,
       status: 'ACTIVE',
       permissions: testResult.permissions,
@@ -263,13 +266,20 @@ export class ExchangeConnectionsService {
   getConnectorForConnection(connection: any): ExchangeApiConnector {
     const apiKey = decrypt(connection.encryptedApiKey, this.encryptionKey);
     const apiSecret = decrypt(connection.encryptedApiSecret, this.encryptionKey);
-    return this.createConnector(connection.exchangeName, apiKey, apiSecret);
+    const passphrase = connection.encryptedPassphrase
+      ? decrypt(connection.encryptedPassphrase, this.encryptionKey) : undefined;
+    return this.createConnector(connection.exchangeName, apiKey, apiSecret, passphrase);
   }
 
-  private createConnector(exchangeName: string, apiKey: string, apiSecret: string): ExchangeApiConnector {
+  private createConnector(exchangeName: string, apiKey: string, apiSecret: string, passphrase?: string): ExchangeApiConnector {
     switch (exchangeName) {
       case 'binance':
         return new BinanceConnector(apiKey, apiSecret);
+      case 'bybit':
+        return new BybitConnector(apiKey, apiSecret);
+      case 'okx':
+        if (!passphrase) throw new BadRequestException('OKX requires a passphrase');
+        return new OkxConnector(apiKey, apiSecret, passphrase);
       default:
         throw new BadRequestException(`Exchange "${exchangeName}" is not supported for API connection`);
     }

@@ -21,6 +21,11 @@ export class LinkExchangeDto {
   @IsString()
   @IsOptional()
   subAccountLabel?: string;
+
+  @ApiPropertyOptional({ description: 'API passphrase (required for OKX)' })
+  @IsString()
+  @IsOptional()
+  passphrase?: string;
 }
 
 export class SyncExchangeDto {

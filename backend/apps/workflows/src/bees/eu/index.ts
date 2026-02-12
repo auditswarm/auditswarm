@@ -1,4 +1,4 @@
-import { BaseBee, BeeResult, BeeOptions } from '../base';
+import { BaseBee, BeeResult, BeeOptions, BeeContext } from '../base';
 import { getTaxRate, TAX_THRESHOLDS } from '@auditswarm/common';
 import type { CapitalGainsReport, IncomeReport, JurisdictionCode, Transaction } from '@auditswarm/common';
 
@@ -31,12 +31,15 @@ export class EUBee extends BaseBee {
     const capitalGainsRate = getTaxRate('EU', 'capital_gains_short');
     const incomeRate = getTaxRate('EU', 'income');
 
-    if (capitalGains.totalNet > 0) {
-      estimatedTax += capitalGains.totalNet * capitalGainsRate;
+    // Convert to EUR before applying rates
+    const gainsEur = await this.toLocal(capitalGains.totalNet);
+    if (gainsEur > 0) {
+      estimatedTax += gainsEur * capitalGainsRate;
     }
 
-    if (income.total > 0) {
-      estimatedTax += income.total * incomeRate;
+    const incomeEur = await this.toLocal(income.total);
+    if (incomeEur > 0) {
+      estimatedTax += incomeEur * incomeRate;
     }
 
     return Math.round(estimatedTax * 100) / 100;
@@ -67,7 +70,7 @@ export class EUBee extends BaseBee {
     const violations: { transaction: string; amount: number }[] = [];
 
     for (const tx of transactions) {
-      const valueEur = Number(tx.totalValueUsd ?? 0) * 0.92; // Approximate USD to EUR
+      const valueEur = await this.toLocal(Number(tx.totalValueUsd ?? 0), tx.timestamp);
 
       if (valueEur > threshold) {
         // In production, check if originator/beneficiary info is available
@@ -154,6 +157,14 @@ export class EUBee extends BaseBee {
   }
 
   private async generateDAC8Report(result: BeeResult): Promise<Buffer> {
+    const disposalsEur = await this.toLocal(result.capitalGains.shortTermGains + result.capitalGains.longTermGains);
+    const acquisitionsEur = await this.toLocal(result.capitalGains.shortTermGains + result.capitalGains.longTermGains - result.capitalGains.totalNet);
+    const netEur = await this.toLocal(result.capitalGains.totalNet);
+    const stakingEur = await this.toLocal(result.income.staking);
+    const airdropsEur = await this.toLocal(result.income.airdrops);
+    const otherEur = await this.toLocal(result.income.other);
+    const totalIncomeEur = await this.toLocal(result.income.total);
+
     // DAC8 requires reporting of all crypto transactions
     const lines: string[] = [
       'DAC8 - Directive on Administrative Cooperation',
@@ -164,15 +175,15 @@ export class EUBee extends BaseBee {
       '',
       'Reporting Period Summary:',
       `  Total Transactions: ${result.capitalGains.transactions.length}`,
-      `  Total Disposals Value: €${(result.capitalGains.shortTermGains + result.capitalGains.longTermGains).toFixed(2)}`,
-      `  Total Acquisitions Value: €${(result.capitalGains.shortTermGains + result.capitalGains.longTermGains - result.capitalGains.totalNet).toFixed(2)}`,
-      `  Net Gain/Loss: €${result.capitalGains.totalNet.toFixed(2)}`,
+      `  Total Disposals Value: €${disposalsEur.toFixed(2)}`,
+      `  Total Acquisitions Value: €${acquisitionsEur.toFixed(2)}`,
+      `  Net Gain/Loss: €${netEur.toFixed(2)}`,
       '',
       'Income from Crypto-Assets:',
-      `  Staking Rewards: €${result.income.staking.toFixed(2)}`,
-      `  Airdrops: €${result.income.airdrops.toFixed(2)}`,
-      `  Other Income: €${result.income.other.toFixed(2)}`,
-      `  Total Income: €${result.income.total.toFixed(2)}`,
+      `  Staking Rewards: €${stakingEur.toFixed(2)}`,
+      `  Airdrops: €${airdropsEur.toFixed(2)}`,
+      `  Other Income: €${otherEur.toFixed(2)}`,
+      `  Total Income: €${totalIncomeEur.toFixed(2)}`,
       '',
       'Year-End Holdings:',
       '-'.repeat(40),
@@ -203,16 +214,21 @@ export class EUBee extends BaseBee {
       '-'.repeat(40),
     ];
 
-    const largeTransactions = result.capitalGains.transactions.filter(
-      tx => tx.proceeds > threshold,
-    );
+    // Convert proceeds to EUR and filter by threshold
+    const txsWithEur: { tx: typeof result.capitalGains.transactions[0]; proceedsEur: number }[] = [];
+    for (const tx of result.capitalGains.transactions) {
+      const proceedsEur = await this.toLocal(tx.proceeds, tx.dateSold);
+      if (proceedsEur > threshold) {
+        txsWithEur.push({ tx, proceedsEur });
+      }
+    }
 
-    if (largeTransactions.length === 0) {
+    if (txsWithEur.length === 0) {
       lines.push('No transactions above threshold.');
     } else {
-      for (const tx of largeTransactions) {
+      for (const { tx, proceedsEur } of txsWithEur) {
         lines.push(
-          `  ${tx.dateSold.toISOString().split('T')[0]} | ${tx.asset} | €${tx.proceeds.toFixed(2)}`,
+          `  ${tx.dateSold.toISOString().split('T')[0]} | ${tx.asset} | €${proceedsEur.toFixed(2)}`,
           `    Signature: ${tx.transactionSignature}`,
         );
       }

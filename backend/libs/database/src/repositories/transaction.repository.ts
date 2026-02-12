@@ -51,8 +51,8 @@ export class TransactionRepository {
   ): Promise<Transaction[]> {
     return this.prisma.transaction.findMany({
       where: { walletId },
-      take: options?.take ?? 100,
-      skip: options?.skip ?? 0,
+      take: Number.isFinite(options?.take) ? options!.take : 100,
+      skip: Number.isFinite(options?.skip) ? options!.skip : 0,
       orderBy: { timestamp: options?.orderBy ?? 'desc' },
     });
   }
@@ -128,8 +128,8 @@ export class TransactionRepository {
     return this.prisma.transaction.findMany({
       where,
       include: { enrichment: true },
-      take: options?.take ?? 1000,
-      skip: options?.skip ?? 0,
+      take: Number.isFinite(options?.take) ? options!.take : 1000,
+      skip: Number.isFinite(options?.skip) ? options!.skip : 0,
       orderBy: { [sortBy]: sortOrder },
     });
   }

@@ -5,20 +5,20 @@
   "description": "AuditSwarm Backend Monorepo",
   "license": "MIT",
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "build": "echo 'Build handled by root turbo — run pnpm build from repo root'",
+    "dev": "echo 'Use pnpm dev:api / pnpm dev:workflows from repo root'",
     "dev:api": "pnpm --filter @auditswarm/api dev",
     "dev:indexer": "pnpm --filter @auditswarm/indexer dev",
     "dev:workflows": "pnpm --filter @auditswarm/workflows dev",
     "dev:mcp": "pnpm --filter @auditswarm/mcp dev",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "test:e2e": "turbo run test:e2e",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
+    "test:e2e": "pnpm -r run test:e2e",
     "db:generate": "pnpm --filter @auditswarm/database db:generate",
     "db:migrate": "pnpm --filter @auditswarm/database db:migrate",
     "db:push": "pnpm --filter @auditswarm/database db:push",
     "db:studio": "pnpm --filter @auditswarm/database db:studio",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "pnpm -r run clean && rm -rf node_modules"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

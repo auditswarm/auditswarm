@@ -30,6 +30,26 @@ const SUPPORTED_EXCHANGES = [
     docs: 'https://www.binance.com/en/support/faq/how-to-create-api-keys-on-binance-360002502072',
     notes: 'Enable "Read Only" permissions. IP whitelist recommended.',
   },
+  {
+    id: 'bybit',
+    name: 'Bybit',
+    logo: '/exchanges/bybit.svg',
+    requiredCredentials: ['apiKey', 'apiSecret'],
+    optionalCredentials: [],
+    features: ['trades', 'deposits', 'withdrawals', 'convert', 'c2c', 'staking', 'earn', 'margin'],
+    docs: 'https://www.bybit.com/app/user/api-management',
+    notes: 'Enable "Read Only" permissions. IP whitelist recommended. Requires Unified Trading Account.',
+  },
+  {
+    id: 'okx',
+    name: 'OKX',
+    logo: '/exchanges/okx.svg',
+    requiredCredentials: ['apiKey', 'apiSecret', 'passphrase'],
+    optionalCredentials: [],
+    features: ['trades', 'deposits', 'withdrawals', 'convert', 'staking', 'earn', 'margin'],
+    docs: 'https://www.okx.com/account/my-api',
+    notes: 'Create API key with "Read Only" permission. Passphrase is set during API key creation.',
+  },
 ];
 
 @ApiTags('exchange-connections')
@@ -59,6 +79,7 @@ export class ExchangeConnectionsController {
       dto.apiKey,
       dto.apiSecret,
       dto.subAccountLabel,
+      dto.passphrase,
     );
   }
 

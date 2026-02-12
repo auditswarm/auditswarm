@@ -65,6 +65,11 @@ export interface AuditResult {
   issues: AuditIssue[];
   recommendations: string[];
   metadata: AuditMetadata;
+  monthlyBreakdown?: MonthlyBreakdown;
+
+  // US-specific
+  scheduleDSummary?: ScheduleDSummary;
+  fbarReport?: FBARReport;
 }
 
 export interface AuditSummary {
@@ -89,6 +94,13 @@ export interface CapitalGainsReport {
   transactions: CapitalGainTransaction[];
 }
 
+/**
+ * Form 8949 Box categories for digital assets (2025+).
+ * Short-term: G (1099-DA basis reported), H (not reported), I (no 1099-DA)
+ * Long-term:  J (1099-DA basis reported), K (not reported), L (no 1099-DA)
+ */
+export type Form8949Box = 'G' | 'H' | 'I' | 'J' | 'K' | 'L';
+
 export interface CapitalGainTransaction {
   id: string;
   asset: string;
@@ -99,6 +111,14 @@ export interface CapitalGainTransaction {
   gainLoss: number;
   type: 'SHORT_TERM' | 'LONG_TERM';
   transactionSignature?: string;
+
+  // Form 8949 fields (US)
+  description?: string;        // Full description: "1.5 SOL (Solana)"
+  form8949Box?: Form8949Box;   // Which box on Form 8949
+  adjustmentCode?: string;     // Column (f): B, E, M, etc.
+  adjustmentAmount?: number;   // Column (g)
+  exchangeSource?: string;     // Exchange name (for 1099-DA tracking)
+  unitsDisposed?: number;      // Exact units sold
 }
 
 export interface IncomeReport {
@@ -144,6 +164,25 @@ export interface AuditIssue {
   recommendation: string;
 }
 
+export interface MonthlyBreakdownEntry {
+  month: number;           // 0-11
+  label: string;           // e.g. "Jan", "Fev"
+  salesVolume: number;     // total disposal proceeds in local currency
+  capitalGains: number;    // net gains in local currency
+  exempt: boolean;         // true if salesVolume <= threshold
+  taxableGains: number;    // 0 if exempt, otherwise capitalGains
+  threshold: number;       // exemption threshold in local currency
+}
+
+export interface MonthlyBreakdown {
+  entries: MonthlyBreakdownEntry[];
+  currency: string;
+  totalExemptGains: number;
+  totalTaxableGains: number;
+  exemptMonths: number;
+  taxableMonths: number;
+}
+
 export interface AuditMetadata {
   version: string;
   beeVersion: string;
@@ -152,4 +191,53 @@ export interface AuditMetadata {
   dataSource: string;
   processedAt: Date;
   processingTime: number;
+}
+
+// ─── US-Specific Types ───
+
+/** Schedule D summary with capital loss cap */
+export interface ScheduleDSummary {
+  // Part I totals
+  shortTermProceeds: number;
+  shortTermCostBasis: number;
+  shortTermGainLoss: number;
+  // Part II totals
+  longTermProceeds: number;
+  longTermCostBasis: number;
+  longTermGainLoss: number;
+  // Part III
+  totalNetGainLoss: number;
+  /** Losses capped at -$3,000 ($-1,500 MFS) */
+  capitalLossDeduction: number;
+  /** Losses exceeding the cap — carry to next year */
+  capitalLossCarryforward: number;
+  /** NIIT 3.8% applicable amount (income > $200K threshold) */
+  niitAmount: number;
+}
+
+/** FBAR foreign account entry */
+export interface FBARAccount {
+  exchangeName: string;
+  exchangeCountry: string;
+  accountIdentifier: string;   // user ID / account email
+  /** Peak USD balance at any point during the year */
+  peakBalance: number;
+  peakBalanceDate?: Date;
+  isForeignExchange: boolean;
+}
+
+/** FBAR / FATCA compliance report */
+export interface FBARReport {
+  accounts: FBARAccount[];
+  aggregatePeakValue: number;
+  fbarRequired: boolean;        // aggregate > $10K
+  fatcaRequired: boolean;       // aggregate > $50K (single resident)
+  fbarThreshold: number;
+  fatcaThreshold: number;
+}
+
+/** Form 8938 (FATCA) thresholds by filing status */
+export interface FATCAThresholds {
+  yearEnd: number;
+  anyTime: number;
 }

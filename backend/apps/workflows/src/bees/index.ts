@@ -1,4 +1,4 @@
-export { BaseBee, type JurisdictionBee, type BeeOptions, type BeeResult } from './base';
+export { BaseBee, type JurisdictionBee, type BeeOptions, type BeeResult, type BeeContext } from './base';
 export { USBee } from './us';
 export { EUBee } from './eu';
 export { BRBee } from './br';

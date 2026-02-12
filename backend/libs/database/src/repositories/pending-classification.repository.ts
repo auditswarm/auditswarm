@@ -21,8 +21,8 @@ export class PendingClassificationRepository {
     return this.prisma.pendingClassification.findMany({
       where: { userId, status: 'PENDING' },
       orderBy: [{ estimatedValueUsd: 'desc' }, { priority: 'desc' }],
-      take: options?.take ?? 50,
-      skip: options?.skip ?? 0,
+      take: Number.isFinite(options?.take) ? options!.take : 50,
+      skip: Number.isFinite(options?.skip) ? options!.skip : 0,
       include: { transaction: true },
     });
   }

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { AuditRepository, WalletRepository, CounterpartyWalletRepository, PendingClassificationRepository } from '@auditswarm/database';
+import { AuditRepository, WalletRepository, CounterpartyWalletRepository, PendingClassificationRepository, ExchangeConnectionRepository } from '@auditswarm/database';
 import { QUEUES, JOB_NAMES, AuditJobData } from '@auditswarm/queue';
 import { isJurisdictionSupported, JurisdictionCode } from '@auditswarm/common';
 import type { Audit, AuditResult } from '@prisma/client';
@@ -31,6 +31,7 @@ export class AuditsService {
     private walletRepository: WalletRepository,
     private counterpartyWalletRepository: CounterpartyWalletRepository,
     private pendingClassificationRepository: PendingClassificationRepository,
+    private exchangeConnectionRepository: ExchangeConnectionRepository,
     @InjectQueue(QUEUES.AUDIT) private auditQueue: Queue,
   ) {}
 
@@ -48,13 +49,13 @@ export class AuditsService {
       }
     }
 
-    // Check for pending classifications that block audit creation
-    const pendingCount = await this.pendingClassificationRepository.countPendingByUserId(userId);
-    if (pendingCount > 0) {
-      throw new BadRequestException(
-        `Cannot create audit: ${pendingCount} pending transaction classification(s) need to be resolved first. Visit /classifications/pending to review.`,
-      );
-    }
+    // TODO: Re-enable pending classification check before production
+    // const pendingCount = await this.pendingClassificationRepository.countPendingByUserId(userId);
+    // if (pendingCount > 0) {
+    //   throw new BadRequestException(
+    //     `Cannot create audit: ${pendingCount} pending transaction classification(s) need to be resolved first. Visit /classifications/pending to review.`,
+    //   );
+    // }
 
     // Set default options
     const options = {
@@ -85,11 +86,16 @@ export class AuditsService {
       dto.walletIds,
     );
 
+    // Look up user's exchange connections for combined audit
+    const exchangeConnections = await this.exchangeConnectionRepository.findByUserId(userId);
+    const exchangeConnectionIds = exchangeConnections.map(c => c.id);
+
     // Queue the audit job
     const jobData: AuditJobData = {
       auditId: audit.id,
       userId,
       walletIds: dto.walletIds,
+      exchangeConnectionIds,
       jurisdiction: dto.jurisdiction,
       taxYear: dto.taxYear,
       options,

@@ -72,8 +72,8 @@ export class WalletRepository {
       where: { id },
       include: {
         transactions: {
-          take: options?.take ?? 100,
-          skip: options?.skip ?? 0,
+          take: Number.isFinite(options?.take) ? options!.take : 100,
+          skip: Number.isFinite(options?.skip) ? options!.skip : 0,
           orderBy: { timestamp: 'desc' },
         },
       },

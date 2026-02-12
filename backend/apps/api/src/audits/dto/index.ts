@@ -54,6 +54,39 @@ class AuditOptionsDto {
   @IsString()
   @IsOptional()
   currency?: string;
+
+  // US-specific
+  @ApiPropertyOptional({ description: 'FBAR foreign account check (US)' })
+  @IsBoolean()
+  @IsOptional()
+  includeFBAR?: boolean;
+
+  @ApiPropertyOptional({ description: 'Wash sale detection (US)' })
+  @IsBoolean()
+  @IsOptional()
+  includeWashSale?: boolean;
+
+  // EU-specific
+  @ApiPropertyOptional({ description: 'MiCA asset classification (EU)' })
+  @IsBoolean()
+  @IsOptional()
+  includeMiCA?: boolean;
+
+  @ApiPropertyOptional({ description: 'Travel Rule compliance check (EU)' })
+  @IsBoolean()
+  @IsOptional()
+  includeTravelRule?: boolean;
+
+  // BR-specific
+  @ApiPropertyOptional({ description: 'R$35,000 exemption analysis (BR)' })
+  @IsBoolean()
+  @IsOptional()
+  includeExemption?: boolean;
+
+  @ApiPropertyOptional({ description: 'Generate IN 1888 report (BR)' })
+  @IsBoolean()
+  @IsOptional()
+  includeIN1888?: boolean;
 }
 
 export class CreateAuditDto {
@@ -77,7 +110,7 @@ export class CreateAuditDto {
 
   @ApiProperty({
     description: 'Audit type',
-    enum: ['FULL_TAX_YEAR', 'QUARTERLY', 'SINGLE_WALLET', 'MULTI_WALLET', 'CUSTOM_PERIOD'],
+    enum: ['FULL_TAX_YEAR', 'QUARTERLY', 'MONTHLY', 'SINGLE_WALLET', 'MULTI_WALLET', 'CUSTOM_PERIOD'],
   })
   @IsString()
   @IsNotEmpty()

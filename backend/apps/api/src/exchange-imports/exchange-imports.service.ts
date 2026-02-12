@@ -4,6 +4,8 @@ import { ExchangeImportRepository } from '@auditswarm/database';
 import { ExchangeAdapter, ExchangeRecord } from './adapters/base-adapter';
 import { CoinbaseAdapter } from './adapters/coinbase-adapter';
 import { BinanceAdapter } from './adapters/binance-adapter';
+import { BybitAdapter } from './adapters/bybit-adapter';
+import { OkxAdapter } from './adapters/okx-adapter';
 import { GenericAdapter } from './adapters/generic-adapter';
 import { Prisma } from '@prisma/client';
 
@@ -20,6 +22,8 @@ export class ExchangeImportsService {
     this.adapters = new Map<string, ExchangeAdapter>([
       ['coinbase', new CoinbaseAdapter()],
       ['binance', new BinanceAdapter()],
+      ['bybit', new BybitAdapter()],
+      ['okx', new OkxAdapter()],
     ]);
   }
 

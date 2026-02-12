@@ -11,6 +11,7 @@ import { ExchangeRecord } from '../../exchange-imports/adapters/base-adapter';
 
 const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
 const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
+const THREE_YEARS_MS = 3 * ONE_YEAR_MS;
 
 export class BinanceConnector implements ExchangeApiConnector {
   readonly exchangeName = 'binance';
@@ -385,7 +386,7 @@ export class BinanceConnector implements ExchangeApiConnector {
     const records: ExchangeRecord[] = [];
     const now = options.until ?? new Date();
     let windowEnd = cursor.depositsWindowEnd ?? now.getTime();
-    const earliest = options.since?.getTime() ?? (now.getTime() - ONE_YEAR_MS);
+    const earliest = options.since?.getTime() ?? (now.getTime() - THREE_YEARS_MS);
 
     while (windowEnd > earliest) {
       const windowStart = Math.max(windowEnd - NINETY_DAYS_MS, earliest);
@@ -435,7 +436,7 @@ export class BinanceConnector implements ExchangeApiConnector {
     const records: ExchangeRecord[] = [];
     const now = options.until ?? new Date();
     let windowEnd = cursor.withdrawalsWindowEnd ?? now.getTime();
-    const earliest = options.since?.getTime() ?? (now.getTime() - ONE_YEAR_MS);
+    const earliest = options.since?.getTime() ?? (now.getTime() - THREE_YEARS_MS);
 
     while (windowEnd > earliest) {
       const windowStart = Math.max(windowEnd - NINETY_DAYS_MS, earliest);
@@ -595,7 +596,7 @@ export class BinanceConnector implements ExchangeApiConnector {
     try {
       const now = options.until ?? new Date();
       let endTime = cursor.convertEndTime ?? now.getTime();
-      const earliest = options.since?.getTime() ?? (now.getTime() - ONE_YEAR_MS);
+      const earliest = options.since?.getTime() ?? (now.getTime() - THREE_YEARS_MS);
       const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
       while (endTime > earliest) {
@@ -662,7 +663,7 @@ export class BinanceConnector implements ExchangeApiConnector {
       // Binance dust log supports pagination: total + rows per page
       const now = options.until ?? new Date();
       let windowEnd = cursor.dustWindowEnd ?? now.getTime();
-      const earliest = options.since?.getTime() ?? (now.getTime() - ONE_YEAR_MS);
+      const earliest = options.since?.getTime() ?? (now.getTime() - THREE_YEARS_MS);
 
       while (windowEnd > earliest) {
         const windowStart = Math.max(windowEnd - NINETY_DAYS_MS, earliest);
@@ -906,7 +907,7 @@ export class BinanceConnector implements ExchangeApiConnector {
   ): Promise<ExchangeRecord[]> {
     const records: ExchangeRecord[] = [];
     const now = options.until ?? new Date();
-    const earliest = options.since?.getTime() ?? (now.getTime() - ONE_YEAR_MS);
+    const earliest = options.since?.getTime() ?? (now.getTime() - THREE_YEARS_MS);
 
     // Flexible subscriptions (90-day windows + page pagination)
     try {
@@ -1022,7 +1023,7 @@ export class BinanceConnector implements ExchangeApiConnector {
   ): Promise<ExchangeRecord[]> {
     const records: ExchangeRecord[] = [];
     const now = options.until ?? new Date();
-    const earliest = options.since?.getTime() ?? (now.getTime() - ONE_YEAR_MS);
+    const earliest = options.since?.getTime() ?? (now.getTime() - THREE_YEARS_MS);
 
     // Locked subscriptions (90-day windows + page pagination)
     try {
@@ -1365,7 +1366,7 @@ export class BinanceConnector implements ExchangeApiConnector {
   ): Promise<ExchangeRecord[]> {
     const records: ExchangeRecord[] = [];
     const now = options.until ?? new Date();
-    const earliest = options.since?.getTime() ?? (now.getTime() - ONE_YEAR_MS);
+    const earliest = options.since?.getTime() ?? (now.getTime() - THREE_YEARS_MS);
     const ONE_HUNDRED_SEVENTY_DAYS_MS = 170 * 24 * 60 * 60 * 1000; // slightly under 180-day API limit
 
     try {

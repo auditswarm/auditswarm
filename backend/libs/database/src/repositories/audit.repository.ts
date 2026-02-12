@@ -40,8 +40,8 @@ export class AuditRepository {
         userId,
         status: options?.status,
       },
-      take: options?.take ?? 20,
-      skip: options?.skip ?? 0,
+      take: Number.isFinite(options?.take) ? options!.take : 20,
+      skip: Number.isFinite(options?.skip) ? options!.skip : 0,
       orderBy: { createdAt: 'desc' },
       include: { wallets: { include: { wallet: true } } },
     });

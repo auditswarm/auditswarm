@@ -48,8 +48,8 @@ export class ExchangeImportRepository {
     return this.prisma.exchangeTransaction.findMany({
       where: { importId },
       orderBy: { timestamp: 'desc' },
-      take: options?.take ?? 100,
-      skip: options?.skip ?? 0,
+      take: Number.isFinite(options?.take) ? options!.take : 100,
+      skip: Number.isFinite(options?.skip) ? options!.skip : 0,
     });
   }
 
