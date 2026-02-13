@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
@@ -13,16 +13,11 @@ import {
   ArrowRight,
   Shield,
   Activity,
-  Hexagon,
   ChevronDown,
-  Download,
-  Send,
   ArrowLeftRight,
   ArrowDownRight,
   ArrowUpRight,
   Coins,
-  Calendar,
-  MoreHorizontal,
   TrendingUp,
   TrendingDown,
   Copy,
@@ -34,33 +29,47 @@ import {
   Loader2,
   AlertTriangle,
   CheckCircle2,
-  XCircle,
   Trash2,
   X,
   ExternalLink,
   Eye,
   EyeOff,
   Key,
+  PieChart,
+  FileSearch,
+  Check,
+  DollarSign,
+  BarChart3,
 } from 'lucide-react';
 import { Navbar } from '@/components/dashboard/Sidebar';
-import { TaxObligations } from '@/components/dashboard/TaxObligations';
+
 import { ChatWidget } from '@/components/dashboard/ChatWidget';
-import { JURISDICTIONS } from '@/lib/constants';
+
 import {
   listWallets,
   getTransactionStats,
   queryTransactions,
+  getPortfolio,
+  listAudits,
+  getAuditResult,
   listExchangeConnections,
   getAvailableExchanges,
   linkExchange,
   syncExchangeConnection,
   deleteExchangeConnection,
+  syncWallet,
+  getSyncStatus,
   type Transaction,
   type ExchangeConnection,
   type AvailableExchange,
+  type PortfolioToken,
+  type Audit,
+  type AuditResult,
+  type SyncStatus,
+  type Wallet as WalletType,
 } from '@/lib/api';
 
-// ─── Animation variants ──────────────────────────────────────────────
+// ─── Animations ─────────────────────────────────────────────────────
 
 const container = {
   hidden: { opacity: 0 },
@@ -71,7 +80,7 @@ const container = {
 };
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 14 },
   visible: {
     opacity: 1,
     y: 0,
@@ -79,7 +88,38 @@ const fadeUp = {
   },
 };
 
-// ─── Transaction type config ─────────────────────────────────────────
+// ─── Helpers ────────────────────────────────────────────────────────
+
+function formatUsd(value: number): string {
+  if (Math.abs(value) >= 1_000_000) return `$${(value / 1_000_000).toFixed(2)}M`;
+  if (Math.abs(value) >= 1_000) return `$${(value / 1_000).toFixed(1)}K`;
+  if (Math.abs(value) < 0.01 && value !== 0) return `$${value.toFixed(4)}`;
+  return `$${value.toFixed(2)}`;
+}
+
+function formatAmount(value: number): string {
+  if (value === 0) return '0';
+  if (Math.abs(value) >= 1_000_000) return `${(value / 1_000_000).toFixed(2)}M`;
+  if (Math.abs(value) >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
+  if (Math.abs(value) < 0.001) return value.toFixed(6);
+  if (Math.abs(value) < 1) return value.toFixed(4);
+  return value.toFixed(2);
+}
+
+function truncateAddress(addr: string, chars = 4): string {
+  if (addr.length <= chars * 2 + 3) return addr;
+  return `${addr.slice(0, chars)}...${addr.slice(-chars)}`;
+}
+
+function formatCurrency(value: number | string | null | undefined, currency = 'USD'): string {
+  const n = Number(value) || 0;
+  const sym = currency === 'BRL' ? 'R$' : currency === 'EUR' ? '\u20AC' : '$';
+  if (Math.abs(n) >= 1_000_000) return `${sym}${(n / 1_000_000).toFixed(2)}M`;
+  if (Math.abs(n) >= 1_000) return `${sym}${(n / 1_000).toFixed(1)}K`;
+  return `${sym}${n.toFixed(2)}`;
+}
+
+// ─── TX type config ─────────────────────────────────────────────────
 
 const TX_TYPE_CONFIG: Record<Transaction['type'], { icon: typeof ArrowLeftRight; label: string; color: string }> = {
   TRANSFER_IN: { icon: ArrowDownRight, label: 'Received', color: 'text-emerald-400' },
@@ -97,54 +137,34 @@ const TX_TYPE_CONFIG: Record<Transaction['type'], { icon: typeof ArrowLeftRight;
   UNKNOWN: { icon: Activity, label: 'Unknown', color: 'text-white/30' },
 };
 
-const TX_STATUS_DOT: Record<Transaction['status'], string> = {
-  CONFIRMED: 'bg-emerald-400',
-  FAILED: 'bg-red-400',
+const JURISDICTION_FLAGS: Record<string, string> = {
+  US: '\u{1F1FA}\u{1F1F8}',
+  EU: '\u{1F1EA}\u{1F1FA}',
+  BR: '\u{1F1E7}\u{1F1F7}',
 };
 
-function formatTxDate(timestamp: string): { date: string; time: string } {
-  const d = new Date(timestamp);
-  return {
-    date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-    time: d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-  };
-}
-
-function truncateAddress(addr: string): string {
-  if (addr.length <= 10) return addr;
-  return `${addr.slice(0, 4)}...${addr.slice(-4)}`;
-}
-
-// ─── Mini sparkline paths ────────────────────────────────────────────
-
-const SPARKLINE_UP = 'M0,32 L8,28 L16,30 L24,22 L32,24 L40,16 L48,18 L56,10 L64,12 L72,4';
-const SPARKLINE_DOWN = 'M0,8 L8,12 L16,10 L24,18 L32,16 L40,24 L48,22 L56,28 L64,26 L72,32';
-const SPARKLINE_FLAT = 'M0,18 L8,16 L16,20 L24,14 L32,18 L40,16 L48,20 L56,14 L64,18 L72,16';
-
-// ─── Main Dashboard ──────────────────────────────────────────────────
+// ─── Main Dashboard ─────────────────────────────────────────────────
 
 export default function Dashboard() {
   const { connected, publicKey } = useWallet();
   const [showConnectExchange, setShowConnectExchange] = useState(false);
 
   useEffect(() => {
-    if (!connected) {
-      redirect('/');
-    }
+    if (!connected) redirect('/');
   }, [connected]);
 
-  if (!connected || !publicKey) {
-    return null;
-  }
+  if (!connected || !publicKey) return null;
 
-  const walletAddress = publicKey.toBase58();
-  const truncatedAddress = `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
-  const activeJurisdictions = JURISDICTIONS.filter((j) => j.active);
 
-  // Real data from API
   const { data: wallets } = useQuery({
     queryKey: ['wallets'],
     queryFn: listWallets,
+    retry: 1,
+  });
+
+  const { data: portfolio } = useQuery({
+    queryKey: ['portfolio'],
+    queryFn: () => getPortfolio({ sortBy: 'volume', sortOrder: 'desc' }),
     retry: 1,
   });
 
@@ -156,7 +176,7 @@ export default function Dashboard() {
 
   const { data: recentTxs, isLoading: txsLoading } = useQuery({
     queryKey: ['recent-transactions'],
-    queryFn: () => queryTransactions({ take: 10, excludeTypes: ['UNKNOWN'] }),
+    queryFn: () => queryTransactions({ take: 8, excludeTypes: ['UNKNOWN', 'PROGRAM_INTERACTION'] }),
     retry: 1,
   });
 
@@ -166,18 +186,52 @@ export default function Dashboard() {
     retry: 1,
   });
 
-  const walletCount = wallets?.length ?? 0;
-  const totalTxCount = wallets?.reduce((sum, w) => sum + w.transactionCount, 0) ?? 0;
-  const exchangeCount = exchangeConnections?.length ?? 0;
+  const { data: audits } = useQuery({
+    queryKey: ['audits'],
+    queryFn: () => listAudits({ take: 5 }),
+    retry: 1,
+    refetchInterval: (query) => {
+      const data = query.state.data as Audit[] | undefined;
+      const hasActive = data?.some((a) => ['QUEUED', 'PENDING', 'PROCESSING'].includes(a.status));
+      return hasActive ? 5000 : 60000;
+    },
+  });
 
-  // Build wallet lookup: walletId → { label, address }
+  // ─── Derived ───
+  const walletCount = wallets?.length ?? 0;
+  const exchangeCount = exchangeConnections?.length ?? 0;
+  const totalTxCount = wallets?.reduce((sum, w) => sum + w.transactionCount, 0) ?? 0;
   const walletMap = new Map<string, { label: string | null; address: string }>();
   wallets?.forEach((w) => walletMap.set(w.id, { label: w.label, address: w.address }));
+
+  const totalPortfolioVolume = portfolio
+    ? portfolio.wallet.summary.totalVolumeUsd + portfolio.exchange.summary.totalVolumeUsd
+    : 0;
+
+  const totalPnl = portfolio
+    ? portfolio.wallet.summary.totalRealizedPnl + portfolio.exchange.summary.totalRealizedPnl
+    : 0;
+
+  // Split tokens into active (has balance) vs traded (zero balance but has volume)
+  const { activeOnChain, tradedOnChain, activeExchange, tradedExchange } = useMemo(() => {
+    if (!portfolio) return { activeOnChain: [], tradedOnChain: [], activeExchange: [], tradedExchange: [] };
+    const walletTokens = portfolio.wallet.tokens;
+    const exchangeTokens = portfolio.exchange.tokens;
+    return {
+      activeOnChain: walletTokens.filter((t) => t.holdingAmount > 0.000001),
+      tradedOnChain: walletTokens.filter((t) => t.holdingAmount <= 0.000001 && t.totalVolume > 0),
+      activeExchange: exchangeTokens.filter((t) => t.holdingAmount > 0.000001),
+      tradedExchange: exchangeTokens.filter((t) => t.holdingAmount <= 0.000001 && t.totalVolume > 0),
+    };
+  }, [portfolio]);
+
+  const totalActiveTokens = activeOnChain.length + activeExchange.length;
 
   return (
     <div className="min-h-screen bg-background">
       <div className="fixed inset-0 pointer-events-none">
         <div className="fixed inset-0 honeycomb-bg opacity-30" />
+        <div className="fixed inset-0 bg-gradient-to-b from-primary/[0.02] via-transparent to-transparent" />
       </div>
 
       <Navbar />
@@ -187,248 +241,209 @@ export default function Dashboard() {
           variants={container}
           initial="hidden"
           animate="visible"
-          className="max-w-[1600px] mx-auto"
+          className="max-w-[1600px] mx-auto px-5 lg:px-8 py-6 space-y-5"
         >
-          {/* ─── Hero Banner ──────────────────────────────── */}
-          <motion.div variants={fadeUp}>
-            <div className="relative overflow-hidden mx-5 lg:mx-8 mt-6 rounded-2xl">
-              {/* Gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-800 via-primary-700/80 to-primary-900" />
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary-600/10" />
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/4" />
-              <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-primary-400/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/4" />
-              {/* Honeycomb overlay */}
-              <div className="absolute inset-0 honeycomb-bg opacity-40" />
+          {/* ─── Stats ─────────────────────────────────── */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <motion.div variants={fadeUp}>
+              <StatCard
+                label="Portfolio Volume"
+                value={totalPortfolioVolume > 0 ? formatUsd(totalPortfolioVolume) : '--'}
+                sub={totalActiveTokens > 0 ? `${totalActiveTokens} active holdings` : 'Sync wallets to start'}
+                icon={PieChart}
+                accent="gold"
+              />
+            </motion.div>
+            <motion.div variants={fadeUp}>
+              <StatCard
+                label="Realized P&L"
+                value={totalPnl !== 0 ? `${totalPnl > 0 ? '+' : ''}${formatUsd(totalPnl)}` : '--'}
+                sub={totalPnl > 0 ? 'Net profit' : totalPnl < 0 ? 'Net loss' : 'No trades yet'}
+                icon={totalPnl >= 0 ? TrendingUp : TrendingDown}
+                accent={totalPnl > 0 ? 'green' : totalPnl < 0 ? 'red' : 'neutral'}
+              />
+            </motion.div>
+            <motion.div variants={fadeUp}>
+              <StatCard
+                label="Wallets"
+                value={String(walletCount)}
+                sub={`${totalTxCount.toLocaleString()} transactions`}
+                icon={Wallet}
+                accent="blue"
+              />
+            </motion.div>
+            <motion.div variants={fadeUp}>
+              <StatCard
+                label="Exchanges"
+                value={String(exchangeCount)}
+                sub={exchangeCount > 0 ? `${exchangeCount} connected` : 'None linked'}
+                icon={Link2}
+                accent="purple"
+              />
+            </motion.div>
+          </div>
 
-              <div className="relative px-6 lg:px-10 py-8 lg:py-10">
-                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-                  {/* Left: Balance */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-sm text-white/50 font-medium">
-                        {walletCount > 1 ? `${walletCount} Wallets` : 'Portfolio Balance'}
-                      </p>
-                      <span className="text-white/20">|</span>
-                      <button className="flex items-center gap-1 text-xs font-mono text-white/40 hover:text-white/60 transition-colors">
-                        {truncatedAddress}
-                        <Copy className="w-3 h-3" />
-                      </button>
-                    </div>
-                    <div className="flex items-baseline gap-3 mb-1">
-                      <h2 className="font-display text-5xl lg:text-6xl font-extrabold text-white tracking-tight">
-                        {totalTxCount.toLocaleString()}
-                      </h2>
-                      <span className="text-2xl lg:text-3xl font-display font-bold text-white/50">transactions</span>
-                    </div>
-                    <p className="text-sm text-white/30 mb-4">
-                      {totalTxCount > 0
-                        ? `Indexed across ${walletCount} wallet${walletCount > 1 ? 's' : ''}`
-                        : 'Connect wallets and sync to start indexing'}
-                    </p>
-                    <div className="flex items-center gap-4">
-                      <Link
-                        href="/audits/new"
-                        className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm font-semibold hover:bg-white/20 transition-all border border-white/10"
-                      >
-                        <Shield className="w-4 h-4" />
-                        Request Audit
-                      </Link>
-                      <Link
-                        href="/wallets"
-                        className="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white/80 transition-colors font-medium"
-                      >
-                        <Wallet className="w-4 h-4" />
-                        Manage Wallets
-                      </Link>
-                      <button className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/10 transition-all">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
+          {/* ─── Wallets (single row) ────────────────── */}
+          <WalletsRow wallets={wallets ?? []} totalTxCount={totalTxCount} />
 
-                  {/* Right: Date + Export */}
+          {/* ─── Holdings ──────────────────────────────── */}
+          {portfolio && (activeOnChain.length > 0 || activeExchange.length > 0 || tradedOnChain.length > 0 || tradedExchange.length > 0) && (
+            <motion.div variants={fadeUp}>
+              <div className="rounded-2xl bg-surface/60 backdrop-blur-md border border-white/[0.06] overflow-hidden shadow-lg shadow-black/20">
+                <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-sm text-white/60 hover:text-white/80 hover:bg-white/10 transition-all">
-                      <Calendar className="w-4 h-4" />
-                      <span>Jan 2025 - Tax Year</span>
-                      <ChevronDown className="w-3.5 h-3.5" />
-                    </button>
-                    <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white font-medium hover:bg-white/20 transition-all">
-                      <Download className="w-4 h-4" />
-                      Export
-                    </button>
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/10">
+                      <Coins className="w-4.5 h-4.5 text-primary" />
+                    </div>
+                    <div>
+                      <h2 className="font-display text-[15px] font-bold text-white">Holdings</h2>
+                      <p className="text-[11px] text-white/30">
+                        {totalActiveTokens} active{' '}
+                        {(tradedOnChain.length + tradedExchange.length) > 0 && (
+                          <span className="text-white/15">&middot; {tradedOnChain.length + tradedExchange.length} previously traded</span>
+                        )}
+                      </p>
+                    </div>
                   </div>
+                  <Link
+                    href="/holdings"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] text-primary/70 hover:text-primary hover:bg-primary/5 transition-all font-medium"
+                  >
+                    View all
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
                 </div>
-              </div>
-            </div>
-          </motion.div>
 
-          {/* ─── Stat Cards Row ───────────────────────────── */}
-          <div className="px-5 lg:px-8 mt-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-              <motion.div variants={fadeUp}>
-                <FinanceCard
-                  icon={Wallet}
-                  label="Connected Wallets"
-                  value={String(walletCount || 1)}
-                  change={walletCount ? `${walletCount} wallet${walletCount > 1 ? 's' : ''} active` : 'Add more wallets'}
-                  trend={walletCount ? 'up' : 'neutral'}
-                  sparkline={SPARKLINE_FLAT}
-                />
-              </motion.div>
-              <motion.div variants={fadeUp}>
-                <FinanceCard
-                  icon={Activity}
-                  label="Transactions Indexed"
-                  value={totalTxCount ? totalTxCount.toLocaleString() : '0'}
-                  change={totalTxCount ? `Across ${walletCount} wallet${walletCount > 1 ? 's' : ''}` : 'Awaiting sync'}
-                  trend={totalTxCount > 0 ? 'up' : 'neutral'}
-                  sparkline={SPARKLINE_UP}
-                />
-              </motion.div>
-              <motion.div variants={fadeUp}>
-                <FinanceCard
-                  icon={Coins}
-                  label="Estimated Tax Liability"
-                  value={txStats?.totalValueUsd ? `$${txStats.totalValueUsd.toLocaleString()}` : '—'}
-                  change={txStats ? 'Run audit for full report' : 'Pending calculation'}
-                  trend="neutral"
-                  sparkline={SPARKLINE_DOWN}
-                />
-              </motion.div>
-              <motion.div variants={fadeUp}>
-                <FinanceCard
-                  icon={Link2}
-                  label="Exchange Connections"
-                  value={String(exchangeCount)}
-                  change={exchangeCount ? `${exchangeCount} exchange${exchangeCount > 1 ? 's' : ''} linked` : 'Connect an exchange'}
-                  trend={exchangeCount > 0 ? 'up' : 'neutral'}
-                  sparkline={SPARKLINE_FLAT}
-                />
-              </motion.div>
-            </div>
-          </div>
-
-          {/* ─── Main Content: Table + Side panels ────────── */}
-          <div className="px-5 lg:px-8 mt-6 pb-10">
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-              {/* Recent Transactions - 2 cols */}
-              <motion.div variants={fadeUp} className="xl:col-span-2">
-                <div className="rounded-2xl bg-surface/40 backdrop-blur-sm border border-white/5 overflow-hidden">
-                  <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between">
-                    <h2 className="font-display text-lg font-bold text-white">Recent Activity</h2>
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 text-xs text-white/50 hover:text-white/70 transition-colors">
-                      Week
-                      <ChevronDown className="w-3 h-3" />
-                    </button>
-                  </div>
-
-                  {/* Table header */}
-                  <div className="hidden md:grid grid-cols-[1fr_130px_110px_130px_80px] gap-4 px-6 py-3 border-b border-white/5">
-                    <span className="text-[11px] font-medium text-white/20 uppercase tracking-wider">Type</span>
-                    <span className="text-[11px] font-medium text-white/20 uppercase tracking-wider">Wallet</span>
-                    <span className="text-[11px] font-medium text-white/20 uppercase tracking-wider">Date</span>
-                    <span className="text-[11px] font-medium text-white/20 uppercase tracking-wider text-right">Value</span>
-                    <span className="text-[11px] font-medium text-white/20 uppercase tracking-wider text-right">Status</span>
-                  </div>
-
-                  {/* Transaction rows */}
-                  <div className="divide-y divide-white/[0.03]">
-                    {txsLoading ? (
-                      <div className="px-6 py-12 flex flex-col items-center gap-3">
-                        <RefreshCw className="w-5 h-5 text-white/15 animate-spin" />
-                        <p className="text-xs text-white/20">Loading transactions...</p>
-                      </div>
-                    ) : !recentTxs || recentTxs.length === 0 ? (
-                      <div className="px-6 py-12 flex flex-col items-center gap-3">
-                        <Activity className="w-6 h-6 text-white/10" />
-                        <p className="text-sm text-white/25">No transactions yet</p>
-                        <p className="text-xs text-white/15">Add and sync a wallet to see activity here</p>
-                      </div>
-                    ) : (
-                      recentTxs.map((tx) => (
-                        <TransactionRow
-                          key={tx.id}
-                          tx={tx}
-                          walletInfo={walletMap.get(tx.walletId)}
-                        />
-                      ))
-                    )}
-                  </div>
-
-                  {/* Footer */}
-                  <div className="px-6 py-4 border-t border-white/5 flex items-center justify-between">
-                    <p className="text-xs text-white/20">
-                      {recentTxs?.length
-                        ? `Showing ${recentTxs.length} of ${totalTxCount.toLocaleString()} transactions`
-                        : 'No transactions to show'}
-                    </p>
-                    <Link
-                      href="/audits"
-                      className="text-xs text-primary/70 hover:text-primary flex items-center gap-1 transition-colors font-medium"
-                    >
-                      View all transactions
-                      <ArrowRight className="w-3 h-3" />
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Right column: Exchanges + Tax Obligations + Swarm Agents */}
-              <motion.div variants={fadeUp} className="space-y-6">
-                {/* Exchange Connections */}
-                <ExchangePanel
-                  connections={exchangeConnections ?? []}
-                  onConnect={() => setShowConnectExchange(true)}
-                />
-
-                <TaxObligations jurisdictions={activeJurisdictions} />
-
-                <div className="rounded-2xl bg-surface/40 backdrop-blur-sm border border-white/5 overflow-hidden flex flex-col">
-                  <div className="px-6 py-5 border-b border-white/5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Hexagon className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <h2 className="font-display text-lg font-bold text-white">Swarm Agents</h2>
-                        <p className="text-xs text-white/30">AI-powered compliance bees</p>
+                {/* On-chain active holdings */}
+                {activeOnChain.length > 0 && (
+                  <div>
+                    <div className="px-5 py-2.5 bg-white/[0.015] border-b border-white/[0.04] flex items-center gap-2">
+                      <Wallet className="w-3 h-3 text-primary/30" />
+                      <span className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">On-Chain</span>
+                      <span className="ml-auto text-[10px] font-mono text-white/15">{activeOnChain.length} tokens</span>
+                    </div>
+                    <div className="p-3.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
+                        {activeOnChain.slice(0, 8).map((token) => (
+                          <TokenCard key={`w-${token.mint}`} token={token} />
+                        ))}
                       </div>
                     </div>
                   </div>
+                )}
 
-                  <div className="p-4 space-y-2 flex-1">
-                    {activeJurisdictions.map((j) => (
-                      <SwarmAgent
-                        key={j.code}
-                        name={`${j.code} Bee`}
-                        flag={j.flag}
-                        jurisdiction={j.name}
-                        status="idle"
-                      />
-                    ))}
+                {/* On-chain traded (zero balance) — compact strip */}
+                {tradedOnChain.length > 0 && (
+                  <TradedTokensStrip
+                    tokens={tradedOnChain}
+                    label="on-chain"
+                    icon={<Wallet className="w-3 h-3 text-white/15" />}
+                  />
+                )}
+
+                {/* Exchange active holdings */}
+                {activeExchange.length > 0 && (
+                  <div>
+                    <div className="px-5 py-2.5 bg-white/[0.015] border-b border-white/[0.04] flex items-center gap-2">
+                      <Link2 className="w-3 h-3 text-violet-400/30" />
+                      <span className="text-[10px] font-semibold text-white/30 uppercase tracking-widest">Exchange</span>
+                      <span className="ml-auto text-[10px] font-mono text-white/15">{activeExchange.length} tokens</span>
+                    </div>
+                    <div className="p-3.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
+                        {activeExchange.slice(0, 8).map((token) => (
+                          <TokenCard key={`e-${token.mint}`} token={token} exchange />
+                        ))}
+                      </div>
+                    </div>
                   </div>
+                )}
 
-                  <div className="px-4 pb-4">
+                {/* Exchange traded (zero balance) — compact strip */}
+                {tradedExchange.length > 0 && (
+                  <TradedTokensStrip
+                    tokens={tradedExchange}
+                    label="exchange"
+                    icon={<Link2 className="w-3 h-3 text-white/15" />}
+                  />
+                )}
+              </div>
+            </motion.div>
+          )}
+
+          {/* ─── Main Content: Transactions + Sidebar ─── */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+            {/* Transactions */}
+            <motion.div variants={fadeUp} className="xl:col-span-2">
+              <div className="rounded-2xl bg-surface/60 backdrop-blur-md border border-white/[0.06] overflow-hidden shadow-lg shadow-black/20">
+                <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/15 to-cyan-500/5 flex items-center justify-center border border-cyan-500/10">
+                      <Activity className="w-4.5 h-4.5 text-cyan-400" />
+                    </div>
+                    <h2 className="font-display text-[15px] font-bold text-white">Recent Activity</h2>
+                  </div>
+                  <span className="text-[10px] text-white/20 font-mono bg-white/[0.03] px-2.5 py-1 rounded-md">
+                    {totalTxCount.toLocaleString()} total
+                  </span>
+                </div>
+
+                <div className="hidden md:grid grid-cols-[1fr_120px_100px_120px_70px] gap-3 px-5 py-2.5 border-b border-white/[0.03]">
+                  <span className="text-[10px] font-semibold text-white/20 uppercase tracking-wider">Type</span>
+                  <span className="text-[10px] font-semibold text-white/20 uppercase tracking-wider">Wallet</span>
+                  <span className="text-[10px] font-semibold text-white/20 uppercase tracking-wider">Date</span>
+                  <span className="text-[10px] font-semibold text-white/20 uppercase tracking-wider text-right">Value</span>
+                  <span className="text-[10px] font-semibold text-white/20 uppercase tracking-wider text-right">Status</span>
+                </div>
+
+                <div className="divide-y divide-white/[0.03]">
+                  {txsLoading ? (
+                    <div className="px-5 py-12 flex flex-col items-center gap-2">
+                      <RefreshCw className="w-4 h-4 text-white/15 animate-spin" />
+                      <p className="text-xs text-white/20">Loading...</p>
+                    </div>
+                  ) : !recentTxs?.length ? (
+                    <div className="px-5 py-12 flex flex-col items-center gap-2">
+                      <Activity className="w-5 h-5 text-white/10" />
+                      <p className="text-xs text-white/20">No transactions yet</p>
+                    </div>
+                  ) : (
+                    recentTxs.map((tx) => (
+                      <TransactionRow key={tx.id} tx={tx} walletInfo={walletMap.get(tx.walletId)} />
+                    ))
+                  )}
+                </div>
+
+                {recentTxs && recentTxs.length > 0 && (
+                  <div className="px-5 py-3 border-t border-white/[0.03] flex items-center justify-between">
+                    <p className="text-[10px] text-white/15">
+                      Showing {recentTxs.length} of {totalTxCount.toLocaleString()}
+                    </p>
                     <Link
-                      href="/audits/new"
-                      className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition-colors"
+                      href="/holdings"
+                      className="text-[11px] text-primary/60 hover:text-primary flex items-center gap-1 transition-colors font-medium"
                     >
-                      <Plus className="w-4 h-4" />
-                      Activate Swarm
+                      View all <ArrowRight className="w-3 h-3" />
                     </Link>
                   </div>
-                </div>
-              </motion.div>
-            </div>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Right column */}
+            <motion.div variants={fadeUp} className="space-y-5">
+              <AuditsPanel audits={audits ?? []} />
+              <ExchangePanel
+                connections={exchangeConnections ?? []}
+                onConnect={() => setShowConnectExchange(true)}
+              />
+            </motion.div>
           </div>
 
-          {/* Chat Widget */}
           <ChatWidget />
         </motion.main>
       </div>
 
-      {/* Connect Exchange Modal */}
       <AnimatePresence>
         {showConnectExchange && (
           <ConnectExchangeModal onClose={() => setShowConnectExchange(false)} />
@@ -438,77 +453,562 @@ export default function Dashboard() {
   );
 }
 
-// ─── FinanceCard (stat card with sparkline) ──────────────────────────
+// ─── StatCard ───────────────────────────────────────────────────────
 
-function FinanceCard({
-  icon: Icon,
+function StatCard({
   label,
   value,
-  change,
-  trend,
-  sparkline,
+  sub,
+  icon: Icon,
+  accent,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
-  change: string;
-  trend: 'up' | 'down' | 'neutral';
-  sparkline: string;
+  sub: string;
+  icon: React.ComponentType<{ className?: string }>;
+  accent: 'gold' | 'green' | 'red' | 'blue' | 'purple' | 'neutral';
 }) {
-  const trendColor =
-    trend === 'up'
-      ? 'text-emerald-400'
-      : trend === 'down'
-        ? 'text-red-400'
-        : 'text-white/25';
-  const strokeColor =
-    trend === 'up'
-      ? '#34D399'
-      : trend === 'down'
-        ? '#F87171'
-        : 'rgba(255,255,255,0.15)';
+  const styles: Record<string, { gradient: string; border: string; icon: string; iconBg: string; value: string; glow: string }> = {
+    gold: {
+      gradient: 'from-primary/[0.06] via-surface/60 to-surface/60',
+      border: 'border-primary/15 hover:border-primary/25',
+      icon: 'text-primary',
+      iconBg: 'bg-gradient-to-br from-primary/20 to-primary/5',
+      value: 'text-white',
+      glow: 'shadow-primary/5',
+    },
+    green: {
+      gradient: 'from-emerald-500/[0.06] via-surface/60 to-surface/60',
+      border: 'border-emerald-500/15 hover:border-emerald-500/25',
+      icon: 'text-emerald-400',
+      iconBg: 'bg-gradient-to-br from-emerald-500/20 to-emerald-500/5',
+      value: 'text-emerald-400',
+      glow: 'shadow-emerald-500/5',
+    },
+    red: {
+      gradient: 'from-red-500/[0.06] via-surface/60 to-surface/60',
+      border: 'border-red-500/15 hover:border-red-500/25',
+      icon: 'text-red-400',
+      iconBg: 'bg-gradient-to-br from-red-500/20 to-red-500/5',
+      value: 'text-red-400',
+      glow: 'shadow-red-500/5',
+    },
+    blue: {
+      gradient: 'from-blue-500/[0.06] via-surface/60 to-surface/60',
+      border: 'border-blue-500/15 hover:border-blue-500/25',
+      icon: 'text-blue-400',
+      iconBg: 'bg-gradient-to-br from-blue-500/15 to-blue-500/5',
+      value: 'text-white',
+      glow: 'shadow-blue-500/5',
+    },
+    purple: {
+      gradient: 'from-violet-500/[0.06] via-surface/60 to-surface/60',
+      border: 'border-violet-500/15 hover:border-violet-500/25',
+      icon: 'text-violet-400',
+      iconBg: 'bg-gradient-to-br from-violet-500/15 to-violet-500/5',
+      value: 'text-white',
+      glow: 'shadow-violet-500/5',
+    },
+    neutral: {
+      gradient: 'from-white/[0.02] via-surface/60 to-surface/60',
+      border: 'border-white/[0.06] hover:border-white/10',
+      icon: 'text-white/40',
+      iconBg: 'bg-white/[0.06]',
+      value: 'text-white',
+      glow: '',
+    },
+  };
+  const s = styles[accent];
 
   return (
-    <div className="group relative rounded-2xl bg-surface/40 backdrop-blur-sm border border-white/5 p-5 hover:border-white/10 transition-all duration-300 overflow-hidden">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center">
-            <Icon className="w-4.5 h-4.5 text-white/40" />
+    <div className={`relative rounded-xl bg-gradient-to-br ${s.gradient} backdrop-blur-md border ${s.border} p-4 transition-all shadow-lg ${s.glow} group overflow-hidden`}>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="relative">
+        <div className="flex items-center gap-2.5 mb-3">
+          <div className={`w-8 h-8 rounded-lg ${s.iconBg} flex items-center justify-center border border-white/[0.04]`}>
+            <Icon className={`w-3.5 h-3.5 ${s.icon}`} />
           </div>
-          <span className="text-sm text-white/40 font-medium">{label}</span>
+          <span className="text-[11px] text-white/40 font-semibold uppercase tracking-wider">{label}</span>
         </div>
-        <button className="text-white/10 hover:text-white/30 transition-colors">
-          <MoreHorizontal className="w-4 h-4" />
-        </button>
-      </div>
-
-      <div className="flex items-end justify-between">
-        <div>
-          <span className="font-display text-3xl font-bold text-white tracking-tight">{value}</span>
-          <div className="flex items-center gap-1 mt-1">
-            {trend === 'up' && <TrendingUp className={`w-3 h-3 ${trendColor}`} />}
-            {trend === 'down' && <TrendingDown className={`w-3 h-3 ${trendColor}`} />}
-            <span className={`text-xs ${trendColor}`}>{change}</span>
-          </div>
-        </div>
-
-        {/* Mini sparkline */}
-        <svg width="72" height="36" viewBox="0 0 72 36" className="opacity-60 group-hover:opacity-100 transition-opacity">
-          <path
-            d={sparkline}
-            fill="none"
-            stroke={strokeColor}
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <p className={`font-display text-[26px] font-bold tracking-tight ${s.value} leading-none`}>{value}</p>
+        <p className="text-[11px] text-white/25 mt-1.5">{sub}</p>
       </div>
     </div>
   );
 }
 
-// ─── TransactionRow ──────────────────────────────────────────────────
+// ─── TokenCard ──────────────────────────────────────────────────────
+
+function TokenCard({ token, exchange }: { token: PortfolioToken; exchange?: boolean }) {
+  const pnl = token.realizedPnl;
+  const pnlColor = pnl > 0 ? 'text-emerald-400' : pnl < 0 ? 'text-red-400' : 'text-white/20';
+  const accentBar = pnl > 0 ? 'from-emerald-500/40 to-emerald-500/0' : pnl < 0 ? 'from-red-500/40 to-red-500/0' : 'from-white/5 to-transparent';
+
+  return (
+    <Link
+      href="/holdings"
+      className="group relative flex items-center gap-3 rounded-xl bg-white/[0.025] border border-white/[0.05] px-3.5 py-3 hover:border-white/[0.12] hover:bg-white/[0.04] transition-all"
+    >
+      {/* Left accent */}
+      <div className={`absolute left-0 top-2 bottom-2 w-[2px] rounded-full bg-gradient-to-b ${accentBar}`} />
+
+      {/* Token icon */}
+      <div className="w-10 h-10 rounded-xl bg-white/[0.06] flex items-center justify-center shrink-0 overflow-hidden border border-white/[0.04] group-hover:border-white/[0.08] transition-colors">
+        {token.logoUrl ? (
+          <img src={token.logoUrl} alt={token.symbol} className="w-10 h-10 rounded-xl object-cover" />
+        ) : (
+          <span className="text-[11px] font-mono font-bold text-white/25">
+            {token.symbol.slice(0, 3)}
+          </span>
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 mb-0.5">
+          <span className="text-sm font-semibold text-white/85 truncate">{token.symbol}</span>
+          {exchange && (
+            <span className="px-1 py-[1px] rounded text-[7px] font-bold bg-violet-500/15 text-violet-400 shrink-0 uppercase tracking-wider">
+              cex
+            </span>
+          )}
+        </div>
+        <p className="text-[10px] text-white/20 truncate">{token.name}</p>
+      </div>
+
+      {/* Numbers */}
+      <div className="text-right shrink-0">
+        <p className="text-sm font-mono font-semibold text-white/80">{formatAmount(token.holdingAmount)}</p>
+        <div className="flex items-center justify-end gap-1.5 mt-0.5">
+          <span className="text-[10px] font-mono text-white/25">{formatUsd(token.totalVolume)}</span>
+          {pnl !== 0 && (
+            <>
+              <span className="text-white/10">&middot;</span>
+              <span className={`text-[10px] font-mono font-medium ${pnlColor}`}>
+                {pnl > 0 ? '+' : ''}{formatUsd(pnl)}
+              </span>
+            </>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// ─── TradedTokensStrip (zero-balance grouping) ─────────────────────
+
+function TradedTokensStrip({
+  tokens,
+  label,
+  icon,
+}: {
+  tokens: PortfolioToken[];
+  label: string;
+  icon: React.ReactNode;
+}) {
+  const totalVolume = tokens.reduce((sum, t) => sum + t.totalVolume, 0);
+  const totalPnl = tokens.reduce((sum, t) => sum + t.realizedPnl, 0);
+
+  return (
+    <Link
+      href="/holdings"
+      className="group flex items-center gap-3 px-5 py-3 border-t border-white/[0.03] hover:bg-white/[0.02] transition-colors"
+    >
+      {/* Stacked token avatars */}
+      <div className="flex items-center -space-x-2.5">
+        {tokens.slice(0, 5).map((t, i) => (
+          <div
+            key={t.mint}
+            className="w-7 h-7 rounded-full bg-surface border-2 border-surface flex items-center justify-center overflow-hidden shrink-0"
+            style={{ zIndex: 10 - i }}
+          >
+            {t.logoUrl ? (
+              <img src={t.logoUrl} alt={t.symbol} className="w-7 h-7 rounded-full object-cover" />
+            ) : (
+              <span className="text-[8px] font-mono font-bold text-white/25 bg-white/[0.06] w-full h-full flex items-center justify-center">
+                {t.symbol.slice(0, 2)}
+              </span>
+            )}
+          </div>
+        ))}
+        {tokens.length > 5 && (
+          <div
+            className="w-7 h-7 rounded-full bg-white/[0.06] border-2 border-surface flex items-center justify-center shrink-0"
+            style={{ zIndex: 4 }}
+          >
+            <span className="text-[9px] font-mono font-bold text-white/40">+{tokens.length - 5}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Text */}
+      <div className="flex-1 min-w-0">
+        <p className="text-[11px] text-white/35">
+          <span className="font-semibold text-white/45">{tokens.length}</span> {label} tokens previously traded
+        </p>
+      </div>
+
+      {/* Volume + PnL */}
+      <div className="flex items-center gap-3 shrink-0">
+        <div className="text-right">
+          <p className="text-[10px] text-white/20">Volume</p>
+          <p className="text-[11px] font-mono text-white/30">{formatUsd(totalVolume)}</p>
+        </div>
+        {totalPnl !== 0 && (
+          <div className="text-right">
+            <p className="text-[10px] text-white/20">P&L</p>
+            <p className={`text-[11px] font-mono font-medium ${totalPnl > 0 ? 'text-emerald-400/70' : 'text-red-400/70'}`}>
+              {totalPnl > 0 ? '+' : ''}{formatUsd(totalPnl)}
+            </p>
+          </div>
+        )}
+        <ArrowRight className="w-3 h-3 text-white/10 group-hover:text-white/25 transition-colors" />
+      </div>
+    </Link>
+  );
+}
+
+// ─── WalletsRow (single-line floating cards) ────────────────────────
+
+const WALLETS_VISIBLE = 4; // max visible in one row
+
+function WalletsRow({ wallets, totalTxCount }: { wallets: WalletType[]; totalTxCount: number }) {
+  const [expanded, setExpanded] = useState(false);
+  const walletCount = wallets.length;
+  const visible = expanded ? wallets : wallets.slice(0, WALLETS_VISIBLE);
+  const overflow = walletCount - WALLETS_VISIBLE;
+
+  return (
+    <motion.div variants={fadeUp}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500/15 to-blue-500/5 flex items-center justify-center border border-blue-500/10">
+            <Wallet className="w-4.5 h-4.5 text-blue-400" />
+          </div>
+          <div>
+            <h2 className="font-display text-[15px] font-bold text-white">Wallets</h2>
+            <p className="text-[11px] text-white/30">{walletCount} wallet{walletCount !== 1 ? 's' : ''} &middot; {totalTxCount.toLocaleString()} transactions</p>
+          </div>
+        </div>
+        <Link
+          href="/wallets"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] text-primary/70 hover:text-primary hover:bg-primary/5 transition-all font-medium"
+        >
+          Manage
+          <ArrowRight className="w-3 h-3" />
+        </Link>
+      </div>
+
+      {!wallets.length ? (
+        <div className="rounded-2xl bg-surface/60 backdrop-blur-md border border-white/[0.06] p-8 flex flex-col items-center gap-3 shadow-lg shadow-black/20">
+          <Wallet className="w-8 h-8 text-white/10" />
+          <p className="text-sm text-white/25">No wallets connected yet</p>
+          <Link
+            href="/wallets"
+            className="flex items-center gap-1.5 text-xs text-primary font-medium hover:text-primary-400 transition-colors"
+          >
+            <Plus className="w-3 h-3" />
+            Add your first wallet
+          </Link>
+        </div>
+      ) : (
+        <div className="flex items-stretch gap-3 overflow-hidden">
+          {visible.map((wallet) => (
+            <WalletChip key={wallet.id} wallet={wallet} />
+          ))}
+
+          {/* "+N more" button */}
+          {overflow > 0 && !expanded && (
+            <button
+              onClick={() => setExpanded(true)}
+              className="shrink-0 flex items-center gap-2 px-5 rounded-2xl bg-surface/50 backdrop-blur-md border border-white/[0.06] hover:border-white/10 text-white/30 hover:text-white/60 transition-all shadow-lg shadow-black/20"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span className="text-sm font-semibold">{overflow} more</span>
+            </button>
+          )}
+          {expanded && overflow > 0 && (
+            <button
+              onClick={() => setExpanded(false)}
+              className="shrink-0 flex items-center gap-2 px-4 rounded-2xl bg-surface/50 backdrop-blur-md border border-white/[0.06] hover:border-white/10 text-white/20 hover:text-white/50 transition-all shadow-lg shadow-black/20"
+            >
+              <X className="w-3 h-3" />
+              <span className="text-xs font-medium">Less</span>
+            </button>
+          )}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+function WalletChip({ wallet }: { wallet: WalletType }) {
+  const queryClient = useQueryClient();
+  const [copied, setCopied] = useState(false);
+
+  const { data: syncStatus } = useQuery({
+    queryKey: ['sync-status', wallet.id],
+    queryFn: () => getSyncStatus(wallet.id),
+    refetchInterval: (query) => {
+      const data = query.state.data as SyncStatus | undefined;
+      return data?.status === 'SYNCING' ? 3000 : 60000;
+    },
+  });
+
+  const syncMutation = useMutation({
+    mutationFn: () => syncWallet(wallet.id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sync-status', wallet.id] }),
+  });
+
+  const copyAddress = () => {
+    navigator.clipboard.writeText(wallet.address);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const status = syncStatus?.status ?? 'IDLE';
+  const isSyncing = status === 'SYNCING';
+
+  const statusDot: Record<string, string> = {
+    IDLE: 'bg-white/20',
+    SYNCING: 'bg-primary animate-pulse',
+    COMPLETED: 'bg-emerald-400',
+    FAILED: 'bg-red-400',
+    PAUSED: 'bg-amber-400',
+  };
+
+  const borderColor = isSyncing
+    ? 'border-primary/20'
+    : status === 'COMPLETED'
+      ? 'border-emerald-500/10 hover:border-white/10'
+      : 'border-white/[0.06] hover:border-white/10';
+
+  return (
+    <div
+      className={`group relative flex-1 min-w-[200px] max-w-[340px] rounded-2xl bg-surface/70 backdrop-blur-md border ${borderColor} shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/25 transition-all duration-200 overflow-hidden`}
+    >
+      {/* Syncing shimmer */}
+      {isSyncing && <div className="absolute inset-0 shimmer pointer-events-none" />}
+
+      {/* Top accent */}
+      <div className={`h-[2px] w-full ${
+        isSyncing
+          ? 'bg-gradient-to-r from-primary/0 via-primary to-primary/0'
+          : status === 'COMPLETED'
+            ? 'bg-gradient-to-r from-emerald-500/0 via-emerald-500/30 to-emerald-500/0'
+            : 'bg-gradient-to-r from-blue-500/0 via-blue-500/10 to-blue-500/0'
+      }`} />
+
+      <div className="px-4 py-3 flex items-center gap-3">
+        {/* Icon with status dot */}
+        <div className="relative shrink-0">
+          <div className={`w-9 h-9 rounded-xl flex items-center justify-center border transition-colors ${
+            isSyncing ? 'bg-primary/10 border-primary/15' : 'bg-white/[0.04] border-white/[0.04] group-hover:border-white/[0.08]'
+          }`}>
+            <Wallet className={`w-4 h-4 ${isSyncing ? 'text-primary' : 'text-blue-400/60'}`} />
+          </div>
+          <span className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-surface ${statusDot[status] ?? statusDot.IDLE}`} />
+        </div>
+
+        {/* Name + address */}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <p className="text-[13px] font-semibold text-white/85 truncate">{wallet.label || 'Wallet'}</p>
+            {isSyncing && (
+              <span className="inline-flex items-center gap-1 px-1.5 py-[1px] rounded text-[7px] font-bold bg-primary/10 text-primary uppercase tracking-wider animate-pulse">
+                live
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className="text-[10px] font-mono text-white/25">{truncateAddress(wallet.address, 4)}</span>
+            <button onClick={copyAddress} className="text-white/10 hover:text-white/35 transition-colors">
+              {copied ? <Check className="w-2.5 h-2.5 text-emerald-400" /> : <Copy className="w-2.5 h-2.5" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Tx count + sync */}
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="px-2 py-1 rounded-lg bg-white/[0.04] text-[10px] font-mono text-white/30 border border-white/[0.03]">
+            {wallet.transactionCount.toLocaleString()} tx
+          </span>
+          <button
+            onClick={() => syncMutation.mutate()}
+            disabled={syncMutation.isPending || isSyncing}
+            className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all disabled:opacity-30 ${
+              isSyncing ? 'bg-primary/10 text-primary' : 'bg-white/[0.03] text-white/15 hover:text-primary hover:bg-primary/10'
+            }`}
+            title="Sync"
+          >
+            {syncMutation.isPending || isSyncing ? (
+              <Loader2 className="w-3 h-3 animate-spin text-primary" />
+            ) : (
+              <RefreshCw className="w-3 h-3" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Syncing progress bar */}
+      {isSyncing && (
+        <div className="px-4 pb-2">
+          <div className="h-[2px] rounded-full bg-white/[0.04] overflow-hidden">
+            <div className="h-full w-1/3 bg-gradient-to-r from-primary/80 to-primary rounded-full animate-indeterminate" />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── AuditsPanel ────────────────────────────────────────────────────
+
+function AuditsPanel({ audits }: { audits: Audit[] }) {
+  const completed = audits.filter((a) => a.status === 'COMPLETED');
+  const active = audits.filter((a) => ['QUEUED', 'PENDING', 'PROCESSING'].includes(a.status));
+  const latestCompleted = completed[0];
+
+  return (
+    <div className="rounded-2xl bg-surface/60 backdrop-blur-md border border-white/[0.06] overflow-hidden shadow-lg shadow-black/20">
+      <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500/15 to-emerald-500/5 flex items-center justify-center border border-emerald-500/10">
+            <Shield className="w-4.5 h-4.5 text-emerald-400" />
+          </div>
+          <div>
+            <h2 className="font-display text-[15px] font-bold text-white">Audits</h2>
+            <p className="text-[11px] text-white/25">{audits.length} audit{audits.length !== 1 ? 's' : ''}</p>
+          </div>
+        </div>
+        <Link
+          href="/audits/new"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition-colors border border-primary/10"
+        >
+          <Plus className="w-3 h-3" />
+          New
+        </Link>
+      </div>
+
+      {audits.length === 0 ? (
+        <div className="p-6 text-center">
+          <FileSearch className="w-8 h-8 text-white/10 mx-auto mb-2" />
+          <p className="text-xs text-white/25 mb-3">No audits yet</p>
+          <Link
+            href="/audits/new"
+            className="inline-flex items-center gap-1.5 text-xs text-primary font-medium hover:text-primary-400 transition-colors"
+          >
+            <Plus className="w-3 h-3" />
+            Request your first audit
+          </Link>
+        </div>
+      ) : (
+        <div className="divide-y divide-white/[0.03]">
+          {active.map((audit) => (
+            <ActiveAuditRow key={audit.id} audit={audit} />
+          ))}
+          {latestCompleted && <CompletedAuditCard audit={latestCompleted} />}
+          {completed.slice(1, 3).map((audit) => (
+            <CompactAuditRow key={audit.id} audit={audit} />
+          ))}
+        </div>
+      )}
+
+      {audits.length > 0 && (
+        <div className="px-5 py-3 border-t border-white/[0.03]">
+          <Link
+            href="/audits"
+            className="flex items-center justify-center gap-1 text-[11px] text-primary/50 hover:text-primary transition-colors font-medium"
+          >
+            View all audits <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ActiveAuditRow({ audit }: { audit: Audit }) {
+  const flag = JURISDICTION_FLAGS[audit.jurisdiction] ?? audit.jurisdiction;
+  return (
+    <div className="px-5 py-3.5 flex items-center gap-3">
+      <span className="text-lg">{flag}</span>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-white/60">{audit.jurisdiction} {audit.taxYear}</p>
+        <p className="text-[10px] text-white/20">
+          {audit.status === 'PROCESSING' ? 'Processing...' : audit.status === 'QUEUED' ? 'Queued' : 'Pending'}
+        </p>
+      </div>
+      <Loader2 className="w-4 h-4 text-primary/50 animate-spin shrink-0" />
+    </div>
+  );
+}
+
+function CompletedAuditCard({ audit }: { audit: Audit }) {
+  const flag = JURISDICTION_FLAGS[audit.jurisdiction] ?? audit.jurisdiction;
+  const { data: result } = useQuery({
+    queryKey: ['audit-result', audit.id],
+    queryFn: () => getAuditResult(audit.id),
+    staleTime: 5 * 60 * 1000,
+  });
+  const currency = result?.currency ?? 'USD';
+
+  return (
+    <Link href="/audits" className="block px-5 py-4 hover:bg-white/[0.02] transition-colors">
+      <div className="flex items-center gap-3 mb-3">
+        <span className="text-lg">{flag}</span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-semibold text-white/70">{audit.jurisdiction} Tax Audit</p>
+            <span className="text-[10px] font-mono text-white/20">{audit.taxYear}</span>
+          </div>
+        </div>
+        <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold border border-emerald-500/10">
+          <CheckCircle2 className="w-3 h-3" /> Done
+        </span>
+      </div>
+
+      {result ? (
+        <div className="grid grid-cols-3 gap-2">
+          <div className="px-3 py-2 rounded-lg bg-white/[0.025] border border-white/[0.04]">
+            <p className="text-[9px] text-white/25 uppercase tracking-wider mb-0.5">Net Gain/Loss</p>
+            <p className={`text-sm font-mono font-bold ${Number(result.netGainLoss) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+              {Number(result.netGainLoss) >= 0 ? '+' : ''}{formatCurrency(result.netGainLoss, currency)}
+            </p>
+          </div>
+          <div className="px-3 py-2 rounded-lg bg-white/[0.025] border border-white/[0.04]">
+            <p className="text-[9px] text-white/25 uppercase tracking-wider mb-0.5">Income</p>
+            <p className="text-sm font-mono font-bold text-blue-400">{formatCurrency(result.totalIncome, currency)}</p>
+          </div>
+          <div className="px-3 py-2 rounded-lg bg-white/[0.025] border border-white/[0.04]">
+            <p className="text-[9px] text-white/25 uppercase tracking-wider mb-0.5">Est. Tax</p>
+            <p className="text-sm font-mono font-bold text-primary">{formatCurrency(result.estimatedTax, currency)}</p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center gap-2 py-2">
+          <Loader2 className="w-3 h-3 text-white/15 animate-spin" />
+          <span className="text-[11px] text-white/20">Loading results...</span>
+        </div>
+      )}
+    </Link>
+  );
+}
+
+function CompactAuditRow({ audit }: { audit: Audit }) {
+  const flag = JURISDICTION_FLAGS[audit.jurisdiction] ?? audit.jurisdiction;
+  return (
+    <Link href="/audits" className="flex items-center gap-3 px-5 py-3 hover:bg-white/[0.02] transition-colors">
+      <span className="text-base">{flag}</span>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-white/50">{audit.jurisdiction} {audit.taxYear}</p>
+      </div>
+      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400/50" />
+    </Link>
+  );
+}
+
+// ─── TransactionRow ─────────────────────────────────────────────────
 
 function getTxDirection(tx: Transaction): 'in' | 'out' | 'neutral' {
   switch (tx.type) {
@@ -519,12 +1019,10 @@ function getTxDirection(tx: Transaction): 'in' | 'out' | 'neutral' {
     case 'BURN':
     case 'STAKE':
       return 'out';
-    case 'PROGRAM_INTERACTION': {
-      // Derive direction from summary (set by API based on accountData/transfers)
+    case 'PROGRAM_INTERACTION':
       if (tx.summary?.startsWith('Received')) return 'in';
       if (tx.summary?.startsWith('Sent')) return 'out';
       return 'neutral';
-    }
     default:
       return 'neutral';
   }
@@ -549,110 +1047,67 @@ function TransactionRow({
 }) {
   const config = TX_TYPE_CONFIG[tx.type] ?? TX_TYPE_CONFIG.UNKNOWN;
   const Icon = config.icon;
-  const { date, time } = formatTxDate(tx.timestamp);
+  const d = new Date(tx.timestamp);
+  const date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
   const walletDisplay = walletInfo?.label || (walletInfo?.address ? truncateAddress(walletInfo.address) : '—');
   const protocol = tx.enrichment?.protocolName;
   const direction = getTxDirection(tx);
   const flowLabel = getTxFlowLabel(tx);
-
-  const valueColor =
-    direction === 'in' ? 'text-emerald-400' : direction === 'out' ? 'text-orange-400' : 'text-white/60';
+  const valueColor = direction === 'in' ? 'text-emerald-400' : direction === 'out' ? 'text-orange-400' : 'text-white/50';
   const valuePrefix = direction === 'in' ? '+' : direction === 'out' ? '-' : '';
 
   return (
-    <div className="group grid grid-cols-1 md:grid-cols-[1fr_130px_110px_130px_80px] gap-2 md:gap-4 items-center px-6 py-4 hover:bg-white/[0.02] transition-colors">
-      {/* Type + summary */}
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center shrink-0 group-hover:bg-white/[0.08] transition-colors">
-          <Icon className={`w-4 h-4 ${config.color}`} />
+    <div className="group grid grid-cols-1 md:grid-cols-[1fr_120px_100px_120px_70px] gap-2 md:gap-3 items-center px-5 py-3 hover:bg-white/[0.02] transition-colors">
+      <div className="flex items-center gap-2.5">
+        <div className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0 group-hover:bg-white/[0.06] transition-colors">
+          <Icon className={`w-3.5 h-3.5 ${config.color}`} />
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-medium text-white/80 truncate">{tx.summary || config.label}</p>
+          <p className="text-sm text-white/70 truncate">{tx.summary || config.label}</p>
           <div className="flex items-center gap-1.5">
-            <span className={`text-[11px] font-medium ${config.color}`}>{config.label}</span>
+            <span className={`text-[10px] font-medium ${config.color}`}>{config.label}</span>
             {flowLabel && (
               <>
                 <span className="text-white/10">&middot;</span>
-                <span className="text-[11px] text-white/25">{flowLabel}</span>
+                <span className="text-[10px] text-white/20">{flowLabel}</span>
               </>
             )}
             {!flowLabel && protocol && (
               <>
                 <span className="text-white/10">&middot;</span>
-                <span className="text-[11px] text-white/25">{protocol}</span>
+                <span className="text-[10px] text-white/20">{protocol}</span>
               </>
             )}
           </div>
         </div>
       </div>
 
-      {/* Wallet */}
       <div className="hidden md:block">
-        <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/[0.04] text-[11px] font-mono text-white/40 truncate max-w-full">
-          <Wallet className="w-3 h-3 text-white/20 shrink-0" />
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/[0.03] text-[10px] font-mono text-white/30 truncate max-w-full">
+          <Wallet className="w-2.5 h-2.5 text-white/15 shrink-0" />
           {walletDisplay}
         </span>
       </div>
 
-      {/* Date */}
       <div className="hidden md:block">
-        <p className="text-sm text-white/50">{date}</p>
-        <p className="text-[11px] text-white/20">{time}</p>
+        <p className="text-xs text-white/40">{date}</p>
+        <p className="text-[10px] text-white/15">{time}</p>
       </div>
 
-      {/* Value */}
       <div className="hidden md:block text-right">
         {tx.totalValueUsd != null ? (
-          <p className={`text-sm font-mono font-medium ${valueColor}`}>
+          <p className={`text-xs font-mono font-medium ${valueColor}`}>
             {valuePrefix}${tx.totalValueUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
         ) : (
-          <p className="text-sm font-mono text-white/20">&mdash;</p>
+          <p className="text-xs font-mono text-white/15">&mdash;</p>
         )}
-        <p className="text-[11px] font-mono text-white/20">
-          Fee: {Number(tx.fee).toLocaleString()} lamports
-        </p>
       </div>
 
-      {/* Status */}
-      <div className="hidden md:flex items-center justify-end gap-1.5">
-        <span className={`w-1.5 h-1.5 rounded-full ${TX_STATUS_DOT[tx.status]}`} />
-        <span className="text-[11px] text-white/30 capitalize">{tx.status.toLowerCase()}</span>
-      </div>
-    </div>
-  );
-}
-
-// ─── SwarmAgent ──────────────────────────────────────────────────────
-
-function SwarmAgent({
-  name,
-  flag,
-  jurisdiction,
-  status,
-}: {
-  name: string;
-  flag: string;
-  jurisdiction: string;
-  status: 'idle' | 'working' | 'complete';
-}) {
-  const statusStyles = {
-    idle: { dot: 'bg-white/20', label: 'Idle', text: 'text-white/30' },
-    working: { dot: 'bg-primary animate-pulse', label: 'Working', text: 'text-primary' },
-    complete: { dot: 'bg-emerald-400', label: 'Complete', text: 'text-emerald-400' },
-  };
-
-  const config = statusStyles[status];
-
-  return (
-    <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.02] transition-colors">
-      <span className="text-lg">{flag}</span>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-white/60">{name}</p>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <span className={`w-1.5 h-1.5 rounded-full ${config.dot}`} />
-        <span className={`text-[11px] font-medium ${config.text}`}>{config.label}</span>
+      <div className="hidden md:flex items-center justify-end gap-1">
+        <span className={`w-1.5 h-1.5 rounded-full ${tx.status === 'CONFIRMED' ? 'bg-emerald-400' : 'bg-red-400'}`} />
+        <span className="text-[10px] text-white/25 capitalize">{tx.status.toLowerCase()}</span>
       </div>
     </div>
   );
@@ -687,50 +1142,46 @@ function ExchangePanel({
   });
 
   return (
-    <div className="rounded-2xl bg-surface/40 backdrop-blur-sm border border-white/5 overflow-hidden">
-      <div className="px-6 py-5 border-b border-white/5">
+    <div className="rounded-2xl bg-surface/60 backdrop-blur-md border border-white/[0.06] overflow-hidden shadow-lg shadow-black/20">
+      <div className="px-5 py-4 border-b border-white/[0.06]">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Link2 className="w-5 h-5 text-primary" />
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500/15 to-violet-500/5 flex items-center justify-center border border-violet-500/10">
+            <Link2 className="w-4.5 h-4.5 text-violet-400" />
           </div>
           <div className="flex-1">
-            <h2 className="font-display text-lg font-bold text-white">Exchanges</h2>
-            <p className="text-xs text-white/30">Linked exchange accounts</p>
+            <h2 className="font-display text-[15px] font-bold text-white">Exchanges</h2>
+            <p className="text-[11px] text-white/25">Linked exchange accounts</p>
           </div>
           {connections.length > 0 && (
-            <span className="text-xs font-mono text-white/20">{connections.length}</span>
+            <span className="text-[10px] font-mono text-white/15 bg-white/[0.03] px-2 py-0.5 rounded">{connections.length}</span>
           )}
         </div>
       </div>
 
       {connections.length === 0 ? (
         <div className="p-6 text-center">
-          <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-3">
-            <Link2 className="w-6 h-6 text-white/10" />
-          </div>
-          <p className="text-sm text-white/30 mb-1">No exchanges connected</p>
-          <p className="text-xs text-white/15 mb-4">
-            Link Binance, Coinbase, or other exchanges to import trade history.
-          </p>
+          <Link2 className="w-8 h-8 text-white/10 mx-auto mb-2" />
+          <p className="text-xs text-white/25 mb-1">No exchanges connected</p>
+          <p className="text-[10px] text-white/15 mb-3">Import trade history from exchanges</p>
         </div>
       ) : (
         <div className="divide-y divide-white/[0.03]">
           {connections.map((conn) => {
             const statusCfg = EXCHANGE_STATUS_CONFIG[conn.status];
             return (
-              <div key={conn.id} className="px-5 py-4 hover:bg-white/[0.015] transition-colors">
+              <div key={conn.id} className="px-5 py-3.5 hover:bg-white/[0.015] transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
-                    <Link2 className="w-4 h-4 text-white/25" />
+                  <div className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0">
+                    <Link2 className="w-3.5 h-3.5 text-white/25" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-white/70 capitalize">{conn.exchangeName}</p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-medium ${statusCfg.bg} ${statusCfg.color}`}>
+                      <span className={`inline-flex px-1.5 py-0.5 rounded text-[9px] font-medium ${statusCfg.bg} ${statusCfg.color}`}>
                         {statusCfg.label}
                       </span>
                       {conn.lastSyncAt && (
-                        <span className="text-[10px] text-white/15">
+                        <span className="text-[9px] text-white/15">
                           Synced {new Date(conn.lastSyncAt).toLocaleDateString()}
                         </span>
                       )}
@@ -740,33 +1191,23 @@ function ExchangePanel({
                     <button
                       onClick={() => syncMutation.mutate(conn.id)}
                       disabled={syncMutation.isPending}
-                      className="w-7 h-7 rounded-lg bg-white/[0.03] flex items-center justify-center text-white/15 hover:text-primary hover:bg-primary/10 transition-all"
-                      title="Sync"
+                      className="w-6 h-6 rounded-md bg-white/[0.03] flex items-center justify-center text-white/15 hover:text-primary hover:bg-primary/10 transition-all"
                     >
-                      {syncMutation.isPending ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <RefreshCw className="w-3 h-3" />
-                      )}
+                      {syncMutation.isPending ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <RefreshCw className="w-2.5 h-2.5" />}
                     </button>
                     <button
                       onClick={() => deleteMutation.mutate(conn.id)}
                       disabled={deleteMutation.isPending}
-                      className="w-7 h-7 rounded-lg bg-white/[0.03] flex items-center justify-center text-white/15 hover:text-red-400 hover:bg-red-500/10 transition-all"
-                      title="Disconnect"
+                      className="w-6 h-6 rounded-md bg-white/[0.03] flex items-center justify-center text-white/15 hover:text-red-400 hover:bg-red-500/10 transition-all"
                     >
-                      {deleteMutation.isPending ? (
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <Trash2 className="w-3 h-3" />
-                      )}
+                      {deleteMutation.isPending ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Trash2 className="w-2.5 h-2.5" />}
                     </button>
                   </div>
                 </div>
                 {conn.lastError && (
-                  <div className="mt-2 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 flex items-start gap-2">
-                    <AlertTriangle className="w-3 h-3 text-red-400 shrink-0 mt-0.5" />
-                    <p className="text-[10px] text-red-400/70 leading-relaxed">{conn.lastError}</p>
+                  <div className="mt-2 px-2.5 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 flex items-start gap-1.5">
+                    <AlertTriangle className="w-2.5 h-2.5 text-red-400 shrink-0 mt-0.5" />
+                    <p className="text-[9px] text-red-400/60 leading-relaxed">{conn.lastError}</p>
                   </div>
                 )}
               </div>
@@ -778,9 +1219,9 @@ function ExchangePanel({
       <div className="px-4 pb-4 pt-2">
         <button
           onClick={onConnect}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition-colors"
+          className="w-full flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary/10 text-primary text-xs font-semibold hover:bg-primary/20 transition-colors border border-primary/10"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           Connect Exchange
         </button>
       </div>
@@ -821,9 +1262,7 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
       queryClient.invalidateQueries({ queryKey: ['exchange-connections'] });
       onClose();
     },
-    onError: (err: Error) => {
-      setError(err.message);
-    },
+    onError: (err: Error) => setError(err.message),
   });
 
   const handleSelectExchange = (exchange: AvailableExchange) => {
@@ -835,20 +1274,9 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    if (!apiKey.trim()) {
-      setError('API Key is required');
-      return;
-    }
-    if (!apiSecret.trim()) {
-      setError('API Secret is required');
-      return;
-    }
-    if (needsPassphrase && !passphrase.trim()) {
-      setError('Passphrase is required for this exchange');
-      return;
-    }
-
+    if (!apiKey.trim()) { setError('API Key is required'); return; }
+    if (!apiSecret.trim()) { setError('API Secret is required'); return; }
+    if (needsPassphrase && !passphrase.trim()) { setError('Passphrase is required for this exchange'); return; }
     linkMutation.mutate();
   };
 
@@ -858,7 +1286,7 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
         onClick={onClose}
       />
       <motion.div
@@ -869,9 +1297,8 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-full max-w-lg bg-surface border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
-          {/* Header */}
-          <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between">
+        <div className="w-full max-w-lg bg-surface border border-white/[0.06] rounded-2xl overflow-hidden shadow-2xl shadow-black/40">
+          <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
             <div className="flex items-center gap-3">
               {step === 'credentials' && (
                 <button
@@ -881,7 +1308,7 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                   <ArrowRight className="w-4 h-4 rotate-180" />
                 </button>
               )}
-              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/10">
                 <Link2 className="w-5 h-5 text-primary" />
               </div>
               <div>
@@ -901,7 +1328,6 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
             </button>
           </div>
 
-          {/* Step 1: Exchange selection */}
           {step === 'select' && (
             <div className="p-6">
               {isLoading ? (
@@ -928,10 +1354,7 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                             src={exchange.logo}
                             alt={exchange.name}
                             className="w-7 h-7 object-contain"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                              (e.target as HTMLImageElement).parentElement!.innerHTML = '<svg class="w-5 h-5 text-white/20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
-                            }}
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                           />
                         ) : (
                           <Link2 className="w-5 h-5 text-white/20" />
@@ -943,10 +1366,7 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                         </p>
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
                           {exchange.features.map((feat) => (
-                            <span
-                              key={feat}
-                              className="px-2 py-0.5 rounded text-[10px] bg-white/5 text-white/25 capitalize"
-                            >
+                            <span key={feat} className="px-2 py-0.5 rounded text-[10px] bg-white/5 text-white/25 capitalize">
                               {feat}
                             </span>
                           ))}
@@ -960,10 +1380,8 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          {/* Step 2: Credentials form */}
           {step === 'credentials' && selectedExchange && (
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              {/* Info banner */}
               {selectedExchange.notes && (
                 <div className="px-4 py-3 rounded-xl bg-primary/5 border border-primary/10 flex items-start gap-2.5">
                   <Shield className="w-4 h-4 text-primary/60 shrink-0 mt-0.5" />
@@ -971,15 +1389,10 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                 </div>
               )}
 
-              {/* API Key */}
               <div>
-                <label className="block text-xs text-white/40 mb-2 uppercase tracking-wider font-medium">
-                  API Key
-                </label>
+                <label className="block text-xs text-white/40 mb-2 uppercase tracking-wider font-medium">API Key</label>
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                    <Key className="w-4 h-4 text-white/15" />
-                  </div>
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2"><Key className="w-4 h-4 text-white/15" /></div>
                   <input
                     type="text"
                     value={apiKey}
@@ -991,15 +1404,10 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
 
-              {/* API Secret */}
               <div>
-                <label className="block text-xs text-white/40 mb-2 uppercase tracking-wider font-medium">
-                  API Secret
-                </label>
+                <label className="block text-xs text-white/40 mb-2 uppercase tracking-wider font-medium">API Secret</label>
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                    <Key className="w-4 h-4 text-white/15" />
-                  </div>
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2"><Key className="w-4 h-4 text-white/15" /></div>
                   <input
                     type={showSecret ? 'text' : 'password'}
                     value={apiSecret}
@@ -1018,16 +1426,11 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
 
-              {/* Passphrase (required for OKX) */}
               {needsPassphrase && (
                 <div>
-                  <label className="block text-xs text-white/40 mb-2 uppercase tracking-wider font-medium">
-                    Passphrase
-                  </label>
+                  <label className="block text-xs text-white/40 mb-2 uppercase tracking-wider font-medium">Passphrase</label>
                   <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                      <Key className="w-4 h-4 text-white/15" />
-                    </div>
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2"><Key className="w-4 h-4 text-white/15" /></div>
                     <input
                       type="password"
                       value={passphrase}
@@ -1040,7 +1443,6 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                 </div>
               )}
 
-              {/* Sub-account (optional) */}
               {selectedExchange.optionalCredentials?.includes('subAccountLabel') && (
                 <div>
                   <label className="block text-xs text-white/40 mb-2 uppercase tracking-wider font-medium">
@@ -1056,7 +1458,6 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                 </div>
               )}
 
-              {/* Docs link */}
               {selectedExchange.docs && (
                 <a
                   href={selectedExchange.docs}
@@ -1069,7 +1470,6 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                 </a>
               )}
 
-              {/* Error */}
               {error && (
                 <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
@@ -1077,7 +1477,6 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                 </div>
               )}
 
-              {/* Actions */}
               <div className="flex items-center gap-3 pt-2">
                 <button
                   type="button"
@@ -1091,11 +1490,7 @@ function ConnectExchangeModal({ onClose }: { onClose: () => void }) {
                   disabled={linkMutation.isPending}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-background text-sm font-semibold hover:bg-primary-400 transition-all disabled:opacity-50"
                 >
-                  {linkMutation.isPending ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Link2 className="w-4 h-4" />
-                  )}
+                  {linkMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Link2 className="w-4 h-4" />}
                   Connect
                 </button>
               </div>
