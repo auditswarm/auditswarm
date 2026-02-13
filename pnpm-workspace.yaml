@@ -3,5 +3,6 @@ packages:
   - 'backend/apps/*'
   - 'backend/libs/*'
   - 'frontend/*'
+  - 'onchain'
   - 'onchain/sdk'
   - 'packages/*'
