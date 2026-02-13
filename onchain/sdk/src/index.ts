@@ -1,12 +1,35 @@
-import { PublicKey, Connection, TransactionInstruction } from '@solana/web3.js';
-import { Program, AnchorProvider, Idl, BN } from '@coral-xyz/anchor';
+import {
+  PublicKey,
+  Connection,
+  TransactionInstruction,
+  SystemProgram,
+  Keypair,
+  Transaction,
+  sendAndConfirmTransaction,
+} from '@solana/web3.js';
+// @coral-xyz/anchor available as peer dep but not directly used for instruction building
+// due to IDL format incompatibility with anchor 0.29 (program uses 0.30+ IDL spec)
 
-// Program ID - update after deployment
-export const PROGRAM_ID = new PublicKey('Attest1111111111111111111111111111111111111');
+// Program ID
+export const PROGRAM_ID = new PublicKey('52LCg2VXDYgam4yHkXEp2vN2psUmo6Q7rv5efRm7ic8c');
 
 // Seeds
 export const STATE_SEED = Buffer.from('state');
 export const ATTESTATION_SEED = Buffer.from('attestation');
+
+// Instruction discriminators (from IDL)
+const DISCRIMINATORS = {
+  initialize: Buffer.from([175, 175, 109, 31, 13, 152, 155, 237]),
+  createAttestation: Buffer.from([49, 24, 67, 80, 12, 249, 96, 239]),
+  updateStatus: Buffer.from([147, 215, 74, 174, 55, 191, 42, 0]),
+  revokeAttestation: Buffer.from([12, 156, 103, 161, 194, 246, 211, 179]),
+};
+
+// Account discriminators (from IDL)
+const ACCOUNT_DISCRIMINATORS = {
+  attestation: Buffer.from([152, 125, 183, 86, 36, 146, 121, 73]),
+  programState: Buffer.from([77, 209, 137, 229, 149, 67, 167, 230]),
+};
 
 // Enums
 export enum Jurisdiction {
@@ -40,7 +63,6 @@ export enum AttestationStatus {
 export interface AttestationData {
   bump: number;
   authority: PublicKey;
-  wallet: PublicKey;
   jurisdiction: Jurisdiction;
   attestationType: AttestationType;
   status: AttestationStatus;
@@ -49,12 +71,35 @@ export interface AttestationData {
   issuedAt: bigint;
   expiresAt: bigint;
   revokedAt: bigint;
+  numWallets: number;
+  wallets: PublicKey[];
 }
 
 export interface ProgramStateData {
   authority: PublicKey;
   attestationCount: bigint;
   bump: number;
+}
+
+export interface CreateAttestationParams {
+  authority: Keypair;
+  jurisdiction: Jurisdiction;
+  attestationType: AttestationType;
+  taxYear: number;
+  auditHash: Buffer;
+  expiresAt: number;
+  wallets: PublicKey[];
+}
+
+export interface UpdateStatusParams {
+  authority: Keypair;
+  auditHash: Buffer;
+  newStatus: AttestationStatus;
+}
+
+export interface RevokeAttestationParams {
+  authority: Keypair;
+  auditHash: Buffer;
 }
 
 /**
@@ -65,32 +110,131 @@ export function getStatePDA(programId: PublicKey = PROGRAM_ID): [PublicKey, numb
 }
 
 /**
- * Get the PDA for an attestation
+ * Get the PDA for an attestation by audit hash.
+ * Seeds: ["attestation", auditHash] where auditHash is 32 bytes.
  */
 export function getAttestationPDA(
-  wallet: PublicKey,
-  jurisdiction: Jurisdiction,
-  attestationType: AttestationType,
-  taxYear: number,
+  auditHash: Buffer,
   programId: PublicKey = PROGRAM_ID,
 ): [PublicKey, number] {
-  const taxYearBuffer = Buffer.alloc(2);
-  taxYearBuffer.writeUInt16LE(taxYear);
-
   return PublicKey.findProgramAddressSync(
-    [
-      ATTESTATION_SEED,
-      wallet.toBuffer(),
-      Buffer.from([jurisdiction]),
-      Buffer.from([attestationType]),
-      taxYearBuffer,
-    ],
+    [ATTESTATION_SEED, auditHash],
     programId,
   );
 }
 
+// -- Serialization helpers --
+
+function serializeEnum(value: number): Buffer {
+  // Anchor enums are serialized as a single byte index
+  return Buffer.from([value]);
+}
+
+function serializeU16LE(value: number): Buffer {
+  const buf = Buffer.alloc(2);
+  buf.writeUInt16LE(value);
+  return buf;
+}
+
+function serializeI64LE(value: number | bigint): Buffer {
+  const buf = Buffer.alloc(8);
+  buf.writeBigInt64LE(BigInt(value));
+  return buf;
+}
+
+function serializeVecPubkey(keys: PublicKey[]): Buffer {
+  // Vec<Pubkey>: 4-byte LE length prefix + concatenated 32-byte keys
+  const lenBuf = Buffer.alloc(4);
+  lenBuf.writeUInt32LE(keys.length);
+  return Buffer.concat([lenBuf, ...keys.map((k) => k.toBuffer())]);
+}
+
+// -- Account parsing helpers --
+
+function parseAttestationData(data: Buffer): AttestationData {
+  // Skip 8-byte account discriminator
+  let offset = 8;
+
+  const bump = data[offset];
+  offset += 1;
+
+  const authority = new PublicKey(data.slice(offset, offset + 32));
+  offset += 32;
+
+  const jurisdiction = data[offset] as Jurisdiction;
+  offset += 1;
+
+  const attestationType = data[offset] as AttestationType;
+  offset += 1;
+
+  const status = data[offset] as AttestationStatus;
+  offset += 1;
+
+  const taxYear = data.readUInt16LE(offset);
+  offset += 2;
+
+  const auditHash = new Uint8Array(data.slice(offset, offset + 32));
+  offset += 32;
+
+  const issuedAt = data.readBigInt64LE(offset);
+  offset += 8;
+
+  const expiresAt = data.readBigInt64LE(offset);
+  offset += 8;
+
+  const revokedAt = data.readBigInt64LE(offset);
+  offset += 8;
+
+  const numWallets = data[offset];
+  offset += 1;
+
+  // Vec<Pubkey>: 4-byte LE length + N * 32 bytes
+  const vecLen = data.readUInt32LE(offset);
+  offset += 4;
+
+  const wallets: PublicKey[] = [];
+  for (let i = 0; i < vecLen; i++) {
+    wallets.push(new PublicKey(data.slice(offset, offset + 32)));
+    offset += 32;
+  }
+
+  return {
+    bump,
+    authority,
+    jurisdiction,
+    attestationType,
+    status,
+    taxYear,
+    auditHash,
+    issuedAt,
+    expiresAt,
+    revokedAt,
+    numWallets,
+    wallets,
+  };
+}
+
+function parseProgramStateData(data: Buffer): ProgramStateData {
+  // Skip 8-byte account discriminator
+  let offset = 8;
+
+  const authority = new PublicKey(data.slice(offset, offset + 32));
+  offset += 32;
+
+  const attestationCount = data.readBigUInt64LE(offset);
+  offset += 8;
+
+  const bump = data[offset];
+
+  return { authority, attestationCount, bump };
+}
+
 /**
  * AuditSwarm Attestation SDK
+ *
+ * Provides read and write operations for the on-chain attestation program.
+ * Write operations build and send transactions using the provided keypair.
+ * Read operations only require a Connection.
  */
 export class AuditSwarmSolana {
   private connection: Connection;
@@ -101,8 +245,261 @@ export class AuditSwarmSolana {
     this.programId = programId;
   }
 
+  // ===================
+  // Write Operations
+  // ===================
+
   /**
-   * Get the program state
+   * Initialize the program state. Must be called once by the authority.
+   * Returns the transaction signature.
+   */
+  async initialize(authority: Keypair): Promise<string> {
+    const [statePDA] = getStatePDA(this.programId);
+
+    const ix = new TransactionInstruction({
+      programId: this.programId,
+      keys: [
+        { pubkey: statePDA, isSigner: false, isWritable: true },
+        { pubkey: authority.publicKey, isSigner: true, isWritable: true },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ],
+      data: DISCRIMINATORS.initialize,
+    });
+
+    const tx = new Transaction().add(ix);
+    return sendAndConfirmTransaction(this.connection, tx, [authority]);
+  }
+
+  /**
+   * Create a new attestation covering multiple wallets.
+   * Returns the transaction signature.
+   */
+  async createAttestation(params: CreateAttestationParams): Promise<string> {
+    const { authority, jurisdiction, attestationType, taxYear, auditHash, expiresAt, wallets } = params;
+
+    if (auditHash.length !== 32) {
+      throw new Error('auditHash must be exactly 32 bytes');
+    }
+    if (wallets.length < 1 || wallets.length > 10) {
+      throw new Error('wallets must contain 1-10 entries');
+    }
+
+    const [statePDA] = getStatePDA(this.programId);
+    const [attestationPDA] = getAttestationPDA(auditHash, this.programId);
+
+    // Serialize instruction data:
+    // discriminator(8) + jurisdiction(1) + attestation_type(1) + tax_year(2) + audit_hash(32) + expires_at(8) + wallets(4 + N*32)
+    const instructionData = Buffer.concat([
+      DISCRIMINATORS.createAttestation,
+      serializeEnum(jurisdiction),
+      serializeEnum(attestationType),
+      serializeU16LE(taxYear),
+      auditHash,
+      serializeI64LE(expiresAt),
+      serializeVecPubkey(wallets),
+    ]);
+
+    const ix = new TransactionInstruction({
+      programId: this.programId,
+      keys: [
+        { pubkey: statePDA, isSigner: false, isWritable: true },
+        { pubkey: attestationPDA, isSigner: false, isWritable: true },
+        { pubkey: authority.publicKey, isSigner: true, isWritable: true },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ],
+      data: instructionData,
+    });
+
+    const tx = new Transaction().add(ix);
+    return sendAndConfirmTransaction(this.connection, tx, [authority]);
+  }
+
+  /**
+   * Update the status of an existing attestation.
+   * Returns the transaction signature.
+   */
+  async updateStatus(params: UpdateStatusParams): Promise<string> {
+    const { authority, auditHash, newStatus } = params;
+
+    if (auditHash.length !== 32) {
+      throw new Error('auditHash must be exactly 32 bytes');
+    }
+
+    const [statePDA] = getStatePDA(this.programId);
+    const [attestationPDA] = getAttestationPDA(auditHash, this.programId);
+
+    const instructionData = Buffer.concat([
+      DISCRIMINATORS.updateStatus,
+      serializeEnum(newStatus),
+    ]);
+
+    const ix = new TransactionInstruction({
+      programId: this.programId,
+      keys: [
+        { pubkey: statePDA, isSigner: false, isWritable: false },
+        { pubkey: attestationPDA, isSigner: false, isWritable: true },
+        { pubkey: authority.publicKey, isSigner: true, isWritable: false },
+      ],
+      data: instructionData,
+    });
+
+    const tx = new Transaction().add(ix);
+    return sendAndConfirmTransaction(this.connection, tx, [authority]);
+  }
+
+  /**
+   * Revoke an attestation.
+   * Returns the transaction signature.
+   */
+  async revokeAttestation(params: RevokeAttestationParams): Promise<string> {
+    const { authority, auditHash } = params;
+
+    if (auditHash.length !== 32) {
+      throw new Error('auditHash must be exactly 32 bytes');
+    }
+
+    const [statePDA] = getStatePDA(this.programId);
+    const [attestationPDA] = getAttestationPDA(auditHash, this.programId);
+
+    const ix = new TransactionInstruction({
+      programId: this.programId,
+      keys: [
+        { pubkey: statePDA, isSigner: false, isWritable: false },
+        { pubkey: attestationPDA, isSigner: false, isWritable: true },
+        { pubkey: authority.publicKey, isSigner: true, isWritable: false },
+      ],
+      data: DISCRIMINATORS.revokeAttestation,
+    });
+
+    const tx = new Transaction().add(ix);
+    return sendAndConfirmTransaction(this.connection, tx, [authority]);
+  }
+
+  // ==========================
+  // Instruction Builders
+  // ==========================
+
+  /**
+   * Build an initialize instruction without sending.
+   * Useful for composing with other instructions in a single transaction.
+   */
+  buildInitializeInstruction(authority: PublicKey): TransactionInstruction {
+    const [statePDA] = getStatePDA(this.programId);
+
+    return new TransactionInstruction({
+      programId: this.programId,
+      keys: [
+        { pubkey: statePDA, isSigner: false, isWritable: true },
+        { pubkey: authority, isSigner: true, isWritable: true },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ],
+      data: DISCRIMINATORS.initialize,
+    });
+  }
+
+  /**
+   * Build a createAttestation instruction without sending.
+   */
+  buildCreateAttestationInstruction(
+    authority: PublicKey,
+    params: Omit<CreateAttestationParams, 'authority'> & { authority?: never },
+  ): TransactionInstruction {
+    const { jurisdiction, attestationType, taxYear, auditHash, expiresAt, wallets } = params;
+
+    if (auditHash.length !== 32) {
+      throw new Error('auditHash must be exactly 32 bytes');
+    }
+    if (wallets.length < 1 || wallets.length > 10) {
+      throw new Error('wallets must contain 1-10 entries');
+    }
+
+    const [statePDA] = getStatePDA(this.programId);
+    const [attestationPDA] = getAttestationPDA(auditHash, this.programId);
+
+    const instructionData = Buffer.concat([
+      DISCRIMINATORS.createAttestation,
+      serializeEnum(jurisdiction),
+      serializeEnum(attestationType),
+      serializeU16LE(taxYear),
+      auditHash,
+      serializeI64LE(expiresAt),
+      serializeVecPubkey(wallets),
+    ]);
+
+    return new TransactionInstruction({
+      programId: this.programId,
+      keys: [
+        { pubkey: statePDA, isSigner: false, isWritable: true },
+        { pubkey: attestationPDA, isSigner: false, isWritable: true },
+        { pubkey: authority, isSigner: true, isWritable: true },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ],
+      data: instructionData,
+    });
+  }
+
+  /**
+   * Build an updateStatus instruction without sending.
+   */
+  buildUpdateStatusInstruction(
+    authority: PublicKey,
+    auditHash: Buffer,
+    newStatus: AttestationStatus,
+  ): TransactionInstruction {
+    if (auditHash.length !== 32) {
+      throw new Error('auditHash must be exactly 32 bytes');
+    }
+
+    const [statePDA] = getStatePDA(this.programId);
+    const [attestationPDA] = getAttestationPDA(auditHash, this.programId);
+
+    const instructionData = Buffer.concat([
+      DISCRIMINATORS.updateStatus,
+      serializeEnum(newStatus),
+    ]);
+
+    return new TransactionInstruction({
+      programId: this.programId,
+      keys: [
+        { pubkey: statePDA, isSigner: false, isWritable: false },
+        { pubkey: attestationPDA, isSigner: false, isWritable: true },
+        { pubkey: authority, isSigner: true, isWritable: false },
+      ],
+      data: instructionData,
+    });
+  }
+
+  /**
+   * Build a revokeAttestation instruction without sending.
+   */
+  buildRevokeAttestationInstruction(
+    authority: PublicKey,
+    auditHash: Buffer,
+  ): TransactionInstruction {
+    if (auditHash.length !== 32) {
+      throw new Error('auditHash must be exactly 32 bytes');
+    }
+
+    const [statePDA] = getStatePDA(this.programId);
+    const [attestationPDA] = getAttestationPDA(auditHash, this.programId);
+
+    return new TransactionInstruction({
+      programId: this.programId,
+      keys: [
+        { pubkey: statePDA, isSigner: false, isWritable: false },
+        { pubkey: attestationPDA, isSigner: false, isWritable: true },
+        { pubkey: authority, isSigner: true, isWritable: false },
+      ],
+      data: DISCRIMINATORS.revokeAttestation,
+    });
+  }
+
+  // ===================
+  // Read Operations
+  // ===================
+
+  /**
+   * Get the program state.
    */
   async getState(): Promise<ProgramStateData | null> {
     const [statePDA] = getStatePDA(this.programId);
@@ -110,79 +507,49 @@ export class AuditSwarmSolana {
     try {
       const accountInfo = await this.connection.getAccountInfo(statePDA);
       if (!accountInfo) return null;
-
-      // Parse account data (skip 8-byte discriminator)
-      const data = accountInfo.data.slice(8);
-      return {
-        authority: new PublicKey(data.slice(0, 32)),
-        attestationCount: data.readBigUInt64LE(32),
-        bump: data[40],
-      };
+      return parseProgramStateData(accountInfo.data as Buffer);
     } catch {
       return null;
     }
   }
 
   /**
-   * Get an attestation by its PDA
+   * Get an attestation by its audit hash (derives PDA from hash).
    */
-  async getAttestation(
-    wallet: PublicKey,
-    jurisdiction: Jurisdiction,
-    attestationType: AttestationType,
-    taxYear: number,
-  ): Promise<AttestationData | null> {
-    const [attestationPDA] = getAttestationPDA(
-      wallet,
-      jurisdiction,
-      attestationType,
-      taxYear,
-      this.programId,
-    );
+  async getAttestation(auditHash: Buffer): Promise<AttestationData | null> {
+    if (auditHash.length !== 32) {
+      throw new Error('auditHash must be exactly 32 bytes');
+    }
 
+    const [attestationPDA] = getAttestationPDA(auditHash, this.programId);
     return this.getAttestationByAddress(attestationPDA);
   }
 
   /**
-   * Get an attestation by address
+   * Get an attestation by its on-chain account address.
    */
   async getAttestationByAddress(address: PublicKey): Promise<AttestationData | null> {
     try {
       const accountInfo = await this.connection.getAccountInfo(address);
       if (!accountInfo) return null;
-
-      // Parse account data (skip 8-byte discriminator)
-      const data = accountInfo.data.slice(8);
-
-      return {
-        bump: data[0],
-        authority: new PublicKey(data.slice(1, 33)),
-        wallet: new PublicKey(data.slice(33, 65)),
-        jurisdiction: data[65] as Jurisdiction,
-        attestationType: data[66] as AttestationType,
-        status: data[67] as AttestationStatus,
-        taxYear: data.readUInt16LE(68),
-        auditHash: new Uint8Array(data.slice(70, 102)),
-        issuedAt: data.readBigInt64LE(102),
-        expiresAt: data.readBigInt64LE(110),
-        revokedAt: data.readBigInt64LE(118),
-      };
+      return parseAttestationData(accountInfo.data as Buffer);
     } catch {
       return null;
     }
   }
 
   /**
-   * Get all attestations for a wallet
+   * Get all attestations that include the given wallet.
+   * Fetches all program attestation accounts and filters client-side.
    */
   async getWalletAttestations(wallet: PublicKey): Promise<AttestationData[]> {
-    // Get all program accounts that match the attestation discriminator
     const accounts = await this.connection.getProgramAccounts(this.programId, {
       filters: [
         {
           memcmp: {
-            offset: 33, // Skip discriminator (8) + bump (1) + authority (32)
-            bytes: wallet.toBase58(),
+            offset: 0,
+            bytes: Buffer.from(ACCOUNT_DISCRIMINATORS.attestation).toString('base64'),
+            encoding: 'base64' as any,
           },
         },
       ],
@@ -190,10 +557,16 @@ export class AuditSwarmSolana {
 
     const attestations: AttestationData[] = [];
 
-    for (const { pubkey, account } of accounts) {
-      const attestation = await this.getAttestationByAddress(pubkey);
-      if (attestation) {
-        attestations.push(attestation);
+    for (const { account } of accounts) {
+      try {
+        const attestation = parseAttestationData(account.data as Buffer);
+        // Check if any wallet in the attestation matches the queried wallet
+        const hasWallet = attestation.wallets.some((w) => w.equals(wallet));
+        if (hasWallet) {
+          attestations.push(attestation);
+        }
+      } catch {
+        // Skip malformed accounts
       }
     }
 
@@ -201,7 +574,9 @@ export class AuditSwarmSolana {
   }
 
   /**
-   * Check if a wallet is compliant for a jurisdiction
+   * Check if a wallet is compliant for a given jurisdiction and optional tax year.
+   * Searches all attestations that include the wallet and checks for an active,
+   * non-expired TaxCompliance attestation.
    */
   async isCompliant(
     wallet: PublicKey,
@@ -213,66 +588,58 @@ export class AuditSwarmSolana {
     reason?: string;
   }> {
     const year = taxYear || new Date().getFullYear();
+    const attestations = await this.getWalletAttestations(wallet);
 
-    // Check for TaxCompliance attestation
-    const attestation = await this.getAttestation(
-      wallet,
-      jurisdiction,
-      AttestationType.TaxCompliance,
-      year,
+    // Find matching TaxCompliance attestation for the jurisdiction and year
+    const matching = attestations.find(
+      (a) =>
+        a.jurisdiction === jurisdiction &&
+        a.attestationType === AttestationType.TaxCompliance &&
+        a.taxYear === year,
     );
 
-    if (!attestation) {
+    if (!matching) {
       return {
         compliant: false,
         reason: 'No attestation found',
       };
     }
 
-    if (attestation.status !== AttestationStatus.Active) {
+    if (matching.status !== AttestationStatus.Active) {
       return {
         compliant: false,
-        attestation,
-        reason: `Attestation status is ${AttestationStatus[attestation.status]}`,
+        attestation: matching,
+        reason: `Attestation status is ${AttestationStatus[matching.status]}`,
       };
     }
 
     const now = BigInt(Math.floor(Date.now() / 1000));
-    if (attestation.expiresAt < now) {
+    if (matching.expiresAt < now) {
       return {
         compliant: false,
-        attestation,
+        attestation: matching,
         reason: 'Attestation has expired',
       };
     }
 
     return {
       compliant: true,
-      attestation,
+      attestation: matching,
     };
   }
 
   /**
-   * Verify an attestation hash
+   * Verify that an attestation's on-chain hash matches the expected hash.
    */
   async verifyAttestation(
-    wallet: PublicKey,
-    jurisdiction: Jurisdiction,
-    attestationType: AttestationType,
-    taxYear: number,
+    auditHash: Buffer,
     expectedHash: Uint8Array,
   ): Promise<boolean> {
-    const attestation = await this.getAttestation(
-      wallet,
-      jurisdiction,
-      attestationType,
-      taxYear,
-    );
+    const attestation = await this.getAttestation(auditHash);
 
     if (!attestation) return false;
     if (attestation.status !== AttestationStatus.Active) return false;
 
-    // Compare hashes
     if (attestation.auditHash.length !== expectedHash.length) return false;
 
     for (let i = 0; i < attestation.auditHash.length; i++) {
