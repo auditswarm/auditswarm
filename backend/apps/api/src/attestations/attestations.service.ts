@@ -2,13 +2,17 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { AttestationRepository, AuditRepository, WalletRepository } from '@auditswarm/database';
-import { QUEUES, JOB_NAMES, AttestationJobData } from '@auditswarm/queue';
+import {
+  QUEUES,
+  JOB_NAMES,
+  AttestationJobData,
+  RevokeAttestationJobData,
+} from '@auditswarm/queue';
 import { generateAuditHash, JurisdictionCode } from '@auditswarm/common';
 import type { Attestation } from '@prisma/client';
 
 export interface CreateAttestationDto {
   auditId: string;
-  walletId: string;
   type: string;
   expiresInDays?: number;
 }
@@ -33,17 +37,20 @@ export class AttestationsService {
       throw new BadRequestException('Audit must be completed before creating attestation');
     }
 
-    // Verify wallet ownership
-    const wallet = await this.walletRepository.findById(dto.walletId);
-    if (!wallet || wallet.userId !== userId) {
-      throw new NotFoundException('Wallet not found');
+    // Get all wallet addresses from the audit
+    const auditWallets = (audit as any).wallets as Array<{ walletId: string; wallet: { id: string; address: string } }>;
+    if (!auditWallets || auditWallets.length === 0) {
+      throw new BadRequestException('Audit has no associated wallets');
     }
 
-    // Generate hash
+    const walletAddresses = auditWallets.map((aw) => aw.wallet.address);
+    const primaryWalletId = auditWallets[0].walletId;
+
+    // Generate hash using all wallet addresses
     const result = await this.auditRepository.findResultById(audit.resultId!);
     const hash = generateAuditHash(
       audit.id,
-      wallet.address,
+      walletAddresses.join(','),
       audit.taxYear,
       audit.jurisdiction,
       result ? { netGainLoss: result.netGainLoss, totalIncome: result.totalIncome } : {},
@@ -53,9 +60,9 @@ export class AttestationsService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + (dto.expiresInDays || 365));
 
-    // Create attestation record
+    // Create attestation record (linked to primary wallet for DB FK)
     const attestation = await this.attestationRepository.create({
-      wallet: { connect: { id: dto.walletId } },
+      wallet: { connect: { id: primaryWalletId } },
       audit: { connect: { id: dto.auditId } },
       jurisdiction: audit.jurisdiction,
       type: dto.type,
@@ -65,11 +72,11 @@ export class AttestationsService {
       expiresAt,
     });
 
-    // Queue on-chain creation
+    // Queue on-chain creation with all wallet addresses
     const jobData: AttestationJobData = {
       attestationId: attestation.id,
       auditId: dto.auditId,
-      walletAddress: wallet.address,
+      walletAddresses,
       jurisdiction: audit.jurisdiction as JurisdictionCode,
       type: dto.type,
       taxYear: audit.taxYear,
@@ -154,6 +161,23 @@ export class AttestationsService {
       throw new BadRequestException('Attestation is already revoked');
     }
 
-    return this.attestationRepository.revoke(id, reason);
+    const revoked = await this.attestationRepository.revoke(id, reason);
+
+    // Queue on-chain revocation if the attestation was created on-chain
+    if (attestation.onChainAccount && attestation.hash) {
+      const jobData: RevokeAttestationJobData = {
+        attestationId: id,
+        hash: attestation.hash,
+        reason,
+      };
+
+      await this.attestationQueue.add(
+        JOB_NAMES.REVOKE_ATTESTATION,
+        jobData,
+        { jobId: `revoke-${id}` },
+      );
+    }
+
+    return revoked;
   }
 }

@@ -22,6 +22,7 @@ export const JOB_NAMES = {
   // Attestation jobs
   CREATE_ATTESTATION: 'create-attestation',
   VERIFY_ATTESTATION: 'verify-attestation',
+  REVOKE_ATTESTATION: 'revoke-attestation',
 
   // Indexer jobs
   INDEX_WALLET: 'index-wallet',

@@ -36,34 +36,34 @@ export class AttestationsController {
   })
   @ApiOperation({ summary: 'Create an on-chain attestation' })
   @ApiCreatedResponse({
-    description: 'Attestation created and submitted to Solana',
+    description: 'Attestation created and submitted to Solana (covers all audit wallets)',
     schema: {
       type: 'object',
       properties: {
         id: { type: 'string', format: 'uuid' },
         auditId: { type: 'string', format: 'uuid' },
-        walletAddress: { type: 'string', description: 'Solana wallet address' },
+        walletId: { type: 'string', format: 'uuid', description: 'Primary wallet ID' },
         jurisdiction: { type: 'string', example: 'US' },
         taxYear: { type: 'integer', example: 2025 },
-        attestationType: {
+        type: {
           type: 'string',
-          enum: ['TAX_COMPLIANCE', 'AUDIT_COMPLETE', 'INCOME_VERIFIED'],
+          enum: ['TAX_COMPLIANCE', 'AUDIT_COMPLETE', 'REPORTING_COMPLETE', 'QUARTERLY_REVIEW', 'ANNUAL_REVIEW'],
         },
         status: {
           type: 'string',
-          enum: ['PENDING', 'CONFIRMED', 'FAILED', 'REVOKED'],
+          enum: ['PENDING', 'ACTIVE', 'EXPIRED', 'REVOKED'],
         },
-        transactionSignature: {
+        onChainSignature: {
           type: 'string',
           nullable: true,
           description: 'Solana transaction signature',
         },
-        pdaAddress: {
+        onChainAccount: {
           type: 'string',
           nullable: true,
           description: 'On-chain PDA address',
         },
-        dataHash: { type: 'string', description: 'SHA-256 hash of attested data' },
+        hash: { type: 'string', description: 'SHA-256 hash of attested data' },
         createdAt: { type: 'string', format: 'date-time' },
       },
     },

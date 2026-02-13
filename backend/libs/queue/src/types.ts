@@ -29,12 +29,18 @@ export interface ReportJobData {
 export interface AttestationJobData {
   attestationId: string;
   auditId: string;
-  walletAddress: string;
+  walletAddresses: string[];
   jurisdiction: JurisdictionCode;
   type: string;
   taxYear: number;
   hash: string;
   expiresAt: Date;
+}
+
+export interface RevokeAttestationJobData {
+  attestationId: string;
+  hash: string;
+  reason: string;
 }
 
 export interface IndexerJobData {
