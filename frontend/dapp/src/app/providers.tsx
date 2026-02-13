@@ -14,6 +14,7 @@ import {
 import { clusterApiUrl } from '@solana/web3.js';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { PaymentProvider } from '@/contexts/PaymentContext';
 
 import '@solana/wallet-adapter-react-ui/styles.css';
 
@@ -36,7 +37,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            <AuthProvider>{children}</AuthProvider>
+            <PaymentProvider>
+              <AuthProvider>{children}</AuthProvider>
+            </PaymentProvider>
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>

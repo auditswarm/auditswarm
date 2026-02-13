@@ -1,3 +1,5 @@
+import { isPaymentRequired, getPaymentHandler, buildPaymentHeader } from './x402';
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/v1';
 
 function getAuthHeaders(): HeadersInit {
@@ -6,14 +8,35 @@ function getAuthHeaders(): HeadersInit {
 }
 
 async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
-      ...options.headers,
-    },
-  });
+  const headers = {
+    'Content-Type': 'application/json',
+    ...getAuthHeaders(),
+    ...options.headers,
+  };
+
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+
+  if (res.status === 402) {
+    const body = await res.json().catch(() => ({}));
+    if (isPaymentRequired(body)) {
+      const handler = getPaymentHandler();
+      if (!handler) {
+        throw new Error('Payment required but no wallet connected');
+      }
+      const signature = await handler(body.instructions);
+      const paymentHeader = buildPaymentHeader(body.instructions, signature);
+      const retry = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers: { ...headers, Payment: paymentHeader },
+      });
+      if (!retry.ok) {
+        const retryBody = await retry.json().catch(() => ({}));
+        throw new Error(retryBody.message || `API error: ${retry.status}`);
+      }
+      return retry.json();
+    }
+    throw new Error(body.message || 'Payment required');
+  }
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
