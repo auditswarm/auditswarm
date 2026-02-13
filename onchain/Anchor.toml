@@ -3,13 +3,13 @@ seeds = true
 skip-lint = false
 
 [programs.localnet]
-attestation = "Attest1111111111111111111111111111111111111"
+attestation = "52LCg2VXDYgam4yHkXEp2vN2psUmo6Q7rv5efRm7ic8c"
 
 [programs.devnet]
-attestation = "Attest1111111111111111111111111111111111111"
+attestation = "52LCg2VXDYgam4yHkXEp2vN2psUmo6Q7rv5efRm7ic8c"
 
 [programs.mainnet]
-attestation = "Attest1111111111111111111111111111111111111"
+attestation = "52LCg2VXDYgam4yHkXEp2vN2psUmo6Q7rv5efRm7ic8c"
 
 [registry]
 url = "https://api.apr.dev"
@@ -22,9 +22,6 @@ wallet = "~/.config/solana/id.json"
 test = "pnpm run test"
 
 [test]
-startup_wait = 5000
+startup_wait = 10000
 shutdown_wait = 2000
 upgradeable = false
-
-[test.validator]
-url = "https://api.devnet.solana.com"

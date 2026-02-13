@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Attest1111111111111111111111111111111111111");
+declare_id!("52LCg2VXDYgam4yHkXEp2vN2psUmo6Q7rv5efRm7ic8c");
 
 #[program]
 pub mod attestation {
@@ -20,7 +20,7 @@ pub mod attestation {
         Ok(())
     }
 
-    /// Create a new attestation
+    /// Create a new attestation covering multiple wallets
     pub fn create_attestation(
         ctx: Context<CreateAttestation>,
         jurisdiction: Jurisdiction,
@@ -28,14 +28,22 @@ pub mod attestation {
         tax_year: u16,
         audit_hash: [u8; 32],
         expires_at: i64,
+        wallets: Vec<Pubkey>,
     ) -> Result<()> {
-        let attestation = &mut ctx.accounts.attestation;
-        let state = &mut ctx.accounts.state;
+        require!(
+            !wallets.is_empty() && wallets.len() <= MAX_WALLETS,
+            AttestationError::InvalidWalletCount
+        );
+
+        let attestation_key = ctx.accounts.attestation.key();
+        let authority_key = ctx.accounts.authority.key();
         let clock = Clock::get()?;
 
+        let attestation = &mut ctx.accounts.attestation;
+        let state = &mut ctx.accounts.state;
+
         attestation.bump = ctx.bumps.attestation;
-        attestation.authority = ctx.accounts.authority.key();
-        attestation.wallet = ctx.accounts.wallet.key();
+        attestation.authority = authority_key;
         attestation.jurisdiction = jurisdiction;
         attestation.attestation_type = attestation_type;
         attestation.status = AttestationStatus::Active;
@@ -44,12 +52,14 @@ pub mod attestation {
         attestation.issued_at = clock.unix_timestamp;
         attestation.expires_at = expires_at;
         attestation.revoked_at = 0;
+        attestation.num_wallets = wallets.len() as u8;
+        attestation.wallets = wallets.clone();
 
         state.attestation_count += 1;
 
         emit!(AttestationCreated {
-            attestation: ctx.accounts.attestation.key(),
-            wallet: attestation.wallet,
+            attestation: attestation_key,
+            wallets,
             jurisdiction,
             attestation_type,
             tax_year,
@@ -66,10 +76,10 @@ pub mod attestation {
         ctx: Context<UpdateAttestation>,
         new_status: AttestationStatus,
     ) -> Result<()> {
+        let attestation_key = ctx.accounts.attestation.key();
         let attestation = &mut ctx.accounts.attestation;
         let old_status = attestation.status;
 
-        // Validate status transition
         require!(
             is_valid_status_transition(old_status, new_status),
             AttestationError::InvalidStatusTransition
@@ -83,7 +93,7 @@ pub mod attestation {
         }
 
         emit!(StatusUpdated {
-            attestation: ctx.accounts.attestation.key(),
+            attestation: attestation_key,
             old_status,
             new_status,
         });
@@ -93,6 +103,7 @@ pub mod attestation {
 
     /// Revoke an attestation
     pub fn revoke_attestation(ctx: Context<UpdateAttestation>) -> Result<()> {
+        let attestation_key = ctx.accounts.attestation.key();
         let attestation = &mut ctx.accounts.attestation;
         let clock = Clock::get()?;
 
@@ -105,8 +116,8 @@ pub mod attestation {
         attestation.revoked_at = clock.unix_timestamp;
 
         emit!(AttestationRevoked {
-            attestation: ctx.accounts.attestation.key(),
-            wallet: attestation.wallet,
+            attestation: attestation_key,
+            wallets: attestation.wallets.clone(),
             revoked_at: attestation.revoked_at,
         });
 
@@ -114,14 +125,17 @@ pub mod attestation {
     }
 }
 
+/// Max wallets per attestation (10 wallets * 32 bytes = 320 bytes)
+pub const MAX_WALLETS: usize = 10;
+
 fn is_valid_status_transition(from: AttestationStatus, to: AttestationStatus) -> bool {
-    match (from, to) {
-        (AttestationStatus::Pending, AttestationStatus::Active) => true,
-        (AttestationStatus::Active, AttestationStatus::Expired) => true,
-        (AttestationStatus::Active, AttestationStatus::Revoked) => true,
-        (AttestationStatus::Pending, AttestationStatus::Revoked) => true,
-        _ => false,
-    }
+    matches!(
+        (from, to),
+        (AttestationStatus::Pending, AttestationStatus::Active)
+            | (AttestationStatus::Active, AttestationStatus::Expired)
+            | (AttestationStatus::Active, AttestationStatus::Revoked)
+            | (AttestationStatus::Pending, AttestationStatus::Revoked)
+    )
 }
 
 // ============================================
@@ -146,7 +160,12 @@ pub struct Initialize<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(jurisdiction: Jurisdiction, attestation_type: AttestationType, tax_year: u16)]
+#[instruction(
+    jurisdiction: Jurisdiction,
+    attestation_type: AttestationType,
+    tax_year: u16,
+    audit_hash: [u8; 32],
+)]
 pub struct CreateAttestation<'info> {
     #[account(
         mut,
@@ -161,17 +180,11 @@ pub struct CreateAttestation<'info> {
         space = 8 + Attestation::INIT_SPACE,
         seeds = [
             b"attestation",
-            wallet.key().as_ref(),
-            &[jurisdiction as u8],
-            &[attestation_type as u8],
-            &tax_year.to_le_bytes()
+            audit_hash.as_ref(),
         ],
         bump
     )]
     pub attestation: Account<'info, Attestation>,
-
-    /// CHECK: The wallet being attested
-    pub wallet: UncheckedAccount<'info>,
 
     #[account(
         mut,
@@ -194,10 +207,7 @@ pub struct UpdateAttestation<'info> {
         mut,
         seeds = [
             b"attestation",
-            attestation.wallet.as_ref(),
-            &[attestation.jurisdiction as u8],
-            &[attestation.attestation_type as u8],
-            &attestation.tax_year.to_le_bytes()
+            attestation.audit_hash.as_ref(),
         ],
         bump = attestation.bump
     )]
@@ -226,7 +236,6 @@ pub struct ProgramState {
 pub struct Attestation {
     pub bump: u8,
     pub authority: Pubkey,
-    pub wallet: Pubkey,
     pub jurisdiction: Jurisdiction,
     pub attestation_type: AttestationType,
     pub status: AttestationStatus,
@@ -235,6 +244,9 @@ pub struct Attestation {
     pub issued_at: i64,
     pub expires_at: i64,
     pub revoked_at: i64,
+    pub num_wallets: u8,
+    #[max_len(10)]
+    pub wallets: Vec<Pubkey>,
 }
 
 // ============================================
@@ -283,7 +295,7 @@ pub struct ProgramInitialized {
 #[event]
 pub struct AttestationCreated {
     pub attestation: Pubkey,
-    pub wallet: Pubkey,
+    pub wallets: Vec<Pubkey>,
     pub jurisdiction: Jurisdiction,
     pub attestation_type: AttestationType,
     pub tax_year: u16,
@@ -302,7 +314,7 @@ pub struct StatusUpdated {
 #[event]
 pub struct AttestationRevoked {
     pub attestation: Pubkey,
-    pub wallet: Pubkey,
+    pub wallets: Vec<Pubkey>,
     pub revoked_at: i64,
 }
 
@@ -329,4 +341,7 @@ pub enum AttestationError {
 
     #[msg("Invalid attestation type")]
     InvalidAttestationType,
+
+    #[msg("Invalid wallet count: must be 1-10 wallets")]
+    InvalidWalletCount,
 }
