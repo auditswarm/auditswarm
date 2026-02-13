@@ -31,7 +31,8 @@ export class AttestationsController {
   @ApiBearerAuth()
   @PaymentRequired({
     resource: 'attestation',
-    amount: '0.25',
+    amount: '0.0025',
+    currency: 'SOL',
     description: 'On-chain attestation creation',
   })
   @ApiOperation({ summary: 'Create an on-chain attestation' })

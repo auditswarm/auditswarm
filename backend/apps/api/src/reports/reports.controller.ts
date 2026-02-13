@@ -28,13 +28,13 @@ export class ReportsController {
   constructor(private reportsService: ReportsService) {}
 
   @Post()
-  // TODO: Re-enable x402 payment before production/commit
-  // @UseGuards(X402Guard)
-  // @PaymentRequired({
-  //   resource: 'report',
-  //   amount: '0.02',
-  //   description: 'Report generation',
-  // })
+  @UseGuards(X402Guard)
+  @PaymentRequired({
+    resource: 'report',
+    amount: '0.0002',
+    currency: 'SOL',
+    description: 'Report generation',
+  })
   @ApiOperation({ summary: 'Generate a report' })
   @ApiCreatedResponse({
     description: 'Report generation job dispatched',

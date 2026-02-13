@@ -22,13 +22,13 @@ export class ComplianceController {
   constructor(private complianceService: ComplianceService) {}
 
   @Post('check')
-  // TODO: Re-enable x402 payment before production/commit
-  // @UseGuards(X402Guard)
-  // @PaymentRequired({
-  //   resource: 'compliance',
-  //   amount: '0.05',
-  //   description: 'Quick compliance check',
-  // })
+  @UseGuards(X402Guard)
+  @PaymentRequired({
+    resource: 'compliance',
+    amount: '0.0005',
+    currency: 'SOL',
+    description: 'Quick compliance check',
+  })
   @ApiOperation({ summary: 'Quick compliance check for a wallet' })
   @ApiCreatedResponse({
     description: 'Compliance check result',
