@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   FileSearch,
   Plus,
@@ -22,15 +22,25 @@ import {
   Receipt,
   Wallet,
   Shield,
+  ShieldCheck,
+  ShieldX,
+  ShieldAlert,
   Lightbulb,
+  ExternalLink,
+  Ban,
 } from 'lucide-react';
 import { Navbar } from '@/components/dashboard/Sidebar';
 import {
   listAudits,
   getAuditResult,
+  createAttestation,
+  getAttestation,
+  revokeAttestation,
+  getWalletAttestations,
   type Audit,
   type AuditStatus,
   type AuditResult,
+  type Attestation,
   type MonthlyBreakdown,
 } from '@/lib/api';
 
@@ -857,6 +867,9 @@ function AuditDetailModal({
               </AnimatePresence>
             </div>
 
+            {/* ── Attestation Section ── */}
+            <AttestationSection audit={audit} />
+
             {/* ── Footer ── */}
             <div className="px-6 py-3 border-t border-white/[0.04] flex items-center justify-between">
               <div className="flex items-center gap-3 text-[10px] text-white/20">
@@ -1000,6 +1013,325 @@ function MonthlyChart({ breakdown }: { breakdown: MonthlyBreakdown }) {
         <MiniStat label="Exempt Months" value={String(breakdown.exemptMonths)} color="text-emerald-400" />
         <MiniStat label="Taxable Months" value={String(breakdown.taxableMonths)} color="text-amber-400" />
       </div>
+    </div>
+  );
+}
+
+/* ─── Attestation Section ─────────────────────────────────────────── */
+
+const EXPLORER_BASE = 'https://explorer.solana.com';
+
+function AttestationSection({ audit }: { audit: Audit }) {
+  const queryClient = useQueryClient();
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [attestationId, setAttestationId] = useState<string | null>(null);
+  const [showRevokeConfirm, setShowRevokeConfirm] = useState(false);
+  const [revokeReason, setRevokeReason] = useState('');
+  const [revoking, setRevoking] = useState(false);
+
+  // Fetch attestation for this audit by checking wallet attestations
+  const { data: attestations } = useQuery({
+    queryKey: ['attestations', audit.walletId],
+    queryFn: () => getWalletAttestations(audit.walletId),
+    enabled: !!audit.walletId,
+  });
+
+  // Find attestation matching this audit
+  const existingAttestation = attestations?.find((a) => a.auditId === audit.id);
+
+  // Poll for status changes when PENDING
+  const activeId = attestationId || existingAttestation?.id;
+  const { data: polledAttestation } = useQuery({
+    queryKey: ['attestation', activeId],
+    queryFn: () => getAttestation(activeId!),
+    enabled: !!activeId,
+    refetchInterval: (query) => {
+      const data = query.state.data as Attestation | undefined;
+      return data?.status === 'PENDING' ? 5000 : false;
+    },
+  });
+
+  // Use the most up-to-date data
+  const attestation = polledAttestation || existingAttestation;
+
+  const handleCreate = useCallback(async () => {
+    setCreating(true);
+    setError(null);
+    try {
+      const result = await createAttestation(audit.id, 'TAX_COMPLIANCE');
+      setAttestationId(result.id);
+      queryClient.invalidateQueries({ queryKey: ['attestations', audit.walletId] });
+    } catch (err) {
+      setError((err as Error).message || 'Failed to create attestation');
+    } finally {
+      setCreating(false);
+    }
+  }, [audit.id, audit.walletId, queryClient]);
+
+  const handleRevoke = useCallback(async () => {
+    if (!attestation) return;
+    setRevoking(true);
+    try {
+      await revokeAttestation(attestation.id, revokeReason || 'Revoked by user');
+      setShowRevokeConfirm(false);
+      setRevokeReason('');
+      queryClient.invalidateQueries({ queryKey: ['attestation', attestation.id] });
+      queryClient.invalidateQueries({ queryKey: ['attestations', audit.walletId] });
+    } catch (err) {
+      setError((err as Error).message || 'Failed to revoke attestation');
+    } finally {
+      setRevoking(false);
+    }
+  }, [attestation, revokeReason, audit.walletId, queryClient]);
+
+  const status = attestation?.status;
+
+  return (
+    <div className="px-6 py-5 border-t border-white/[0.06]">
+      <div className="flex items-center gap-2 mb-4">
+        <Shield className="w-4 h-4 text-white/20" />
+        <h3 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider">
+          On-Chain Attestation
+        </h3>
+      </div>
+
+      {/* Error display */}
+      {error && (
+        <div className="mb-4 px-4 py-3 rounded-xl bg-red-500/[0.06] border border-red-500/15 flex items-start gap-3">
+          <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs text-red-400 font-medium">Attestation Error</p>
+            <p className="text-xs text-red-400/60 mt-0.5">{error}</p>
+          </div>
+          <button
+            onClick={() => setError(null)}
+            className="ml-auto text-red-400/40 hover:text-red-400 transition-colors"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* No attestation yet -- show create button */}
+      {!attestation && !creating && (
+        <button
+          onClick={handleCreate}
+          className="flex items-center gap-2.5 px-5 py-3 rounded-xl bg-primary/10 border border-primary/20 text-primary text-sm font-semibold hover:bg-primary/15 hover:border-primary/30 transition-all group"
+        >
+          <ShieldCheck className="w-4.5 h-4.5 group-hover:scale-110 transition-transform" />
+          Create On-Chain Attestation
+        </button>
+      )}
+
+      {/* Creating / Pending */}
+      {(creating || status === 'PENDING') && (
+        <div className="flex items-center gap-3.5 px-5 py-4 rounded-xl bg-amber-500/[0.04] border border-amber-500/15">
+          <div className="relative w-8 h-8 shrink-0">
+            <div className="absolute inset-0 rounded-full border-2 border-white/[0.06]" />
+            <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-amber-400 animate-spin" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-amber-400">Creating on-chain attestation...</p>
+            <p className="text-xs text-white/25 mt-0.5">
+              Submitting to Solana devnet. This may take a few seconds.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Active attestation */}
+      {(status === 'ACTIVE' || status === 'CONFIRMED') && attestation && (
+        <div className="rounded-xl bg-emerald-500/[0.04] border border-emerald-500/15 overflow-hidden">
+          <div className="px-5 py-4 flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-5 h-5 text-emerald-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-emerald-400">On-Chain Attestation Active</p>
+              <p className="text-xs text-white/25 mt-0.5">
+                Tax compliance verified and recorded on Solana
+              </p>
+
+              <div className="mt-3 space-y-2">
+                {/* On-chain account link */}
+                {attestation.onChainAccount && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-white/25 w-20 shrink-0">PDA Account</span>
+                    <a
+                      href={`${EXPLORER_BASE}/address/${attestation.onChainAccount}?cluster=devnet`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-xs font-mono text-primary/80 hover:text-primary transition-colors truncate"
+                    >
+                      {attestation.onChainAccount.slice(0, 8)}...{attestation.onChainAccount.slice(-8)}
+                      <ExternalLink className="w-3 h-3 shrink-0" />
+                    </a>
+                  </div>
+                )}
+
+                {/* Transaction signature link */}
+                {attestation.onChainSignature && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-white/25 w-20 shrink-0">Transaction</span>
+                    <a
+                      href={`${EXPLORER_BASE}/tx/${attestation.onChainSignature}?cluster=devnet`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-xs font-mono text-primary/80 hover:text-primary transition-colors truncate"
+                    >
+                      {attestation.onChainSignature.slice(0, 8)}...{attestation.onChainSignature.slice(-8)}
+                      <ExternalLink className="w-3 h-3 shrink-0" />
+                    </a>
+                  </div>
+                )}
+
+                {/* Expiration */}
+                {attestation.expiresAt && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-white/25 w-20 shrink-0">Expires</span>
+                    <span className="text-xs text-white/40 font-mono">
+                      {new Date(attestation.expiresAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                )}
+
+                {/* Hash */}
+                {attestation.hash && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-white/25 w-20 shrink-0">Data Hash</span>
+                    <span className="text-xs text-white/25 font-mono truncate">
+                      {attestation.hash.slice(0, 16)}...
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Revoke button */}
+          <div className="px-5 py-3 border-t border-emerald-500/10 flex items-center justify-end">
+            {!showRevokeConfirm ? (
+              <button
+                onClick={() => setShowRevokeConfirm(true)}
+                className="flex items-center gap-1.5 text-[11px] text-white/20 hover:text-red-400 transition-colors"
+              >
+                <Ban className="w-3 h-3" />
+                Revoke Attestation
+              </button>
+            ) : (
+              <div className="flex items-center gap-3 w-full">
+                <input
+                  type="text"
+                  value={revokeReason}
+                  onChange={(e) => setRevokeReason(e.target.value)}
+                  placeholder="Reason for revocation..."
+                  className="flex-1 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] text-xs text-white/60 placeholder:text-white/15 focus:outline-none focus:border-red-500/30"
+                />
+                <button
+                  onClick={handleRevoke}
+                  disabled={revoking}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400 font-medium hover:bg-red-500/15 transition-colors disabled:opacity-50"
+                >
+                  {revoking ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Ban className="w-3 h-3" />
+                  )}
+                  Confirm
+                </button>
+                <button
+                  onClick={() => {
+                    setShowRevokeConfirm(false);
+                    setRevokeReason('');
+                  }}
+                  className="text-xs text-white/20 hover:text-white/40 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Revoked */}
+      {status === 'REVOKED' && attestation && (
+        <div className="flex items-start gap-3.5 px-5 py-4 rounded-xl bg-red-500/[0.04] border border-red-500/15">
+          <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
+            <ShieldX className="w-5 h-5 text-red-400" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-red-400">Attestation Revoked</p>
+            <p className="text-xs text-white/25 mt-0.5">
+              {attestation.revokeReason || 'This attestation has been revoked.'}
+            </p>
+            {attestation.revokedAt && (
+              <p className="text-[10px] text-white/15 mt-1 font-mono">
+                Revoked {new Date(attestation.revokedAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Expired */}
+      {status === 'EXPIRED' && attestation && (
+        <div className="flex items-start gap-3.5 px-5 py-4 rounded-xl bg-amber-500/[0.04] border border-amber-500/15">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+            <ShieldAlert className="w-5 h-5 text-amber-400" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-amber-400">Attestation Expired</p>
+            <p className="text-xs text-white/25 mt-0.5">
+              This attestation expired on{' '}
+              {attestation.expiresAt
+                ? new Date(attestation.expiresAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : 'an unknown date'}
+              .
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Failed */}
+      {status === 'FAILED' && attestation && (
+        <div className="flex items-start gap-3.5 px-5 py-4 rounded-xl bg-red-500/[0.04] border border-red-500/15">
+          <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
+            <ShieldX className="w-5 h-5 text-red-400" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-red-400">Attestation Failed</p>
+            <p className="text-xs text-white/25 mt-0.5">
+              The on-chain attestation could not be created. You can try again.
+            </p>
+            <button
+              onClick={handleCreate}
+              disabled={creating}
+              className="mt-2 flex items-center gap-1.5 text-xs text-primary/80 hover:text-primary transition-colors"
+            >
+              {creating ? (
+                <Loader2 className="w-3 h-3 animate-spin" />
+              ) : (
+                <ShieldCheck className="w-3 h-3" />
+              )}
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

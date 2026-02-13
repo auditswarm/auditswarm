@@ -658,18 +658,56 @@ export async function getReportJobStatus(jobId: string): Promise<ReportJobStatus
 
 export interface Attestation {
   id: string;
-  walletAddress: string;
+  walletId: string;
+  auditId: string;
   jurisdiction: string;
+  type: string;
   taxYear: number;
-  attestationType: 'TAX_COMPLIANCE' | 'AUDIT_COMPLETE' | 'INCOME_VERIFIED';
-  status: 'PENDING' | 'CONFIRMED' | 'FAILED' | 'REVOKED';
-  transactionSignature: string | null;
-  pdaAddress: string | null;
+  status: 'PENDING' | 'ACTIVE' | 'EXPIRED' | 'REVOKED' | 'CONFIRMED' | 'FAILED';
+  hash: string | null;
+  onChainAccount: string | null;
+  onChainSignature: string | null;
+  onChainSlot: number | null;
+  onChainBlockTime: number | null;
+  expiresAt: string | null;
+  issuedAt: string | null;
+  revokedAt: string | null;
+  revokeReason: string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 export async function getWalletAttestations(walletId: string): Promise<Attestation[]> {
   return apiFetch(`/attestations/wallet/${walletId}`);
+}
+
+export async function createAttestation(
+  auditId: string,
+  type: string = 'TAX_COMPLIANCE',
+): Promise<Attestation> {
+  return apiFetch('/attestations', {
+    method: 'POST',
+    body: JSON.stringify({ auditId, type }),
+  });
+}
+
+export async function getAttestation(id: string): Promise<Attestation> {
+  return apiFetch(`/attestations/${id}`);
+}
+
+export async function verifyAttestation(
+  address: string,
+  jurisdiction: string,
+): Promise<{ valid: boolean; attestation?: Attestation; message: string }> {
+  const query = new URLSearchParams({ address, jurisdiction });
+  return apiFetch(`/attestations/verify?${query}`);
+}
+
+export async function revokeAttestation(id: string, reason: string): Promise<Attestation> {
+  return apiFetch(`/attestations/${id}`, {
+    method: 'DELETE',
+    body: JSON.stringify({ reason }),
+  });
 }
 
 // ─── Exchange Connections ───────────────────────────────────────────
