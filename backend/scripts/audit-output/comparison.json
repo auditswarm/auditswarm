@@ -1,0 +1,559 @@
+[
+  {
+    "asset": "BNB",
+    "realBalance": 0,
+    "dbReconstructed": 0.13085529000000004,
+    "apiReconstructed": 0.13087926999999996,
+    "dbDiff": 0.13085529000000004,
+    "apiDiff": 0.13087926999999996,
+    "status": "MISMATCH",
+    "dbDetail": {
+      "totalIn": 0.49997831,
+      "totalOut": 0.36867830999999995,
+      "feeOut": 0.00044470999999999996,
+      "net": 0.13085529000000004,
+      "byType": {
+        "EXCHANGE_CONVERT": {
+          "in": 0.16017831,
+          "out": 0.1598,
+          "feeOut": 0
+        },
+        "EXCHANGE_DEPOSIT": {
+          "in": 0.1598,
+          "out": 0,
+          "feeOut": 0
+        },
+        "EXCHANGE_TRADE": {
+          "in": 0.18,
+          "out": 0.049,
+          "feeOut": 0.00014471
+        },
+        "EXCHANGE_WITHDRAWAL": {
+          "in": 0,
+          "out": 0.15987831,
+          "feeOut": 0.0003
+        }
+      }
+    },
+    "apiDetail": {
+      "totalIn": 0.48397830999999997,
+      "totalOut": 0.35267831,
+      "feeOut": 0.00042072999999999996,
+      "net": 0.13087926999999996,
+      "bySource": {
+        "DEPOSIT": {
+          "in": 0.1598,
+          "out": 0,
+          "fee": 0
+        },
+        "WITHDRAWAL": {
+          "in": 0,
+          "out": 0.15987831,
+          "fee": 0
+        },
+        "WITHDRAWAL_FEE": {
+          "in": 0,
+          "out": 0,
+          "fee": 0.0003
+        },
+        "TRADE_BUY": {
+          "in": 0.164,
+          "out": 0,
+          "fee": 0
+        },
+        "TRADE_FEE": {
+          "in": 0,
+          "out": 0,
+          "fee": 0.00012073
+        },
+        "TRADE_SELL": {
+          "in": 0,
+          "out": 0.033,
+          "fee": 0
+        },
+        "CONVERT": {
+          "in": 0.16017831,
+          "out": 0.1598,
+          "fee": 0
+        }
+      }
+    },
+    "realDetail": null
+  },
+  {
+    "asset": "BRL",
+    "realBalance": 0,
+    "dbReconstructed": 21465.520000000033,
+    "apiReconstructed": 21465.518405829982,
+    "dbDiff": 21465.520000000033,
+    "apiDiff": 21465.518405829982,
+    "status": "MISMATCH",
+    "dbDetail": {
+      "totalIn": 294100.33,
+      "totalOut": 272634.73,
+      "feeOut": 0.08,
+      "net": 21465.520000000033,
+      "byType": {
+        "EXCHANGE_CONVERT": {
+          "in": 294019.68,
+          "out": 272634.73,
+          "feeOut": 0
+        },
+        "EXCHANGE_TRADE": {
+          "in": 80.65,
+          "out": 0,
+          "feeOut": 0.08
+        }
+      }
+    },
+    "apiDetail": {
+      "totalIn": 294100.33267291,
+      "totalOut": 272634.73361708,
+      "feeOut": 0.08065,
+      "net": 21465.518405829982,
+      "bySource": {
+        "TRADE_SELL": {
+          "in": 80.65,
+          "out": 0,
+          "fee": 0
+        },
+        "TRADE_FEE": {
+          "in": 0,
+          "out": 0,
+          "fee": 0.08065
+        },
+        "CONVERT": {
+          "in": 294019.68267291004,
+          "out": 272634.73361708,
+          "fee": 0
+        }
+      }
+    },
+    "realDetail": null
+  },
+  {
+    "asset": "BTC",
+    "realBalance": 0,
+    "dbReconstructed": 0.00093,
+    "apiReconstructed": 0.00093,
+    "dbDiff": 0.00093,
+    "apiDiff": 0.00093,
+    "status": "OK",
+    "dbDetail": {
+      "totalIn": 0.00093,
+      "totalOut": 0,
+      "feeOut": 0,
+      "net": 0.00093,
+      "byType": {
+        "EXCHANGE_TRADE": {
+          "in": 0.00093,
+          "out": 0,
+          "feeOut": 0
+        }
+      }
+    },
+    "apiDetail": {
+      "totalIn": 0.00093,
+      "totalOut": 0,
+      "feeOut": 0,
+      "net": 0.00093,
+      "bySource": {
+        "TRADE_BUY": {
+          "in": 0.00093,
+          "out": 0,
+          "fee": 0
+        }
+      }
+    },
+    "realDetail": null
+  },
+  {
+    "asset": "BUSD",
+    "realBalance": 0,
+    "dbReconstructed": -20.9155029,
+    "apiReconstructed": -20.9155029,
+    "dbDiff": -20.9155029,
+    "apiDiff": -20.9155029,
+    "status": "MISMATCH",
+    "dbDetail": {
+      "totalIn": 10.8669,
+      "totalOut": 31.782402899999997,
+      "feeOut": 0,
+      "net": -20.9155029,
+      "byType": {
+        "EXCHANGE_TRADE": {
+          "in": 10.8669,
+          "out": 31.782402899999997,
+          "feeOut": 0
+        }
+      }
+    },
+    "apiDetail": {
+      "totalIn": 10.8669,
+      "totalOut": 31.7824029,
+      "feeOut": 0,
+      "net": -20.9155029,
+      "bySource": {
+        "TRADE_BUY": {
+          "in": 0,
+          "out": 31.7824029,
+          "fee": 0
+        },
+        "TRADE_SELL": {
+          "in": 10.8669,
+          "out": 0,
+          "fee": 0
+        }
+      }
+    },
+    "realDetail": null
+  },
+  {
+    "asset": "LDUSD1",
+    "realBalance": 0.54637365,
+    "dbReconstructed": 0,
+    "apiReconstructed": 0,
+    "dbDiff": -0.54637365,
+    "apiDiff": -0.54637365,
+    "status": "MISMATCH",
+    "dbDetail": null,
+    "apiDetail": null,
+    "realDetail": {
+      "free": 0.54637365,
+      "locked": 0,
+      "total": 0.54637365,
+      "source": [
+        "SPOT"
+      ]
+    }
+  },
+  {
+    "asset": "SOL",
+    "realBalance": 0,
+    "dbReconstructed": -0.7729595599995811,
+    "apiReconstructed": -0.7729595598987906,
+    "dbDiff": -0.7729595599995811,
+    "apiDiff": -0.7729595598987906,
+    "status": "MISMATCH",
+    "dbDetail": {
+      "totalIn": 3367.5523563,
+      "totalOut": 3364.6653158599997,
+      "feeOut": 3.66,
+      "net": -0.7729595599995811,
+      "byType": {
+        "EXCHANGE_CONVERT": {
+          "in": 54.91185277,
+          "out": 9.62954636,
+          "feeOut": 0
+        },
+        "EXCHANGE_DEPOSIT": {
+          "in": 3312.64050353,
+          "out": 0,
+          "feeOut": 0
+        },
+        "EXCHANGE_TRADE": {
+          "in": 0,
+          "out": 0.1,
+          "feeOut": 0
+        },
+        "EXCHANGE_WITHDRAWAL": {
+          "in": 0,
+          "out": 3354.9357695,
+          "feeOut": 3.66
+        }
+      }
+    },
+    "apiDetail": {
+      "totalIn": 3367.5523562999724,
+      "totalOut": 3364.6653158598715,
+      "feeOut": 3.659999999999709,
+      "net": -0.7729595598987906,
+      "bySource": {
+        "DEPOSIT": {
+          "in": 3312.6405035299726,
+          "out": 0,
+          "fee": 0
+        },
+        "WITHDRAWAL": {
+          "in": 0,
+          "out": 3354.9357694998716,
+          "fee": 0
+        },
+        "WITHDRAWAL_FEE": {
+          "in": 0,
+          "out": 0,
+          "fee": 3.659999999999709
+        },
+        "TRADE_SELL": {
+          "in": 0,
+          "out": 0.1,
+          "fee": 0
+        },
+        "CONVERT": {
+          "in": 54.911852769999996,
+          "out": 9.629546359999999,
+          "fee": 0
+        }
+      }
+    },
+    "realDetail": null
+  },
+  {
+    "asset": "USD1",
+    "realBalance": 0.55044786,
+    "dbReconstructed": 0,
+    "apiReconstructed": 0.53905674,
+    "dbDiff": -0.55044786,
+    "apiDiff": -0.011391119999999977,
+    "status": "MISMATCH",
+    "dbDetail": {
+      "totalIn": 0.5502125600000001,
+      "totalOut": 0.5502125600000001,
+      "feeOut": 0,
+      "net": 0,
+      "byType": {
+        "EXCHANGE_CONVERT": {
+          "in": 0.53905674,
+          "out": 0,
+          "feeOut": 0
+        },
+        "EXCHANGE_DIVIDEND": {
+          "in": 0.01115582,
+          "out": 0,
+          "feeOut": 0
+        },
+        "EXCHANGE_INTEREST": {
+          "in": 0,
+          "out": 0,
+          "feeOut": 0
+        },
+        "EXCHANGE_STAKE": {
+          "in": 0,
+          "out": 0.5502125600000001,
+          "feeOut": 0
+        }
+      }
+    },
+    "apiDetail": {
+      "totalIn": 0.53905674,
+      "totalOut": 0,
+      "feeOut": 0,
+      "net": 0.53905674,
+      "bySource": {
+        "CONVERT": {
+          "in": 0.53905674,
+          "out": 0,
+          "fee": 0
+        }
+      }
+    },
+    "realDetail": {
+      "free": 0.55044786,
+      "locked": 0,
+      "total": 0.55044786,
+      "source": [
+        "EARN_FLEXIBLE"
+      ]
+    }
+  },
+  {
+    "asset": "USDC",
+    "realBalance": 3.9e-7,
+    "dbReconstructed": -66126.135084,
+    "apiReconstructed": -66145.87445400002,
+    "dbDiff": -66126.13508439,
+    "apiDiff": -66145.87445439002,
+    "status": "MISMATCH",
+    "dbDetail": {
+      "totalIn": 48004.365706000004,
+      "totalOut": 114117.75229,
+      "feeOut": 12.7485,
+      "net": -66126.135084,
+      "byType": {
+        "EXCHANGE_CONVERT": {
+          "in": 47784.626336,
+          "out": 52142.029873,
+          "feeOut": 0
+        },
+        "EXCHANGE_DEPOSIT": {
+          "in": 200,
+          "out": 0,
+          "feeOut": 0
+        },
+        "EXCHANGE_DIVIDEND": {
+          "in": 19.73937,
+          "out": 0,
+          "feeOut": 0
+        },
+        "EXCHANGE_STAKE": {
+          "in": 0,
+          "out": 0,
+          "feeOut": 0
+        },
+        "EXCHANGE_WITHDRAWAL": {
+          "in": 0,
+          "out": 61975.722417,
+          "feeOut": 12.7485
+        }
+      }
+    },
+    "apiDetail": {
+      "totalIn": 47984.626336580004,
+      "totalOut": 114117.75229058001,
+      "feeOut": 12.7485,
+      "net": -66145.87445400002,
+      "bySource": {
+        "DEPOSIT": {
+          "in": 200,
+          "out": 0,
+          "fee": 0
+        },
+        "WITHDRAWAL": {
+          "in": 0,
+          "out": 61975.722417000004,
+          "fee": 0
+        },
+        "WITHDRAWAL_FEE": {
+          "in": 0,
+          "out": 0,
+          "fee": 12.7485
+        },
+        "CONVERT": {
+          "in": 47784.626336580004,
+          "out": 52142.029873579995,
+          "fee": 0
+        }
+      }
+    },
+    "realDetail": {
+      "free": 3.9e-7,
+      "locked": 0,
+      "total": 3.9e-7,
+      "source": [
+        "EARN_FLEXIBLE"
+      ]
+    }
+  },
+  {
+    "asset": "USDT",
+    "realBalance": 0,
+    "dbReconstructed": -43.16279999999941,
+    "apiReconstructed": -43.16279999999941,
+    "dbDiff": -43.16279999999941,
+    "apiDiff": -43.16279999999941,
+    "status": "MISMATCH",
+    "dbDetail": {
+      "totalIn": 12312.32873,
+      "totalOut": 12355.461529999999,
+      "feeOut": 0.03,
+      "net": -43.16279999999941,
+      "byType": {
+        "EXCHANGE_CONVERT": {
+          "in": 0,
+          "out": 9512.32873,
+          "feeOut": 0
+        },
+        "EXCHANGE_DEPOSIT": {
+          "in": 12312.32873,
+          "out": 0,
+          "feeOut": 0
+        },
+        "EXCHANGE_TRADE": {
+          "in": 0,
+          "out": 43.1628,
+          "feeOut": 0
+        },
+        "EXCHANGE_WITHDRAWAL": {
+          "in": 0,
+          "out": 2799.97,
+          "feeOut": 0.03
+        }
+      }
+    },
+    "apiDetail": {
+      "totalIn": 12312.32873,
+      "totalOut": 12355.461529999999,
+      "feeOut": 0.03,
+      "net": -43.16279999999941,
+      "bySource": {
+        "DEPOSIT": {
+          "in": 12312.32873,
+          "out": 0,
+          "fee": 0
+        },
+        "WITHDRAWAL": {
+          "in": 0,
+          "out": 2799.97,
+          "fee": 0
+        },
+        "WITHDRAWAL_FEE": {
+          "in": 0,
+          "out": 0,
+          "fee": 0.03
+        },
+        "TRADE_BUY": {
+          "in": 0,
+          "out": 43.162800000000004,
+          "fee": 0
+        },
+        "CONVERT": {
+          "in": 0,
+          "out": 9512.32873,
+          "fee": 0
+        }
+      }
+    },
+    "realDetail": null
+  },
+  {
+    "asset": "WAL",
+    "realBalance": 0,
+    "dbReconstructed": 0,
+    "apiReconstructed": -0.00912350999999978,
+    "dbDiff": 0,
+    "apiDiff": -0.00912350999999978,
+    "status": "OK",
+    "dbDetail": {
+      "totalIn": 4.73480035,
+      "totalOut": 4.73480035,
+      "feeOut": 0,
+      "net": 0,
+      "byType": {
+        "EXCHANGE_CONVERT": {
+          "in": 2.36283842,
+          "out": 2.37196193,
+          "feeOut": 0
+        },
+        "EXCHANGE_INTEREST": {
+          "in": 0,
+          "out": 0,
+          "feeOut": 0
+        },
+        "EXCHANGE_STAKE": {
+          "in": 0,
+          "out": 2.36283842,
+          "feeOut": 0
+        },
+        "EXCHANGE_UNSTAKE": {
+          "in": 2.37196193,
+          "out": 0,
+          "feeOut": 0
+        }
+      }
+    },
+    "apiDetail": {
+      "totalIn": 2.36283842,
+      "totalOut": 2.37196193,
+      "feeOut": 0,
+      "net": -0.00912350999999978,
+      "bySource": {
+        "CONVERT": {
+          "in": 2.36283842,
+          "out": 2.37196193,
+          "fee": 0
+        }
+      }
+    },
+    "realDetail": null
+  }
+]

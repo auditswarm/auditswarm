@@ -1,0 +1,135 @@
+====================================================================================================
+  BINANCE BALANCE AUDIT REPORT
+====================================================================================================
+  Generated: 2026-02-09T19:29:43.467Z
+
+  LEGEND:
+    Real     = Current Binance account balance (spot + earn + margin + futures)
+    DB Recon = Balance reconstructed from DB transaction flows (deposits - withdrawals + trades + converts)
+    API Recon = Balance reconstructed from fresh Binance API data (same logic, raw data)
+
+  ASSET           REAL BAL        DB RECON       API RECON         DB DIFF        API DIFF      STATUS
+  ------------------------------------------------------------------------------------------------
+  BNB           0.00000000      0.13085529      0.13087927+     0.13085529+     0.13087927    MISMATCH
+  BRL           0.00000000  21465.52000000  21465.51840583+ 21465.52000000+ 21465.51840583    MISMATCH
+  BTC           0.00000000      0.00093000      0.00093000+     0.00093000+     0.00093000          OK
+  BUSD          0.00000000    -20.91550290    -20.91550290   -20.91550290   -20.91550290    MISMATCH
+  LDUSD1        0.54637365      0.00000000      0.00000000    -0.54637365    -0.54637365    MISMATCH
+  SOL           0.00000000     -0.77295956     -0.77295956    -0.77295956    -0.77295956    MISMATCH
+  USD1          0.55044786      0.00000000      0.53905674    -0.55044786    -0.01139112    MISMATCH
+  USDC          0.00000039 -66126.13508400 -66145.87445400-66126.13508439-66145.87445439    MISMATCH
+  USDT          0.00000000    -43.16280000    -43.16280000   -43.16280000   -43.16280000    MISMATCH
+  WAL           0.00000000      0.00000000     -0.00912351+     0.00000000    -0.00912351          OK
+
+  SUMMARY:
+    Total assets: 10
+    OK: 2
+    DB mismatch (API ok): 0
+    Full mismatch: 8
+
+  DETAILED BREAKDOWNS FOR MISMATCHED ASSETS:
+
+  --- BNB ---
+    Real balance: 0
+    DB reconstructed: 0.13085529000000004 (diff: 0.13085529)
+    API reconstructed: 0.13087926999999996 (diff: 0.13087927)
+    DB flows by type:
+      EXCHANGE_CONVERT          IN:       0.16017831  OUT:       0.15980000  FEE:       0.00000000
+      EXCHANGE_DEPOSIT          IN:       0.15980000  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_TRADE            IN:       0.18000000  OUT:       0.04900000  FEE:       0.00014471
+      EXCHANGE_WITHDRAWAL       IN:       0.00000000  OUT:       0.15987831  FEE:       0.00030000
+    API flows by source:
+      DEPOSIT                   IN:       0.15980000  OUT:       0.00000000  FEE:       0.00000000
+      WITHDRAWAL                IN:       0.00000000  OUT:       0.15987831  FEE:       0.00000000
+      WITHDRAWAL_FEE            IN:       0.00000000  OUT:       0.00000000  FEE:       0.00030000
+      TRADE_BUY                 IN:       0.16400000  OUT:       0.00000000  FEE:       0.00000000
+      TRADE_FEE                 IN:       0.00000000  OUT:       0.00000000  FEE:       0.00012073
+      TRADE_SELL                IN:       0.00000000  OUT:       0.03300000  FEE:       0.00000000
+      CONVERT                   IN:       0.16017831  OUT:       0.15980000  FEE:       0.00000000
+
+  --- BRL ---
+    Real balance: 0
+    DB reconstructed: 21465.520000000033 (diff: 21465.52000000)
+    API reconstructed: 21465.518405829982 (diff: 21465.51840583)
+    DB flows by type:
+      EXCHANGE_CONVERT          IN:  294019.68000000  OUT:  272634.73000000  FEE:       0.00000000
+      EXCHANGE_TRADE            IN:      80.65000000  OUT:       0.00000000  FEE:       0.08000000
+    API flows by source:
+      TRADE_SELL                IN:      80.65000000  OUT:       0.00000000  FEE:       0.00000000
+      TRADE_FEE                 IN:       0.00000000  OUT:       0.00000000  FEE:       0.08065000
+      CONVERT                   IN:  294019.68267291  OUT:  272634.73361708  FEE:       0.00000000
+
+  --- BUSD ---
+    Real balance: 0
+    DB reconstructed: -20.9155029 (diff: -20.91550290)
+    API reconstructed: -20.9155029 (diff: -20.91550290)
+    DB flows by type:
+      EXCHANGE_TRADE            IN:      10.86690000  OUT:      31.78240290  FEE:       0.00000000
+    API flows by source:
+      TRADE_BUY                 IN:       0.00000000  OUT:      31.78240290  FEE:       0.00000000
+      TRADE_SELL                IN:      10.86690000  OUT:       0.00000000  FEE:       0.00000000
+
+  --- LDUSD1 ---
+    Real balance: 0.54637365
+    DB reconstructed: 0 (diff: -0.54637365)
+    API reconstructed: 0 (diff: -0.54637365)
+
+  --- SOL ---
+    Real balance: 0
+    DB reconstructed: -0.7729595599995811 (diff: -0.77295956)
+    API reconstructed: -0.7729595598987906 (diff: -0.77295956)
+    DB flows by type:
+      EXCHANGE_CONVERT          IN:      54.91185277  OUT:       9.62954636  FEE:       0.00000000
+      EXCHANGE_DEPOSIT          IN:    3312.64050353  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_TRADE            IN:       0.00000000  OUT:       0.10000000  FEE:       0.00000000
+      EXCHANGE_WITHDRAWAL       IN:       0.00000000  OUT:    3354.93576950  FEE:       3.66000000
+    API flows by source:
+      DEPOSIT                   IN:    3312.64050353  OUT:       0.00000000  FEE:       0.00000000
+      WITHDRAWAL                IN:       0.00000000  OUT:    3354.93576950  FEE:       0.00000000
+      WITHDRAWAL_FEE            IN:       0.00000000  OUT:       0.00000000  FEE:       3.66000000
+      TRADE_SELL                IN:       0.00000000  OUT:       0.10000000  FEE:       0.00000000
+      CONVERT                   IN:      54.91185277  OUT:       9.62954636  FEE:       0.00000000
+
+  --- USD1 ---
+    Real balance: 0.55044786
+    DB reconstructed: 0 (diff: -0.55044786)
+    API reconstructed: 0.53905674 (diff: -0.01139112)
+    DB flows by type:
+      EXCHANGE_CONVERT          IN:       0.53905674  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_DIVIDEND         IN:       0.01115582  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_INTEREST         IN:       0.00000000  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_STAKE            IN:       0.00000000  OUT:       0.55021256  FEE:       0.00000000
+    API flows by source:
+      CONVERT                   IN:       0.53905674  OUT:       0.00000000  FEE:       0.00000000
+
+  --- USDC ---
+    Real balance: 3.9e-7
+    DB reconstructed: -66126.135084 (diff: -66126.13508439)
+    API reconstructed: -66145.87445400002 (diff: -66145.87445439)
+    DB flows by type:
+      EXCHANGE_CONVERT          IN:   47784.62633600  OUT:   52142.02987300  FEE:       0.00000000
+      EXCHANGE_DEPOSIT          IN:     200.00000000  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_DIVIDEND         IN:      19.73937000  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_STAKE            IN:       0.00000000  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_WITHDRAWAL       IN:       0.00000000  OUT:   61975.72241700  FEE:      12.74850000
+    API flows by source:
+      DEPOSIT                   IN:     200.00000000  OUT:       0.00000000  FEE:       0.00000000
+      WITHDRAWAL                IN:       0.00000000  OUT:   61975.72241700  FEE:       0.00000000
+      WITHDRAWAL_FEE            IN:       0.00000000  OUT:       0.00000000  FEE:      12.74850000
+      CONVERT                   IN:   47784.62633658  OUT:   52142.02987358  FEE:       0.00000000
+
+  --- USDT ---
+    Real balance: 0
+    DB reconstructed: -43.16279999999941 (diff: -43.16280000)
+    API reconstructed: -43.16279999999941 (diff: -43.16280000)
+    DB flows by type:
+      EXCHANGE_CONVERT          IN:       0.00000000  OUT:    9512.32873000  FEE:       0.00000000
+      EXCHANGE_DEPOSIT          IN:   12312.32873000  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_TRADE            IN:       0.00000000  OUT:      43.16280000  FEE:       0.00000000
+      EXCHANGE_WITHDRAWAL       IN:       0.00000000  OUT:    2799.97000000  FEE:       0.03000000
+    API flows by source:
+      DEPOSIT                   IN:   12312.32873000  OUT:       0.00000000  FEE:       0.00000000
+      WITHDRAWAL                IN:       0.00000000  OUT:    2799.97000000  FEE:       0.00000000
+      WITHDRAWAL_FEE            IN:       0.00000000  OUT:       0.00000000  FEE:       0.03000000
+      TRADE_BUY                 IN:       0.00000000  OUT:      43.16280000  FEE:       0.00000000
+      CONVERT                   IN:       0.00000000  OUT:    9512.32873000  FEE:       0.00000000

@@ -1,0 +1,2880 @@
+{
+  "universalTransfers": [],
+  "dividends": [
+    {
+      "id": 4909881404352611000,
+      "tranId": 349259151130,
+      "asset": "USD1",
+      "amount": "0.00012058",
+      "divTime": 1770610137000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4908498522587939000,
+      "tranId": 349050386238,
+      "asset": "USD1",
+      "amount": "0.00012056",
+      "divTime": 1770527711000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4907030821217249000,
+      "tranId": 348811223024,
+      "asset": "USD1",
+      "amount": "0.00012053",
+      "divTime": 1770440229000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4905601024356579000,
+      "tranId": 348504416499,
+      "asset": "USD1",
+      "amount": "0.0001205",
+      "divTime": 1770355006000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4904113993059851000,
+      "tranId": 348044811545,
+      "asset": "USD1",
+      "amount": "0.00012047",
+      "divTime": 1770266372000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4902649543997445000,
+      "tranId": 347713201679,
+      "asset": "USD1",
+      "amount": "0.00012045",
+      "divTime": 1770179084000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4901194573704159000,
+      "tranId": 347404559750,
+      "asset": "USD1",
+      "amount": "0.00012042",
+      "divTime": 1770092361000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4899750080578142000,
+      "tranId": 347120679324,
+      "asset": "USD1",
+      "amount": "0.00012039",
+      "divTime": 1770006244000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4898374701829179000,
+      "tranId": 346808961693,
+      "asset": "USD1",
+      "amount": "0.00012037",
+      "divTime": 1769924275000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4896925235132326000,
+      "tranId": 346481648700,
+      "asset": "USD1",
+      "amount": "0.00012034",
+      "divTime": 1769837882000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4895481356624640000,
+      "tranId": 346215908658,
+      "asset": "USD1",
+      "amount": "0.00012031",
+      "divTime": 1769751816000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4894042831240246000,
+      "tranId": 345910858481,
+      "asset": "USD1",
+      "amount": "0.00012028",
+      "divTime": 1769666070000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4892618378198638000,
+      "tranId": 345650270957,
+      "asset": "USD1",
+      "amount": "0.00012026",
+      "divTime": 1769581164000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4891138114827522000,
+      "tranId": 345400230417,
+      "asset": "USD1",
+      "amount": "0.00012023",
+      "divTime": 1769492937000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4889693249610650000,
+      "tranId": 345141391115,
+      "asset": "USD1",
+      "amount": "0.0001202",
+      "divTime": 1769406654000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4888227890034652000,
+      "tranId": 344851312019,
+      "asset": "USD1",
+      "amount": "0.00012014",
+      "divTime": 1769319448000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4886795862945391000,
+      "tranId": 344643092024,
+      "asset": "USD1",
+      "amount": "0.00030019",
+      "divTime": 1769233922000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4885340829469485000,
+      "tranId": 344388108188,
+      "asset": "USD1",
+      "amount": "0.00030002",
+      "divTime": 1769147293000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4883883751245143000,
+      "tranId": 344151276607,
+      "asset": "USD1",
+      "amount": "0.00029986",
+      "divTime": 1769060467000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4882517283936183000,
+      "tranId": 343881541276,
+      "asset": "USD1",
+      "amount": "0.0002997",
+      "divTime": 1768979107000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4881067930416923000,
+      "tranId": 343611534842,
+      "asset": "USD1",
+      "amount": "0.00029953",
+      "divTime": 1768892720000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4879539961492341000,
+      "tranId": 343380151032,
+      "asset": "USD1",
+      "amount": "0.00029937",
+      "divTime": 1768801509000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4878090102770964000,
+      "tranId": 343140818979,
+      "asset": "USD1",
+      "amount": "0.0002992",
+      "divTime": 1768715102000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4876549699088615000,
+      "tranId": 342949344974,
+      "asset": "USD1",
+      "amount": "0.00029904",
+      "divTime": 1768623268000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4875194742258963000,
+      "tranId": 342753124606,
+      "asset": "USD1",
+      "amount": "0.00029887",
+      "divTime": 1768542504000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4873650678304501000,
+      "tranId": 342476958889,
+      "asset": "USD1",
+      "amount": "0.00029871",
+      "divTime": 1768450465000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4872282267309686000,
+      "tranId": 342218309886,
+      "asset": "USD1",
+      "amount": "0.00029855",
+      "divTime": 1768369026000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4870750285442432000,
+      "tranId": 341928716127,
+      "asset": "USD1",
+      "amount": "0.00029838",
+      "divTime": 1768277650000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4869356070022691000,
+      "tranId": 341708262810,
+      "asset": "USD1",
+      "amount": "0.00029822",
+      "divTime": 1768194595000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4867886138937687000,
+      "tranId": 341518279061,
+      "asset": "USD1",
+      "amount": "0.00029805",
+      "divTime": 1768106848000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4866431897574474000,
+      "tranId": 341359115005,
+      "asset": "USD1",
+      "amount": "0.00029789",
+      "divTime": 1768020225000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4864990589757719000,
+      "tranId": 341156407902,
+      "asset": "USD1",
+      "amount": "0.00029773",
+      "divTime": 1767934223000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4863536713390700000,
+      "tranId": 340922469704,
+      "asset": "USD1",
+      "amount": "0.00029756",
+      "divTime": 1767847701000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4862052626437710000,
+      "tranId": 340671928297,
+      "asset": "USD1",
+      "amount": "0.0002974",
+      "divTime": 1767759310000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4860624859820037000,
+      "tranId": 340389848519,
+      "asset": "USD1",
+      "amount": "0.00029724",
+      "divTime": 1767674210000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4859145159072738000,
+      "tranId": 340103273570,
+      "asset": "USD1",
+      "amount": "0.00029707",
+      "divTime": 1767586006000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4857705001645559000,
+      "tranId": 339849912066,
+      "asset": "USD1",
+      "amount": "0.00029691",
+      "divTime": 1767500130000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4856253669964502000,
+      "tranId": 339633251235,
+      "asset": "USD1",
+      "amount": "0.00029675",
+      "divTime": 1767413613000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4854805590724703000,
+      "tranId": 339376330112,
+      "asset": "USD1",
+      "amount": "0.00029658",
+      "divTime": 1767327295000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4853451295832012000,
+      "tranId": 339171202943,
+      "asset": "USD1",
+      "amount": "0.00029642",
+      "divTime": 1767246547000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4852002473155222000,
+      "tranId": 338909588684,
+      "asset": "USD1",
+      "amount": "0.00029626",
+      "divTime": 1767160182000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4850553582255290000,
+      "tranId": 338682376790,
+      "asset": "USD1",
+      "amount": "0.0002961",
+      "divTime": 1767073822000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4849138461921392000,
+      "tranId": 338442868276,
+      "asset": "USD1",
+      "amount": "0.00029593",
+      "divTime": 1766989465000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4847649172108476000,
+      "tranId": 338233142875,
+      "asset": "USD1",
+      "amount": "0.00029577",
+      "divTime": 1766900749000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4846204573046623000,
+      "tranId": 338040300265,
+      "asset": "USD1",
+      "amount": "0.00029561",
+      "divTime": 1766814605000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4844719767788015000,
+      "tranId": 337820685967,
+      "asset": "USD1",
+      "amount": "0.00029544",
+      "divTime": 1766726148000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4843326272766386000,
+      "tranId": 337591324153,
+      "asset": "USD1",
+      "amount": "0.00029544",
+      "divTime": 1766643106000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4443064833307033600,
+      "tranId": 251407198280,
+      "asset": "USDC",
+      "amount": "0.50684",
+      "divTime": 1742785696000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4441717367056450000,
+      "tranId": 251280285416,
+      "asset": "USDC",
+      "amount": "0.50684",
+      "divTime": 1742705340000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4440177812764014600,
+      "tranId": 251145795666,
+      "asset": "USDC",
+      "amount": "0.50684",
+      "divTime": 1742613574000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4438757459383735300,
+      "tranId": 250991518862,
+      "asset": "USDC",
+      "amount": "0.50684",
+      "divTime": 1742528961000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4437281066186250000,
+      "tranId": 250827444375,
+      "asset": "USDC",
+      "amount": "0.50684",
+      "divTime": 1742440884000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4435859272518419000,
+      "tranId": 250622975542,
+      "asset": "USDC",
+      "amount": "0.50684",
+      "divTime": 1742356125000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4434384246101324300,
+      "tranId": 250461878026,
+      "asset": "USDC",
+      "amount": "0.50684",
+      "divTime": 1742268222000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4432925199014499300,
+      "tranId": 250292253236,
+      "asset": "USDC",
+      "amount": "0.50684",
+      "divTime": 1742181260000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4431479485359953400,
+      "tranId": 250131725831,
+      "asset": "USDC",
+      "amount": "0.50684",
+      "divTime": 1742095065000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4430033307224996400,
+      "tranId": 250008988992,
+      "asset": "USDC",
+      "amount": "0.50684",
+      "divTime": 1742008848000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4428576369095318000,
+      "tranId": 249850103040,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741922053000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4427134213276007000,
+      "tranId": 249651666544,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741836043000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4425676985925529600,
+      "tranId": 249423226744,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741749236000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4424231167870451700,
+      "tranId": 249165707934,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741663044000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4422781919494816300,
+      "tranId": 248828973412,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741576659000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4421328834869071400,
+      "tranId": 248596853595,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741490065000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4419887201479261700,
+      "tranId": 248460785517,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741404096000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4418425313187414000,
+      "tranId": 248202671391,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741317042000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4416982425673864700,
+      "tranId": 247941318385,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741230986000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4415537644566394000,
+      "tranId": 247702139523,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741144852000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4414088273574668000,
+      "tranId": 247332474676,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1741058495000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4412648885230701600,
+      "tranId": 246917079114,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1740972624000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4411183858713543000,
+      "tranId": 246534103358,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1740885372000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4409726449299621400,
+      "tranId": 246364888930,
+      "asset": "USDC",
+      "amount": "0.91779",
+      "divTime": 1740798578000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4408383965938396000,
+      "tranId": 246066413127,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1740718433000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4406845855775864000,
+      "tranId": 245769151740,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1740626725000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4405450684819064300,
+      "tranId": 245462527454,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1740543643000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4403947136607873500,
+      "tranId": 245067466072,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1740453959000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4402560596686634000,
+      "tranId": 244767205756,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1740371359000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4401066103835678000,
+      "tranId": 244597371646,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1740282346000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4399610110803148000,
+      "tranId": 244432519469,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1740195597000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4398152423566413000,
+      "tranId": 244160951993,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1740108561000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4396740431167270400,
+      "tranId": 243974157854,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1740024541000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4395231430295958500,
+      "tranId": 243763525664,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1739934607000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4393811445572003300,
+      "tranId": 243520435788,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1739849970000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4392337950023788000,
+      "tranId": 243288715158,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1739762079000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4390888002788109000,
+      "tranId": 243132344448,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1739675660000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4389451007116199400,
+      "tranId": 242968764863,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1739589960000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4387998208635090000,
+      "tranId": 242700157791,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1739503365000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4386544105571642400,
+      "tranId": 242446042308,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1739416716000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4385101538148007400,
+      "tranId": 242135713238,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1739330700000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4383654529799730000,
+      "tranId": 241876948545,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1739244439000,
+      "enInfo": "Flexible",
+      "direction": 1
+    },
+    {
+      "id": 4382201414628546000,
+      "tranId": 241627735977,
+      "asset": "USDC",
+      "amount": "0.09589",
+      "divTime": 1739157817000,
+      "enInfo": "Flexible",
+      "direction": 1
+    }
+  ],
+  "earnRewards": [
+    {
+      "asset": "USD1",
+      "rewards": "0.00012058",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1770606208000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012056",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1770523158000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012053",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1770436099000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0001205",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1770350438000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012047",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1770262561000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012045",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1770175263000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012042",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1770088607000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012039",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1770002841000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012037",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769920924000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012034",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769834354000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012031",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769748576000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012028",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769662634000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012026",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769577759000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012023",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769489546000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0001202",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769403448000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00012014",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769315882000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00030019",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769230909000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00030002",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769144290000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029986",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1769056987000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0002997",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768970410000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029953",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768884848000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029937",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768798397000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0002992",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768711782000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029904",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768619953000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029887",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768539394000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029871",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768447221000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029855",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768365581000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029838",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768274382000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029822",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768191332000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029805",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768103669000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029789",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1768016927000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029773",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767931271000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029756",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767844421000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0002974",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767755909000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029724",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767670821000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029707",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767582811000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029691",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767497696000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029675",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767410986000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029658",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767324900000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029642",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767243741000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029626",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767157309000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0002961",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1767071153000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029593",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1766986671000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029577",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1766897650000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029561",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1766811624000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029544",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1766723353000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00029544",
+      "productId": "USD1001",
+      "type": "BONUS",
+      "time": 1766640146000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "0.09589",
+      "productId": "USDC001",
+      "type": "BONUS",
+      "time": 1739500896000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "0.09589",
+      "productId": "USDC001",
+      "type": "BONUS",
+      "time": 1739414355000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "0.09589",
+      "productId": "USDC001",
+      "type": "BONUS",
+      "time": 1739328283000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "0.09589",
+      "productId": "USDC001",
+      "type": "BONUS",
+      "time": 1739242021000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "0.09589",
+      "productId": "USDC001",
+      "type": "BONUS",
+      "time": 1739155350000,
+      "_rewardType": "BONUS"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0000032",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1770595199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0000032",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1770508799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000322",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1770422399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000341",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1770335999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000343",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1770249599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000334",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1770163199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000344",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1770076799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000357",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769990399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000371",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769903999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000369",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769817599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000366",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769731199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0000036",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769644799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000354",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769558399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000356",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769471999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0000035",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769385599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000362",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769299199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000225",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769212799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000147",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769126399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000144",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1769039999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000125",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768953599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000111",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768867199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000099",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768780799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.000001",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768694399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000098",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768607999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0000009",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768521599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000081",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768435199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000082",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768348799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000083",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768262399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000081",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768175999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000079",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768089599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000081",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1768003199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000084",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767916799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000087",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767830399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000089",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767743999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000098",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767657599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000095",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767571199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000089",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767484799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000091",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767398399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000089",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767311999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000094",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767225599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000129",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767139199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000148",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1767052799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000164",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766966399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000193",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766879999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000232",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766793599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000288",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766707199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000384",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766620799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000298",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766534399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000299",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766447999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000297",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766361599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000297",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766275199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000284",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766188799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000256",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766102399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000255",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1766015999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000288",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765929599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000273",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765843199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000247",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765756799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000242",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765670399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000245",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765583999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000172",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765497599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000117",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765411199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000117",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765324799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000118",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765238399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000111",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765151999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000111",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1765065599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000111",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764979199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000112",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764892799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000111",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764806399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000111",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764719999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000129",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764633599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000138",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764547199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000138",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764460799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000138",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764374399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000138",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764287999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000134",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764201599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000133",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764115199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000134",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1764028799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000134",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763942399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000139",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763855999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0000014",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763769599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000138",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763683199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000135",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763596799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000137",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763510399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000137",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763423999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000138",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763337599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000139",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763251199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000176",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763164799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0000021",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1763078399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000228",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762991999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000242",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762905599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0000025",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762819199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000253",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762732799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000249",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762646399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000249",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762559999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000277",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762473599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000356",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762387199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0000037",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762300799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000393",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762214399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000427",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762127999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.000005",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1762041599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000713",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1761955199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.0000085",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1761868799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000981",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1761782399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USD1",
+      "rewards": "0.00000206",
+      "productId": "USD1001",
+      "type": "REALTIME",
+      "time": 1761695999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00047975",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1761695999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00093188",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1761609599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00085774",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1761523199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00081187",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1761436799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00075565",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1761350399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.0006771",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1761263999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00050159",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1761177599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00053767",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1761091199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00050688",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1761004799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00071693",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1760918399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00068897",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1760831999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.0003121",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1760745599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00026522",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1760659199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00028627",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1760572799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00018937",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1760486399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00013615",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1760399999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00016534",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1760313599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "0.00000001",
+      "productId": "USDC001",
+      "type": "REALTIME",
+      "time": 1760313599000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00017952",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1760227199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "WAL",
+      "rewards": "0.00012351",
+      "productId": "WAL001",
+      "type": "REALTIME",
+      "time": 1760140799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "2.9438309",
+      "productId": "USDC001",
+      "type": "REALTIME",
+      "time": 1739491199000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "3.24898793",
+      "productId": "USDC001",
+      "type": "REALTIME",
+      "time": 1739404799000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "3.13349444",
+      "productId": "USDC001",
+      "type": "REALTIME",
+      "time": 1739318399000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "3.3267624",
+      "productId": "USDC001",
+      "type": "REALTIME",
+      "time": 1739231999000,
+      "_rewardType": "REALTIME"
+    },
+    {
+      "asset": "USDC",
+      "rewards": "3.44939822",
+      "productId": "USDC001",
+      "type": "REALTIME",
+      "time": 1739145599000,
+      "_rewardType": "REALTIME"
+    }
+  ],
+  "flexibleOps": [
+    {
+      "amount": "0.00012058",
+      "asset": "USD1",
+      "time": 1770612000000,
+      "status": "SUCCESS",
+      "purchaseId": 10927878192,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012056",
+      "asset": "USD1",
+      "time": 1770579586000,
+      "status": "SUCCESS",
+      "purchaseId": 10926637134,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012053",
+      "asset": "USD1",
+      "time": 1770493174000,
+      "status": "SUCCESS",
+      "purchaseId": 10917865912,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.0001205",
+      "asset": "USD1",
+      "time": 1770406614000,
+      "status": "SUCCESS",
+      "purchaseId": 10909088224,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012047",
+      "asset": "USD1",
+      "time": 1770320503000,
+      "status": "SUCCESS",
+      "purchaseId": 10899862130,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012045",
+      "asset": "USD1",
+      "time": 1770179810000,
+      "status": "SUCCESS",
+      "purchaseId": 10883520882,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012042",
+      "asset": "USD1",
+      "time": 1770093325000,
+      "status": "SUCCESS",
+      "purchaseId": 10874643414,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012039",
+      "asset": "USD1",
+      "time": 1770006814000,
+      "status": "SUCCESS",
+      "purchaseId": 10865800500,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012037",
+      "asset": "USD1",
+      "time": 1769974359000,
+      "status": "SUCCESS",
+      "purchaseId": 10863233557,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012034",
+      "asset": "USD1",
+      "time": 1769888007000,
+      "status": "SUCCESS",
+      "purchaseId": 10854239855,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012031",
+      "asset": "USD1",
+      "time": 1769801436000,
+      "status": "SUCCESS",
+      "purchaseId": 10845214657,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012028",
+      "asset": "USD1",
+      "time": 1769715126000,
+      "status": "SUCCESS",
+      "purchaseId": 10836225479,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012026",
+      "asset": "USD1",
+      "time": 1769628681000,
+      "status": "SUCCESS",
+      "purchaseId": 10827180319,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012023",
+      "asset": "USD1",
+      "time": 1769542425000,
+      "status": "SUCCESS",
+      "purchaseId": 10819158679,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.0001202",
+      "asset": "USD1",
+      "time": 1769456025000,
+      "status": "SUCCESS",
+      "purchaseId": 10810387521,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00012014",
+      "asset": "USD1",
+      "time": 1769369532000,
+      "status": "SUCCESS",
+      "purchaseId": 10801569828,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00030019",
+      "asset": "USD1",
+      "time": 1769283029000,
+      "status": "SUCCESS",
+      "purchaseId": 10792935652,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00030002",
+      "asset": "USD1",
+      "time": 1769196662000,
+      "status": "SUCCESS",
+      "purchaseId": 10784680129,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029986",
+      "asset": "USD1",
+      "time": 1769110302000,
+      "status": "SUCCESS",
+      "purchaseId": 10776409437,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.0002997",
+      "asset": "USD1",
+      "time": 1769024232000,
+      "status": "SUCCESS",
+      "purchaseId": 10768078535,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029953",
+      "asset": "USD1",
+      "time": 1768937806000,
+      "status": "SUCCESS",
+      "purchaseId": 10759707868,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029937",
+      "asset": "USD1",
+      "time": 1768851439000,
+      "status": "SUCCESS",
+      "purchaseId": 10751322988,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.0002992",
+      "asset": "USD1",
+      "time": 1768764825000,
+      "status": "SUCCESS",
+      "purchaseId": 10742910170,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029904",
+      "asset": "USD1",
+      "time": 1768624444000,
+      "status": "SUCCESS",
+      "purchaseId": 10729169464,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029887",
+      "asset": "USD1",
+      "time": 1768592106000,
+      "status": "SUCCESS",
+      "purchaseId": 10726938322,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029871",
+      "asset": "USD1",
+      "time": 1768451731000,
+      "status": "SUCCESS",
+      "purchaseId": 10713244400,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029855",
+      "asset": "USD1",
+      "time": 1768419438000,
+      "status": "SUCCESS",
+      "purchaseId": 10710562177,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029838",
+      "asset": "USD1",
+      "time": 1768278863000,
+      "status": "SUCCESS",
+      "purchaseId": 10697159927,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029822",
+      "asset": "USD1",
+      "time": 1768246454000,
+      "status": "SUCCESS",
+      "purchaseId": 10695113841,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029805",
+      "asset": "USD1",
+      "time": 1768159899000,
+      "status": "SUCCESS",
+      "purchaseId": 10687929613,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029789",
+      "asset": "USD1",
+      "time": 1768073567000,
+      "status": "SUCCESS",
+      "purchaseId": 10680076469,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029773",
+      "asset": "USD1",
+      "time": 1767963994000,
+      "status": "SUCCESS",
+      "purchaseId": 10671144572,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029756",
+      "asset": "USD1",
+      "time": 1767900859000,
+      "status": "SUCCESS",
+      "purchaseId": 10663689619,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.0002974",
+      "asset": "USD1",
+      "time": 1767760415000,
+      "status": "SUCCESS",
+      "purchaseId": 10649383298,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029724",
+      "asset": "USD1",
+      "time": 1767728010000,
+      "status": "SUCCESS",
+      "purchaseId": 10647779272,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029707",
+      "asset": "USD1",
+      "time": 1767587371000,
+      "status": "SUCCESS",
+      "purchaseId": 10632951309,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029691",
+      "asset": "USD1",
+      "time": 1767500991000,
+      "status": "SUCCESS",
+      "purchaseId": 10627354985,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029675",
+      "asset": "USD1",
+      "time": 1767414617000,
+      "status": "SUCCESS",
+      "purchaseId": 10621776878,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029658",
+      "asset": "USD1",
+      "time": 1767328212000,
+      "status": "SUCCESS",
+      "purchaseId": 10616105347,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029642",
+      "asset": "USD1",
+      "time": 1767295971000,
+      "status": "SUCCESS",
+      "purchaseId": 10613487926,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029626",
+      "asset": "USD1",
+      "time": 1767209513000,
+      "status": "SUCCESS",
+      "purchaseId": 10604695993,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.0002961",
+      "asset": "USD1",
+      "time": 1767122998000,
+      "status": "SUCCESS",
+      "purchaseId": 10595828968,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029593",
+      "asset": "USD1",
+      "time": 1767036563000,
+      "status": "SUCCESS",
+      "purchaseId": 10586579893,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029577",
+      "asset": "USD1",
+      "time": 1766950357000,
+      "status": "SUCCESS",
+      "purchaseId": 10578205258,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029561",
+      "asset": "USD1",
+      "time": 1766864006000,
+      "status": "SUCCESS",
+      "purchaseId": 10569477801,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029544",
+      "asset": "USD1",
+      "time": 1766777605000,
+      "status": "SUCCESS",
+      "purchaseId": 10561193187,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00029544",
+      "asset": "USD1",
+      "time": 1766691164000,
+      "status": "SUCCESS",
+      "purchaseId": 10551391863,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.53905674",
+      "asset": "USD1",
+      "time": 1761679792000,
+      "status": "SUCCESS",
+      "purchaseId": 10033411259,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USD1001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00000023",
+      "asset": "USDC",
+      "time": 1760294978000,
+      "status": "SUCCESS",
+      "purchaseId": 9892249992,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USDC001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "2.36283842",
+      "asset": "WAL",
+      "time": 1760125505000,
+      "status": "SUCCESS",
+      "purchaseId": 9874312682,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "WAL001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.00000015",
+      "asset": "USDC",
+      "time": 1757389454000,
+      "status": "SUCCESS",
+      "purchaseId": 9578459117,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "productId": "USDC001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "0.19178005",
+      "asset": "USDC",
+      "time": 1739147192000,
+      "status": "SUCCESS",
+      "purchaseId": 7778123947,
+      "type": "NORMAL",
+      "sourceAccount": "SPOT",
+      "productId": "USDC001",
+      "_opType": "SUBSCRIPTION"
+    },
+    {
+      "amount": "2.37196193",
+      "asset": "WAL",
+      "time": 1761679639000,
+      "status": "PAID",
+      "productId": "WAL001",
+      "redeemId": 757647054,
+      "destAccount": "SPOT",
+      "_opType": "REDEMPTION"
+    },
+    {
+      "amount": "3000",
+      "asset": "USDC",
+      "time": 1739289271000,
+      "status": "PAID",
+      "productId": "USDC001",
+      "redeemId": 516925755,
+      "destAccount": "SPOT",
+      "_opType": "REDEMPTION"
+    },
+    {
+      "amount": "1000",
+      "asset": "USDC",
+      "time": 1739280881000,
+      "status": "PAID",
+      "productId": "USDC001",
+      "redeemId": 516827229,
+      "destAccount": "SPOT",
+      "_opType": "REDEMPTION"
+    },
+    {
+      "amount": "1294.08",
+      "asset": "USDC",
+      "time": 1739185406000,
+      "status": "PAID",
+      "productId": "USDC001",
+      "redeemId": 515941540,
+      "destAccount": "SPOT",
+      "_opType": "REDEMPTION"
+    }
+  ],
+  "fiatOrders": []
+}

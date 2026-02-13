@@ -1,0 +1,450 @@
+
+================================================================================
+SECTION 1: HIGH-LEVEL SUMMARY
+================================================================================
+  UNKNOWN: 3322 txs, 3306 with flows, 10 without, $54329.65 USD
+  TRANSFER_OUT: 30 txs, 27 with flows, 0 without, $9232.58 USD
+
+================================================================================
+SECTION 2: HELIUS TYPE BREAKDOWN (from TransactionEnrichment)
+================================================================================
+  UNKNOWN / UNKNOWN: 3318
+  TRANSFER / SYSTEM_PROGRAM: 11
+  INITIALIZE_ACCOUNT / ASSOCIATED_TOKEN_PROGRAM: 6
+  UPGRADE_PROGRAM_INSTRUCTION / BPF_UPGRADEABLE_LOADER: 4
+  TRANSFER / SOLANA_PROGRAM_LIBRARY: 3
+  CLOSE_ACCOUNT / SOLANA_PROGRAM_LIBRARY: 1
+
+================================================================================
+SECTION 3: HELIUS TYPE FROM rawData FIELD
+================================================================================
+  UNKNOWN / UNKNOWN: 3318 txs, $2753.06, avg fee 5009 lamports
+  TRANSFER / SYSTEM_PROGRAM: 11 txs, $5597.06, avg fee 18636 lamports
+  INITIALIZE_ACCOUNT / ASSOCIATED_TOKEN_PROGRAM: 6 txs, $26231.24, avg fee 120302 lamports
+  UPGRADE_PROGRAM_INSTRUCTION / BPF_UPGRADEABLE_LOADER: 4 txs, $1850.68, avg fee 5000 lamports
+  TRANSFER / SOLANA_PROGRAM_LIBRARY: 3 txs, $449.35, avg fee 105333 lamports
+  CLOSE_ACCOUNT / SOLANA_PROGRAM_LIBRARY: 1 txs, $0.27, avg fee 5000 lamports
+
+================================================================================
+SECTION 4: FEE DISTRIBUTION
+================================================================================
+  5K-10K lamports: 3329
+  10K-50K lamports: 8
+  50K-200K lamports (priority fee): 5
+  200K-1M lamports: 1
+
+================================================================================
+SECTION 5: VALUE DISTRIBUTION (totalValueUsd)
+================================================================================
+  <$0.01: 3295 txs ($1.71 total)
+  $100-$1,000: 19 txs ($6529.64 total)
+  $0.10-$1.00: 9 txs ($3.09 total)
+  $1-$10: 9 txs ($20.62 total)
+  $10-$100: 5 txs ($180.61 total)
+  >$1,000: 3 txs ($30145.92 total)
+  $0 or NULL: 2 txs ($0.00 total)
+  $0.01-$0.10: 1 txs ($0.05 total)
+
+================================================================================
+SECTION 6: DEEP PATTERN ANALYSIS
+================================================================================
+
+  Loading all UNKNOWN/TRANSFER_OUT transactions...
+  Total transactions to analyze: 3343
+
+================================================================================
+SECTION 7: PATTERN CLASSIFICATION RESULTS
+================================================================================
+  BPF_LOADER_INTERACTION: 3304 txs
+    sample: Hf1xt2WpgaHXCzHssPmGo1aYKryDKtWc62eaY4wLc3UYKLTPqw...
+    sample: 67myMMggYHHp8UgbHEpv48s4hssavscA9SxKbw8amYucoKvTKw...
+  SOL_TRANSFER_UNCLASSIFIED: 16 txs
+    sample: BndaxuCzrGA641ppZFSgBCdz41NY7SkrFwjCC3iGps4sYA1kEG...
+    sample: m3yqnhTiAtfyXmkm1ASrTTsaw8K2H6FpNztGXJGJPYGxF72NRN...
+  SMALL_RENT_LIKE_PAYMENT: 11 txs
+    sample: AdvtVbpKGGXgUkaw8fKfpG7NVeV8WAmgavKjBaP4Ndeb3jaoQB...
+    sample: qRfeqV5xjaJsdVhjP3XGLJYb3a6xhGg6RzEKVSCW8zVXEMD9Si...
+  ACCOUNT_CREATION_RENT: 8 txs
+    sample: 3JQwgsQLWTLTQK5qrdCVdycmFd4eA9MKPYEwnHkoV4gpUcy1nB...
+    sample: 5vKnrK5fD3RRSPSSs7jDyszzxZWHyE9ky5ayRoyyY4BHeojdkw...
+  TOKEN_TRANSFER_UNCLASSIFIED: 3 txs
+    sample: N8Pu8yD5pr2m5e97yHBFJ3c9yj8bopNG5wA7AhuVteggSYSzgW...
+    sample: 5dGzvaxhuwe2j7rpbM7sQVZdYznraDKHmryFChZqPf1bVUekob...
+  FEE_PAYER_ONLY: 1 txs
+    sample: 3Rio1TmVZZWNtZke7WftfXpLnzw6QcYgHoib5XMwiLgc8AhH1P...
+
+  Total classified: 3343 / 3343
+
+================================================================================
+SECTION 8: PROGRAM INTERACTION FREQUENCY (top 30)
+================================================================================
+  Compute Budget Program                     ComputeBudget11111111111... : 6647
+  BPF Loader Upgradeable                     BPFLoaderUpgradeab1e1111... : 3306
+  System Program                             111111111111111111111111... : 104
+  Token Program                              TokenkegQfeZyiNwAJbNbGKP... : 37
+  (unknown)                                  MinkoCW871q3LjoJ1yHuGikT... : 12
+  (unknown)                                  j1o2qRpjcyUwEvwtcfhEQefh... : 12
+  Associated Token Account Program           ATokenGPvbdGVxr1b2hvZbsi... : 11
+  (unknown)                                  AddressLookupTab1e111111... : 4
+
+================================================================================
+SECTION 9: TOP DESTINATION ADDRESSES (by tx count)
+================================================================================
+  2z3fbzmqcr4tevvmbrzx...vdqzsuym
+    Known: NO
+    Txs: 5, Total SOL: 21.990545, USD: $2300.10
+    Avg: 4.398109 SOL, Min: 4.225256, Max: 4.452375
+    Pattern: REPEATED_RECIPIENT, Helius types: UNKNOWN
+
+  8detfaht61uegqjapfxd...vm8scvd2
+    Known: NO
+    Txs: 4, Total SOL: 0.007071, USD: $0.73
+    Avg: 0.001768 SOL, Min: 0.000445, Max: 0.003118
+    Pattern: REPEATED_RECIPIENT, Helius types: UNKNOWN
+
+  2s4mfqamycynba1wbvm6...1nujjyux
+    Known: NO
+    Txs: 3, Total SOL: 4.452375, USD: $1379.31
+    Avg: 1.484125 SOL, Min: 0.000501, Max: 4.225256
+    Pattern: REPEATED_RECIPIENT, Helius types: UNKNOWN
+
+  2ixvug4dtpmhsc4ot9nx...vfxq89am
+    Known: NO
+    Txs: 2, Total SOL: 0.004079, USD: $12356.46
+    Avg: 0.002039 SOL, Min: 0.002039, Max: 0.002039
+    Pattern: REPEATED_RECIPIENT, Helius types: INITIALIZE_ACCOUNT
+
+  5zhaacapiuqc5qzenxxv...2gd1xu7c
+    Known: NO
+    Txs: 1, Total SOL: 0.100000, USD: $10.42
+    Avg: 0.100000 SOL, Min: 0.100000, Max: 0.100000
+    Pattern: UNCLASSIFIED, Helius types: TRANSFER
+
+  fdhfvzjivyfookysjnmu...szkivo52
+    Known: NO
+    Txs: 1, Total SOL: 1.000000, USD: $104.44
+    Avg: 1.000000 SOL, Min: 1.000000, Max: 1.000000
+    Pattern: UNCLASSIFIED, Helius types: TRANSFER
+
+  6cy8cnmqejdqmpnrqzdc...yvahj7ls
+    Known: NO
+    Txs: 1, Total SOL: 0.002039, USD: $0.21
+    Avg: 0.002039 SOL, Min: 0.002039, Max: 0.002039
+    Pattern: UNCLASSIFIED, Helius types: UNKNOWN
+
+  5xd6mad8fu51ehtw6kdh...dnubccpr
+    Known: NO
+    Txs: 1, Total SOL: 0.002039, USD: $0.21
+    Avg: 0.002039 SOL, Min: 0.002039, Max: 0.002039
+    Pattern: UNCLASSIFIED, Helius types: UNKNOWN
+
+  3t1zalv8lvhbprgm49uu...pc8e29fp
+    Known: NO
+    Txs: 1, Total SOL: 0.014532, USD: $1.52
+    Avg: 0.014532 SOL, Min: 0.014532, Max: 0.014532
+    Pattern: UNCLASSIFIED, Helius types: UNKNOWN
+
+  3aqh8ymzu8jmz1h4ctb9...zjrqig4g
+    Known: NO
+    Txs: 1, Total SOL: 0.014532, USD: $1.52
+    Avg: 0.014532 SOL, Min: 0.014532, Max: 0.014532
+    Pattern: UNCLASSIFIED, Helius types: UNKNOWN
+
+  giuupngb2wtl1yvzr6jb...kumptxtr
+    Known: NO
+    Txs: 1, Total SOL: 0.014532, USD: $1.75
+    Avg: 0.014532 SOL, Min: 0.014532, Max: 0.014532
+    Pattern: UNCLASSIFIED, Helius types: UNKNOWN
+
+  8n9ju2cm5tbk1dj1b1cd...wupzbh9g
+    Known: NO
+    Txs: 1, Total SOL: 0.001176, USD: $1.75
+    Avg: 0.001176 SOL, Min: 0.001176, Max: 0.001176
+    Pattern: UNCLASSIFIED, Helius types: UNKNOWN
+
+  7gthbkwxhapnqdmbust2...gfqoatsv
+    Known: NO
+    Txs: 1, Total SOL: 0.001496, USD: $1.75
+    Avg: 0.001496 SOL, Min: 0.001496, Max: 0.001496
+    Pattern: UNCLASSIFIED, Helius types: UNKNOWN
+
+  minkocw871q3ljoj1yhu...zha5ecm6
+    Known: NO
+    Txs: 1, Total SOL: 0.001141, USD: $430.80
+    Avg: 0.001141 SOL, Min: 0.001141, Max: 0.001141
+    Pattern: UNCLASSIFIED, Helius types: UNKNOWN
+
+  aojnuj2u33qtzrfrfdmt...qs2t61qt
+    Known: NO
+    Txs: 1, Total SOL: 0.544483, USD: $75.02
+    Avg: 0.544483 SOL, Min: 0.544483, Max: 0.544483
+    Pattern: UNCLASSIFIED, Helius types: TRANSFER
+
+  ci7qqqbguwfw7jwhwxkg...umiufzqy
+    Known: NO
+    Txs: 1, Total SOL: 1.192438, USD: $157.82
+    Avg: 1.192438 SOL, Min: 1.192438, Max: 1.192438
+    Pattern: LARGE_SINGLE_TRANSFER, Helius types: TRANSFER
+
+  9cvpdmybndak8p72tjew...qbgpffug
+    Known: NO
+    Txs: 1, Total SOL: 0.023164, USD: $3.04
+    Avg: 0.023164 SOL, Min: 0.023164, Max: 0.023164
+    Pattern: UNCLASSIFIED, Helius types: TRANSFER
+
+  76vj3jxerobye8d1ngrb...fd7etuvr
+    Known: NO
+    Txs: 1, Total SOL: 0.390000, USD: $72.94
+    Avg: 0.390000 SOL, Min: 0.390000, Max: 0.390000
+    Pattern: UNCLASSIFIED, Helius types: TRANSFER
+
+  8egzszeja28hry5g9iqq...bgbzxvm1
+    Known: NO
+    Txs: 1, Total SOL: 0.003480, USD: $12344.69
+    Avg: 0.003480 SOL, Min: 0.003480, Max: 0.003480
+    Pattern: UNCLASSIFIED, Helius types: INITIALIZE_ACCOUNT
+
+  cfzeehttejhbymczjpt5...2uyump1w
+    Known: NO
+    Txs: 1, Total SOL: 0.002039, USD: $12344.69
+    Avg: 0.002039 SOL, Min: 0.002039, Max: 0.002039
+    Pattern: UNCLASSIFIED, Helius types: INITIALIZE_ACCOUNT
+
+  cjrwxdaa34afhi4hpuaj...gpwm63tc
+    Known: NO
+    Txs: 1, Total SOL: 0.002039, USD: $13616.73
+    Avg: 0.002039 SOL, Min: 0.002039, Max: 0.002039
+    Pattern: UNCLASSIFIED, Helius types: INITIALIZE_ACCOUNT
+
+  dnfzm6wka8cmmwairnjv...8mhs2ott
+    Known: NO
+    Txs: 1, Total SOL: 0.003480, USD: $13616.73
+    Avg: 0.003480 SOL, Min: 0.003480, Max: 0.003480
+    Pattern: UNCLASSIFIED, Helius types: INITIALIZE_ACCOUNT
+
+  h1jetjpn7mb2ouapsif3...rkk2brqz
+    Known: NO
+    Txs: 1, Total SOL: 0.002039, USD: $13616.73
+    Avg: 0.002039 SOL, Min: 0.002039, Max: 0.002039
+    Pattern: UNCLASSIFIED, Helius types: INITIALIZE_ACCOUNT
+
+  cgv1rctr4fhgbi1gexwu...hweqqtdd
+    Known: NO
+    Txs: 1, Total SOL: 1.256234, USD: $274.19
+    Avg: 1.256234 SOL, Min: 1.256234, Max: 1.256234
+    Pattern: LARGE_SINGLE_TRANSFER, Helius types: TRANSFER
+
+  9bzvwsrpjx6rikqvp8vl...6etofrcn
+    Known: NO
+    Txs: 1, Total SOL: 0.003480, USD: $11.76
+    Avg: 0.003480 SOL, Min: 0.003480, Max: 0.003480
+    Pattern: UNCLASSIFIED, Helius types: INITIALIZE_ACCOUNT
+
+  9ytn5spjxwgpzrfyytkq...ntylkcf4
+    Known: NO
+    Txs: 1, Total SOL: 0.002039, USD: $11.76
+    Avg: 0.002039 SOL, Min: 0.002039, Max: 0.002039
+    Pattern: UNCLASSIFIED, Helius types: INITIALIZE_ACCOUNT
+
+  3zrbaagunesbgdmvch2g...qh4ox6s5
+    Known: NO
+    Txs: 1, Total SOL: 2.900000, USD: $714.70
+    Avg: 2.900000 SOL, Min: 2.900000, Max: 2.900000
+    Pattern: LARGE_SINGLE_TRANSFER, Helius types: TRANSFER
+
+  hjv5yjbqzscphzcstcss...hb5wwwyt
+    Known: NO
+    Txs: 1, Total SOL: 16.480020, USD: $4184.50
+    Avg: 16.480020 SOL, Min: 16.480020, Max: 16.480020
+    Pattern: LARGE_SINGLE_TRANSFER, Helius types: TRANSFER
+
+
+================================================================================
+SECTION 10: SAMPLE RAW DATA (diverse patterns)
+================================================================================
+
+  --- Sample: SOL_TRANSFER_UNCLASSIFIED ---
+  Signature: BndaxuCzrGA641ppZFSgBCdz41NY7SkrFwjCC3iGps4sYA1kEGkebLzMzQVdaCyz6PHnUDtSyPGBqxzFpJ3fhNr
+  DB Type: UNKNOWN, Category: null
+  Helius Type: UNKNOWN / Source: UNKNOWN
+  Description: (none)
+  Fee: 5000 lamports, FeePayer: Fg4wdLGhjRHRtX6aTjQgLPysaFPjcumgHeML4tAPMhpv
+  Value USD: $5.13758734
+  Instructions (2): Compute Budget Program, MinkoCW871q3LjoJ1yHuGikT
+  Native transfers (3):
+    Fg4wdLGhjRHRtX6aTjQg... -> 3kzeDHit2Se8YjTLnZHa... : 0.000953520 SOL
+    Fg4wdLGhjRHRtX6aTjQg... -> 7zYwREkDkhPzsYb4Nvp3... : 0.000953520 SOL
+    Fg4wdLGhjRHRtX6aTjQg... -> 8N9JU2cm5Tbk1Dj1b1Cd... : 0.050000000 SOL
+  Token transfers (0):
+  Account data entries: 9
+
+  --- Sample: SOL_TRANSFER_UNCLASSIFIED ---
+  Signature: m3yqnhTiAtfyXmkm1ASrTTsaw8K2H6FpNztGXJGJPYGxF72NRN6a3RtnJtYwugtjNXh7LikzrwJssSn1LDibaKx
+  DB Type: UNKNOWN, Category: null
+  Helius Type: UNKNOWN / Source: UNKNOWN
+  Description: (none)
+  Fee: 5000 lamports, FeePayer: Hhp5BGSmkwCepevy6ZD16KqtPvRLoi65S9KdC6tepkfU
+  Value USD: $2.16828645
+  Instructions (2): Compute Budget Program, MinkoCW871q3LjoJ1yHuGikT
+  Native transfers (3):
+    Hhp5BGSmkwCepevy6ZD1... -> 6Wti5yuGcK97fuWE1qHu... : 0.000953520 SOL
+    Hhp5BGSmkwCepevy6ZD1... -> 89yX7xHMYpE8voudChR9... : 0.000953520 SOL
+    Hhp5BGSmkwCepevy6ZD1... -> 8N9JU2cm5Tbk1Dj1b1Cd... : 0.020000000 SOL
+  Token transfers (0):
+  Account data entries: 9
+
+  --- Sample: SOL_TRANSFER_UNCLASSIFIED ---
+  Signature: 4wfF9B8vBfNFLGMBRmE5929CDpHvf4XPom83V1tYaiHMbW61iiPfiGhQ8BMyax4YPa7z7iCsbKFqQopPhsmgyKFk
+  DB Type: UNKNOWN, Category: null
+  Helius Type: UNKNOWN / Source: UNKNOWN
+  Description: (none)
+  Fee: 5000 lamports, FeePayer: 3cSmK8PSaBGnAVfYy3dNY2dge3Kn2roRag379dmow4cZ
+  Value USD: $2.16828645
+  Instructions (2): Compute Budget Program, MinkoCW871q3LjoJ1yHuGikT
+  Native transfers (3):
+    3cSmK8PSaBGnAVfYy3dN... -> B8YqisBHXA3gyNRnfBEr... : 0.000953520 SOL
+    3cSmK8PSaBGnAVfYy3dN... -> BSZT9tXCQErDuCGLptGt... : 0.000953520 SOL
+    3cSmK8PSaBGnAVfYy3dN... -> 8N9JU2cm5Tbk1Dj1b1Cd... : 0.020000000 SOL
+  Token transfers (0):
+  Account data entries: 9
+
+  --- Sample: SMALL_RENT_LIKE_PAYMENT ---
+  Signature: AdvtVbpKGGXgUkaw8fKfpG7NVeV8WAmgavKjBaP4Ndeb3jaoQBsFsXouZZdyi9gjcRqNsDhASz22sDCfwNvBNjH
+  DB Type: TRANSFER_OUT, Category: null
+  Helius Type: UNKNOWN / Source: UNKNOWN
+  Description: (none)
+  Fee: 5000 lamports, FeePayer: TmYrwibiy2seJZnsi9cGvioixVsh21Q2XmVrVXy9eDH
+  Value USD: $0.04616987
+  Instructions (2): Compute Budget Program, AddressLookupTab1e111111
+  Native transfers (1):
+    TmYrwibiy2seJZnsi9cG... -> 8DEtfaht61uEgqJAPfXd... : 0.000445440 SOL
+  Token transfers (0):
+  Account data entries: 5
+
+  --- Sample: SMALL_RENT_LIKE_PAYMENT ---
+  Signature: qRfeqV5xjaJsdVhjP3XGLJYb3a6xhGg6RzEKVSCW8zVXEMD9Siu5A5XEVa8uTLEoaJeAfxBskBR8es1zKfzfvZP
+  DB Type: UNKNOWN, Category: null
+  Helius Type: UNKNOWN / Source: UNKNOWN
+  Description: (none)
+  Fee: 5000 lamports, FeePayer: GtGeDKroysvxHdESoNsXvQaGe1ETYSBL37bC1Vb1pKpR
+  Value USD: $0.59469809
+  Instructions (2): Compute Budget Program, MinkoCW871q3LjoJ1yHuGikT
+  Native transfers (3):
+    GtGeDKroysvxHdESoNsX... -> FpttH4WojK8B8wUaGrxG... : 0.000953520 SOL
+    GtGeDKroysvxHdESoNsX... -> 4sT134w1N2Sq7QhdnNQM... : 0.000953520 SOL
+    GtGeDKroysvxHdESoNsX... -> 8N9JU2cm5Tbk1Dj1b1Cd... : 0.003800000 SOL
+  Token transfers (0):
+  Account data entries: 9
+
+  --- Sample: SMALL_RENT_LIKE_PAYMENT ---
+  Signature: 2VitZ3MbF1tqPJRTHXebnGyoF8b6b32qnmZpY2Wxyzv6qqUqKwRqHEiEteAq3xRwS6Zi1ttZPcxr3hzdDaUnuaFn
+  DB Type: UNKNOWN, Category: null
+  Helius Type: UNKNOWN / Source: UNKNOWN
+  Description: (none)
+  Fee: 5000 lamports, FeePayer: GtGeDKroysvxHdESoNsXvQaGe1ETYSBL37bC1Vb1pKpR
+  Value USD: $0.40713036
+  Instructions (2): Compute Budget Program, MinkoCW871q3LjoJ1yHuGikT
+  Native transfers (3):
+    GtGeDKroysvxHdESoNsX... -> GbAyw6ce2mbqr6D7XzHo... : 0.000953520 SOL
+    GtGeDKroysvxHdESoNsX... -> 3ZuuadEz4FNwaGmALZbW... : 0.000953520 SOL
+    GtGeDKroysvxHdESoNsX... -> 8N9JU2cm5Tbk1Dj1b1Cd... : 0.002000000 SOL
+  Token transfers (0):
+  Account data entries: 9
+
+  --- Sample: BPF_LOADER_INTERACTION ---
+  Signature: Hf1xt2WpgaHXCzHssPmGo1aYKryDKtWc62eaY4wLc3UYKLTPqwDi74bu9vx9cSrhTGwYucETBDAG5ztLQ6ahZym
+  DB Type: UNKNOWN, Category: null
+  Helius Type: UPGRADE_PROGRAM_INSTRUCTION / Source: BPF_UPGRADEABLE_LOADER
+  Description: (none)
+  Fee: 5000 lamports, FeePayer: TmYrwibiy2seJZnsi9cGvioixVsh21Q2XmVrVXy9eDH
+  Value USD: $461.41028039
+  Instructions (3): BPF Loader Upgradeable, Compute Budget Program, Compute Budget Program
+  Native transfers (0):
+  Token transfers (0):
+  Account data entries: 8
+
+  --- Sample: BPF_LOADER_INTERACTION ---
+  Signature: 67myMMggYHHp8UgbHEpv48s4hssavscA9SxKbw8amYucoKvTKwbeXWu4ikXgwumReMqxkQgkEEnkkMPe92zmZTSU
+  DB Type: UNKNOWN, Category: null
+  Helius Type: UNKNOWN / Source: UNKNOWN
+  Description: (none)
+  Fee: 5000 lamports, FeePayer: TmYrwibiy2seJZnsi9cGvioixVsh21Q2XmVrVXy9eDH
+  Value USD: $0.00052101
+  Instructions (3): BPF Loader Upgradeable, Compute Budget Program, Compute Budget Program
+  Native transfers (0):
+  Token transfers (0):
+  Account data entries: 4
+
+  --- Sample: BPF_LOADER_INTERACTION ---
+  Signature: 5zWb7c8ZKGLyD5yoBg9J9PMfevwYtkypLfoW3Aorye3YnS8XHc92vunEkDW6PeSxXeC7AeVVc7vdTJcj6j2pLFM4
+  DB Type: UNKNOWN, Category: null
+  Helius Type: UNKNOWN / Source: UNKNOWN
+  Description: (none)
+  Fee: 5000 lamports, FeePayer: TmYrwibiy2seJZnsi9cGvioixVsh21Q2XmVrVXy9eDH
+  Value USD: $0.00052101
+  Instructions (3): BPF Loader Upgradeable, Compute Budget Program, Compute Budget Program
+  Native transfers (0):
+  Token transfers (0):
+  Account data entries: 4
+
+  --- Sample: FEE_PAYER_ONLY ---
+  Signature: 3Rio1TmVZZWNtZke7WftfXpLnzw6QcYgHoib5XMwiLgc8AhH1Pf5Tn7y4V5W6yHwZd8hUTqxSmtBrceWBmmrH6ho
+  DB Type: UNKNOWN, Category: null
+  Helius Type: UNKNOWN / Source: UNKNOWN
+  Description: (none)
+  Fee: 5000 lamports, FeePayer: TmYrwibiy2seJZnsi9cGvioixVsh21Q2XmVrVXy9eDH
+  Value USD: $0.00052018
+  Instructions (2): Compute Budget Program, MinkoCW871q3LjoJ1yHuGikT
+  Native transfers (0):
+  Token transfers (0):
+  Account data entries: 4
+
+================================================================================
+SECTION 11: RECLASSIFICATION SUGGESTIONS
+================================================================================
+  BPF_LOADER_INTERACTION (3304 txs) -> type=PROGRAM_INTERACTION, category=DEVELOPMENT
+  SOL_TRANSFER_UNCLASSIFIED (16 txs) -> type=TRANSFER_OUT, category=TRANSFER
+  SMALL_RENT_LIKE_PAYMENT (11 txs) -> type=RENT_PAYMENT, category=BLOCKCHAIN_FEE
+  ACCOUNT_CREATION_RENT (8 txs) -> type=ACCOUNT_CREATION, category=BLOCKCHAIN_FEE
+  TOKEN_TRANSFER_UNCLASSIFIED (3 txs) -> type=TRANSFER_OUT, category=TRANSFER
+  FEE_PAYER_ONLY (1 txs) -> type=FEE_PAYMENT, category=BLOCKCHAIN_FEE
+
+================================================================================
+SECTION 12: HELIUS TYPE -> DB TYPE CROSS-REFERENCE
+================================================================================
+  Helius "UNKNOWN" -> DB "UNKNOWN": 3303 txs, USD [$0.0005 - $5.1376]
+    Categories: 
+  Helius "UNKNOWN" -> DB "TRANSFER_OUT": 15 txs, USD [$0.0462 - $483.4785]
+    Categories: 
+  Helius "TRANSFER" -> DB "TRANSFER_OUT": 12 txs, USD [$3.0416 - $4184.5035]
+    Categories: 
+  Helius "INITIALIZE_ACCOUNT" -> DB "UNKNOWN": 6 txs, USD [$10.4758 - $13616.7258]
+    Categories: 
+  Helius "UPGRADE_PROGRAM_INSTRUCTION" -> DB "UNKNOWN": 4 txs, USD [$461.1922 - $466.4917]
+    Categories: 
+  Helius "TRANSFER" -> DB "UNKNOWN": 2 txs, USD [$0.0000 - $0.0000]
+    Categories: DUST
+  Helius "CLOSE_ACCOUNT" -> DB "UNKNOWN": 1 txs, USD [$0.2678 - $0.2678]
+    Categories: DUST
+
+================================================================================
+SECTION 13: PER-WALLET BREAKDOWN
+================================================================================
+  Primary Wallet (TmYrwibiy2seJZns...): 3324 txs, $4718.59
+  Old Wallet 2 (AUPMVDMHBXdgbMaV...): 11 txs, $14026.16
+  Old Wallet (HL3U3ABafmsKTCZe...): 8 txs, $18136.90
+
+================================================================================
+SECTION 14: TIMELINE DISTRIBUTION (monthly)
+================================================================================
+  2025-01: 6 txs, $5241.21
+  2025-02: 1 txs, $274.19
+  2025-10: 4 txs, $25961.42
+  2025-11: 1 txs, $72.94
+  2025-12: 6 txs, $538.29
+  2026-01: 1 txs, $75.02
+  2026-02: 3324 txs, $4718.59
+
+================================================================================
+WRITING OUTPUT FILES
+================================================================================

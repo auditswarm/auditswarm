@@ -1,0 +1,232 @@
+{
+  "BNB": {
+    "totalIn": 0.49997831,
+    "totalOut": 0.36867830999999995,
+    "feeOut": 0.00044470999999999996,
+    "net": 0.13085529000000004,
+    "byType": {
+      "EXCHANGE_CONVERT": {
+        "in": 0.16017831,
+        "out": 0.1598,
+        "feeOut": 0
+      },
+      "EXCHANGE_DEPOSIT": {
+        "in": 0.1598,
+        "out": 0,
+        "feeOut": 0
+      },
+      "EXCHANGE_TRADE": {
+        "in": 0.18,
+        "out": 0.049,
+        "feeOut": 0.00014471
+      },
+      "EXCHANGE_WITHDRAWAL": {
+        "in": 0,
+        "out": 0.15987831,
+        "feeOut": 0.0003
+      }
+    }
+  },
+  "BRL": {
+    "totalIn": 294100.33,
+    "totalOut": 272634.73,
+    "feeOut": 0.08,
+    "net": 21465.520000000033,
+    "byType": {
+      "EXCHANGE_CONVERT": {
+        "in": 294019.68,
+        "out": 272634.73,
+        "feeOut": 0
+      },
+      "EXCHANGE_TRADE": {
+        "in": 80.65,
+        "out": 0,
+        "feeOut": 0.08
+      }
+    }
+  },
+  "BTC": {
+    "totalIn": 0.00093,
+    "totalOut": 0,
+    "feeOut": 0,
+    "net": 0.00093,
+    "byType": {
+      "EXCHANGE_TRADE": {
+        "in": 0.00093,
+        "out": 0,
+        "feeOut": 0
+      }
+    }
+  },
+  "BUSD": {
+    "totalIn": 10.8669,
+    "totalOut": 31.782402899999997,
+    "feeOut": 0,
+    "net": -20.9155029,
+    "byType": {
+      "EXCHANGE_TRADE": {
+        "in": 10.8669,
+        "out": 31.782402899999997,
+        "feeOut": 0
+      }
+    }
+  },
+  "ETH": {
+    "totalIn": 0.0020512,
+    "totalOut": 0.0020512,
+    "feeOut": 0,
+    "net": 0,
+    "byType": {
+      "EXCHANGE_TRADE": {
+        "in": 0.0020512,
+        "out": 0.0020512,
+        "feeOut": 0
+      }
+    }
+  },
+  "SOL": {
+    "totalIn": 3367.5523563,
+    "totalOut": 3364.6653158599997,
+    "feeOut": 3.66,
+    "net": -0.7729595599995811,
+    "byType": {
+      "EXCHANGE_CONVERT": {
+        "in": 54.91185277,
+        "out": 9.62954636,
+        "feeOut": 0
+      },
+      "EXCHANGE_DEPOSIT": {
+        "in": 3312.64050353,
+        "out": 0,
+        "feeOut": 0
+      },
+      "EXCHANGE_TRADE": {
+        "in": 0,
+        "out": 0.1,
+        "feeOut": 0
+      },
+      "EXCHANGE_WITHDRAWAL": {
+        "in": 0,
+        "out": 3354.9357695,
+        "feeOut": 3.66
+      }
+    }
+  },
+  "USD1": {
+    "totalIn": 0.5502125600000001,
+    "totalOut": 0.5502125600000001,
+    "feeOut": 0,
+    "net": 0,
+    "byType": {
+      "EXCHANGE_CONVERT": {
+        "in": 0.53905674,
+        "out": 0,
+        "feeOut": 0
+      },
+      "EXCHANGE_DIVIDEND": {
+        "in": 0.01115582,
+        "out": 0,
+        "feeOut": 0
+      },
+      "EXCHANGE_INTEREST": {
+        "in": 0,
+        "out": 0,
+        "feeOut": 0
+      },
+      "EXCHANGE_STAKE": {
+        "in": 0,
+        "out": 0.5502125600000001,
+        "feeOut": 0
+      }
+    }
+  },
+  "USDC": {
+    "totalIn": 48004.365706000004,
+    "totalOut": 114117.75229,
+    "feeOut": 12.7485,
+    "net": -66126.135084,
+    "byType": {
+      "EXCHANGE_CONVERT": {
+        "in": 47784.626336,
+        "out": 52142.029873,
+        "feeOut": 0
+      },
+      "EXCHANGE_DEPOSIT": {
+        "in": 200,
+        "out": 0,
+        "feeOut": 0
+      },
+      "EXCHANGE_DIVIDEND": {
+        "in": 19.73937,
+        "out": 0,
+        "feeOut": 0
+      },
+      "EXCHANGE_STAKE": {
+        "in": 0,
+        "out": 0,
+        "feeOut": 0
+      },
+      "EXCHANGE_WITHDRAWAL": {
+        "in": 0,
+        "out": 61975.722417,
+        "feeOut": 12.7485
+      }
+    }
+  },
+  "USDT": {
+    "totalIn": 12312.32873,
+    "totalOut": 12355.461529999999,
+    "feeOut": 0.03,
+    "net": -43.16279999999941,
+    "byType": {
+      "EXCHANGE_CONVERT": {
+        "in": 0,
+        "out": 9512.32873,
+        "feeOut": 0
+      },
+      "EXCHANGE_DEPOSIT": {
+        "in": 12312.32873,
+        "out": 0,
+        "feeOut": 0
+      },
+      "EXCHANGE_TRADE": {
+        "in": 0,
+        "out": 43.1628,
+        "feeOut": 0
+      },
+      "EXCHANGE_WITHDRAWAL": {
+        "in": 0,
+        "out": 2799.97,
+        "feeOut": 0.03
+      }
+    }
+  },
+  "WAL": {
+    "totalIn": 4.73480035,
+    "totalOut": 4.73480035,
+    "feeOut": 0,
+    "net": 0,
+    "byType": {
+      "EXCHANGE_CONVERT": {
+        "in": 2.36283842,
+        "out": 2.37196193,
+        "feeOut": 0
+      },
+      "EXCHANGE_INTEREST": {
+        "in": 0,
+        "out": 0,
+        "feeOut": 0
+      },
+      "EXCHANGE_STAKE": {
+        "in": 0,
+        "out": 2.36283842,
+        "feeOut": 0
+      },
+      "EXCHANGE_UNSTAKE": {
+        "in": 2.37196193,
+        "out": 0,
+        "feeOut": 0
+      }
+    }
+  }
+}

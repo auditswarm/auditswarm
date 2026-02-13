@@ -1,0 +1,219 @@
+{
+  "USDT": {
+    "totalIn": 12312.32873,
+    "totalOut": 12355.461529999999,
+    "feeOut": 0.03,
+    "net": -43.16279999999941,
+    "bySource": {
+      "DEPOSIT": {
+        "in": 12312.32873,
+        "out": 0,
+        "fee": 0
+      },
+      "WITHDRAWAL": {
+        "in": 0,
+        "out": 2799.97,
+        "fee": 0
+      },
+      "WITHDRAWAL_FEE": {
+        "in": 0,
+        "out": 0,
+        "fee": 0.03
+      },
+      "TRADE_BUY": {
+        "in": 0,
+        "out": 43.162800000000004,
+        "fee": 0
+      },
+      "CONVERT": {
+        "in": 0,
+        "out": 9512.32873,
+        "fee": 0
+      }
+    }
+  },
+  "SOL": {
+    "totalIn": 3367.5523562999724,
+    "totalOut": 3364.6653158598715,
+    "feeOut": 3.659999999999709,
+    "net": -0.7729595598987906,
+    "bySource": {
+      "DEPOSIT": {
+        "in": 3312.6405035299726,
+        "out": 0,
+        "fee": 0
+      },
+      "WITHDRAWAL": {
+        "in": 0,
+        "out": 3354.9357694998716,
+        "fee": 0
+      },
+      "WITHDRAWAL_FEE": {
+        "in": 0,
+        "out": 0,
+        "fee": 3.659999999999709
+      },
+      "TRADE_SELL": {
+        "in": 0,
+        "out": 0.1,
+        "fee": 0
+      },
+      "CONVERT": {
+        "in": 54.911852769999996,
+        "out": 9.629546359999999,
+        "fee": 0
+      }
+    }
+  },
+  "USDC": {
+    "totalIn": 47984.626336580004,
+    "totalOut": 114117.75229058001,
+    "feeOut": 12.7485,
+    "net": -66145.87445400002,
+    "bySource": {
+      "DEPOSIT": {
+        "in": 200,
+        "out": 0,
+        "fee": 0
+      },
+      "WITHDRAWAL": {
+        "in": 0,
+        "out": 61975.722417000004,
+        "fee": 0
+      },
+      "WITHDRAWAL_FEE": {
+        "in": 0,
+        "out": 0,
+        "fee": 12.7485
+      },
+      "CONVERT": {
+        "in": 47784.626336580004,
+        "out": 52142.029873579995,
+        "fee": 0
+      }
+    }
+  },
+  "BNB": {
+    "totalIn": 0.48397830999999997,
+    "totalOut": 0.35267831,
+    "feeOut": 0.00042072999999999996,
+    "net": 0.13087926999999996,
+    "bySource": {
+      "DEPOSIT": {
+        "in": 0.1598,
+        "out": 0,
+        "fee": 0
+      },
+      "WITHDRAWAL": {
+        "in": 0,
+        "out": 0.15987831,
+        "fee": 0
+      },
+      "WITHDRAWAL_FEE": {
+        "in": 0,
+        "out": 0,
+        "fee": 0.0003
+      },
+      "TRADE_BUY": {
+        "in": 0.164,
+        "out": 0,
+        "fee": 0
+      },
+      "TRADE_FEE": {
+        "in": 0,
+        "out": 0,
+        "fee": 0.00012073
+      },
+      "TRADE_SELL": {
+        "in": 0,
+        "out": 0.033,
+        "fee": 0
+      },
+      "CONVERT": {
+        "in": 0.16017831,
+        "out": 0.1598,
+        "fee": 0
+      }
+    }
+  },
+  "BRL": {
+    "totalIn": 294100.33267291,
+    "totalOut": 272634.73361708,
+    "feeOut": 0.08065,
+    "net": 21465.518405829982,
+    "bySource": {
+      "TRADE_SELL": {
+        "in": 80.65,
+        "out": 0,
+        "fee": 0
+      },
+      "TRADE_FEE": {
+        "in": 0,
+        "out": 0,
+        "fee": 0.08065
+      },
+      "CONVERT": {
+        "in": 294019.68267291004,
+        "out": 272634.73361708,
+        "fee": 0
+      }
+    }
+  },
+  "BTC": {
+    "totalIn": 0.00093,
+    "totalOut": 0,
+    "feeOut": 0,
+    "net": 0.00093,
+    "bySource": {
+      "TRADE_BUY": {
+        "in": 0.00093,
+        "out": 0,
+        "fee": 0
+      }
+    }
+  },
+  "BUSD": {
+    "totalIn": 10.8669,
+    "totalOut": 31.7824029,
+    "feeOut": 0,
+    "net": -20.9155029,
+    "bySource": {
+      "TRADE_BUY": {
+        "in": 0,
+        "out": 31.7824029,
+        "fee": 0
+      },
+      "TRADE_SELL": {
+        "in": 10.8669,
+        "out": 0,
+        "fee": 0
+      }
+    }
+  },
+  "WAL": {
+    "totalIn": 2.36283842,
+    "totalOut": 2.37196193,
+    "feeOut": 0,
+    "net": -0.00912350999999978,
+    "bySource": {
+      "CONVERT": {
+        "in": 2.36283842,
+        "out": 2.37196193,
+        "fee": 0
+      }
+    }
+  },
+  "USD1": {
+    "totalIn": 0.53905674,
+    "totalOut": 0,
+    "feeOut": 0,
+    "net": 0.53905674,
+    "bySource": {
+      "CONVERT": {
+        "in": 0.53905674,
+        "out": 0,
+        "fee": 0
+      }
+    }
+  }
+}

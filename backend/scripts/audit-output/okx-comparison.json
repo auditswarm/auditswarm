@@ -1,0 +1,26 @@
+[
+  {
+    "asset": "BRL",
+    "realBalance": 0.0073276883816146,
+    "dbReconstructed": 83895.21857861111,
+    "diff": 83895.21125092273,
+    "status": "MISMATCH",
+    "sources": "trading"
+  },
+  {
+    "asset": "SOL",
+    "realBalance": 9.454681e-9,
+    "dbReconstructed": 34.21725665,
+    "diff": 34.21725664054532,
+    "status": "MISMATCH",
+    "sources": "trading"
+  },
+  {
+    "asset": "USDC",
+    "realBalance": 2.6655394e-9,
+    "dbReconstructed": 20577.31335,
+    "diff": 20577.313349997334,
+    "status": "MISMATCH",
+    "sources": "trading"
+  }
+]

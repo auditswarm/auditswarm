@@ -1,0 +1,71 @@
+{
+  "universalTransfers": {},
+  "userAssets": [],
+  "dividends": [],
+  "earnRewards": [],
+  "fiatOrders": [
+    {
+      "orderNo": "03635628710456325120062983",
+      "fiatCurrency": "BRL",
+      "indicatedAmount": "1000.00",
+      "amount": "1000.00",
+      "totalFee": "0",
+      "method": "Bank Transfer (PIX)",
+      "status": "Successful",
+      "createTime": 1751159443000,
+      "updateTime": 1751159504000,
+      "_type": "DEPOSIT"
+    },
+    {
+      "orderNo": "03612324713775234048042583",
+      "fiatCurrency": "BRL",
+      "indicatedAmount": "2400.00",
+      "amount": "2400.00",
+      "totalFee": "0",
+      "method": "Bank Transfer (PIX)",
+      "status": "Successful",
+      "createTime": 1745603337000,
+      "updateTime": 1745603378000,
+      "_type": "DEPOSIT"
+    },
+    {
+      "orderNo": "03612279365207861248042583",
+      "fiatCurrency": "BRL",
+      "indicatedAmount": "2000.00",
+      "amount": "2000.00",
+      "totalFee": "0",
+      "method": "Bank Transfer (PIX)",
+      "status": "Successful",
+      "createTime": 1745592525000,
+      "updateTime": 1745592567000,
+      "_type": "DEPOSIT"
+    },
+    {
+      "orderNo": "04612827903817934848042783",
+      "fiatCurrency": "BRL",
+      "indicatedAmount": "1137.95",
+      "amount": "1134.45",
+      "totalFee": "3.5",
+      "method": "Bank Transfer (PIX)",
+      "status": "Successful",
+      "createTime": 1745723307000,
+      "updateTime": 1745723315000,
+      "_type": "WITHDRAW"
+    },
+    {
+      "orderNo": "04592304215671290880030183",
+      "fiatCurrency": "BRL",
+      "indicatedAmount": "25647.00",
+      "amount": "25643.50",
+      "totalFee": "3.5",
+      "method": "Bank Transfer (PIX)",
+      "status": "Successful",
+      "createTime": 1740830078000,
+      "updateTime": 1740830088000,
+      "_type": "WITHDRAW"
+    }
+  ],
+  "fiatPayments": [],
+  "c2cTrades": [],
+  "flexibleHistory": []
+}

@@ -1,0 +1,46 @@
+================================================================================
+ON-CHAIN BALANCE VERIFICATION REPORT
+Wallet: TmYrwibiy2seJZnsi9cGvioixVsh21Q2XmVrVXy9eDH
+Generated: 2026-02-09T20:55:08.482Z
+================================================================================
+
+--- SOL BALANCE SUMMARY ---
+  RPC balance (ground truth):  4.468212388 SOL  (4468212388 lamports)
+  Helius delta sum:            4.468212388 SOL  (4468212388 lamports)
+  DB flow net:                 4.468212388 SOL  (4468212388 lamports)
+
+  Helius vs RPC diff:          0.000000000 SOL  (0 lamports)
+  DB vs RPC diff:              0.000000000 SOL  (0 lamports)
+  Helius vs DB diff:           0.000000000 SOL  (0 lamports)
+
+--- SPL TOKEN BALANCE SUMMARY ---
+
+--- TRANSACTION COUNT ---
+  Helius transactions:         3332
+  DB transactions with flows:  3324
+  In Helius but not in DB:     8
+  In DB but not in Helius:     0
+
+--- MISSING FROM DB (in Helius, no DB flows) ---
+  BndaxuCzrGA641ppZFSgBCdz41NY7SkrFwjCC3iGps4sYA1kEGkebLzMzQVdaCyz6PHnUDtSyPGBqxzFpJ3fhNr  type=UNKNOWN  solDelta=0  spl=0
+  m3yqnhTiAtfyXmkm1ASrTTsaw8K2H6FpNztGXJGJPYGxF72NRN6a3RtnJtYwugtjNXh7LikzrwJssSn1LDibaKx  type=UNKNOWN  solDelta=0  spl=0
+  4wfF9B8vBfNFLGMBRmE5929CDpHvf4XPom83V1tYaiHMbW61iiPfiGhQ8BMyax4YPa7z7iCsbKFqQopPhsmgyKFk  type=UNKNOWN  solDelta=0  spl=0
+  YcxYrRvnXgAnM8vFTXmyeEUZAfawNxgQwUkKhqsB2D5wMNbPczaYLiUBufyJyiXT4zX9MMeMJMYfzLbq8ZE2UGV  type=UNKNOWN  solDelta=0  spl=0
+  qRfeqV5xjaJsdVhjP3XGLJYb3a6xhGg6RzEKVSCW8zVXEMD9Siu5A5XEVa8uTLEoaJeAfxBskBR8es1zKfzfvZP  type=UNKNOWN  solDelta=0  spl=0
+  2VitZ3MbF1tqPJRTHXebnGyoF8b6b32qnmZpY2Wxyzv6qqUqKwRqHEiEteAq3xRwS6Zi1ttZPcxr3hzdDaUnuaFn  type=UNKNOWN  solDelta=0  spl=0
+  3VWBcsJnP5taW99VnXmmBVVAJkcRcFo6j2p4ijmwhoJm6LnujXR9WeVs76Yz7pfsXQHUmxfhhuDuDqbW4GPS1FGV  type=UNKNOWN  solDelta=0  spl=0
+  3hjrFdusVZTktoemBPEmDGYhszSwPJQy5en9jBkyXHRxz8D32tRBjDj24QooCfosSvp295eL9aoXTaBjjkJV7C7C  type=UNKNOWN  solDelta=0  spl=0
+
+--- FLOW MISMATCHES (0) ---
+  No mismatches found! All DB flows match Helius data.
+
+--- DUPLICATE FLOWS (0) ---
+  No duplicates found.
+
+--- DIAGNOSIS ---
+  Helius delta sum matches RPC balance exactly.
+  The issue is between Helius data and DB flows.
+  Helius and DB flow nets match exactly.
+
+--- RECOMMENDED FIX ---
+  1. Index 8 missing transactions and create flows for them.

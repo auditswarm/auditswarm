@@ -1,0 +1,28 @@
+{
+  "transactions": [
+    {
+      "type": "EXCHANGE_DEPOSIT",
+      "count": 30,
+      "earliest": "2025-04-30T20:30:27.000Z",
+      "latest": "2026-02-05T23:18:05.000Z"
+    },
+    {
+      "type": "EXCHANGE_CONVERT",
+      "count": 8,
+      "earliest": "2025-11-02T00:34:39.025Z",
+      "latest": "2026-02-05T23:18:58.020Z"
+    },
+    {
+      "type": "EXCHANGE_WITHDRAWAL",
+      "count": 5,
+      "earliest": "2025-07-08T20:50:20.000Z",
+      "latest": "2025-09-02T22:27:52.000Z"
+    }
+  ],
+  "totalTxs": 43,
+  "usdCoverage": {
+    "total": 43,
+    "with_usd": 28,
+    "total_usd": "43179.41518600"
+  }
+}

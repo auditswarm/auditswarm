@@ -1,0 +1,110 @@
+[
+  {
+    "symbol": "BNB",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 5.43,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "BNB",
+    "type": "EXCHANGE_DEPOSIT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 5.43,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "BRL",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 8,
+    "totalAmount": 83895.21857861111,
+    "totalUsd": 9690.687126
+  },
+  {
+    "symbol": "ETH",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 0.05943424,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "ETH",
+    "type": "EXCHANGE_DEPOSIT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 0.05943424,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "SOL",
+    "type": "EXCHANGE_DEPOSIT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 8,
+    "totalAmount": 46.69814695,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "SOL",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 3,
+    "totalAmount": 12.4733903,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "SOL",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": true,
+    "count": 3,
+    "totalAmount": 0.0075,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 6,
+    "totalAmount": 9690.687126,
+    "totalUsd": 9690.687126
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_DEPOSIT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 20,
+    "totalAmount": 31879.164268,
+    "totalUsd": 31879.164268
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 2,
+    "totalAmount": 1609.563792,
+    "totalUsd": 1609.563792
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": true,
+    "count": 2,
+    "totalAmount": 1.6,
+    "totalUsd": 1.6
+  }
+]

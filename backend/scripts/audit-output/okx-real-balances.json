@@ -1,0 +1,26 @@
+{
+  "BRL": {
+    "free": 0.0073276883816146,
+    "locked": 0,
+    "total": 0.0073276883816146,
+    "sources": [
+      "trading"
+    ]
+  },
+  "SOL": {
+    "free": 9.454681e-9,
+    "locked": 0,
+    "total": 9.454681e-9,
+    "sources": [
+      "trading"
+    ]
+  },
+  "USDC": {
+    "free": 2.6655394e-9,
+    "locked": 0,
+    "total": 2.6655394e-9,
+    "sources": [
+      "trading"
+    ]
+  }
+}

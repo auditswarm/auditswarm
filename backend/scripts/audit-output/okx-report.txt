@@ -1,0 +1,46 @@
+==========================================================================================
+  OKX BALANCE AUDIT REPORT
+==========================================================================================
+  Generated: 2026-02-11T00:15:08.845Z
+  Connection: 8290384c-8c77-48d0-bc03-104e7d7d2fb2
+
+  LEGEND:
+    Real     = Current OKX account balance (trading + funding + savings + staking)
+    DB Recon = Balance reconstructed from DB transaction flows
+
+  ASSET             REAL BAL        DB RECON            DIFF             SOURCES      STATUS
+  ----------------------------------------------------------------------------------------
+  BRL             0.00732769  83895.21857861 +83895.21125092             trading    MISMATCH
+  SOL             0.00000001     34.21725665    +34.21725664             trading    MISMATCH
+  USDC            0.00000000  20577.31335000 +20577.31335000             trading    MISMATCH
+
+  MISMATCHED ASSETS:
+
+  --- BRL ---
+    Real: 0.0073276883816146 (sources: trading)
+    DB recon: 83895.21857861111 (diff: 83895.21125092)
+    DB flows by type:
+      EXCHANGE_CONVERT          IN:   83895.21857861  OUT:       0.00000000  FEE:       0.00000000
+
+  --- SOL ---
+    Real: 9.454681e-9 (sources: trading)
+    DB recon: 34.21725665 (diff: 34.21725664)
+    DB flows by type:
+      EXCHANGE_DEPOSIT          IN:      46.69814695  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_WITHDRAWAL       IN:       0.00000000  OUT:      12.47339030  FEE:       0.00750000
+
+  --- USDC ---
+    Real: 2.6655394e-9 (sources: trading)
+    DB recon: 20577.31335 (diff: 20577.31335000)
+    DB flows by type:
+      EXCHANGE_CONVERT          IN:       0.00000000  OUT:    9690.68712600  FEE:       0.00000000
+      EXCHANGE_DEPOSIT          IN:   31879.16426800  OUT:       0.00000000  FEE:       0.00000000
+      EXCHANGE_WITHDRAWAL       IN:       0.00000000  OUT:    1609.56379200  FEE:       1.60000000
+
+  SUMMARY:
+    Total assets: 3
+    OK: 0
+    Mismatched: 3
+
+  NOTE: Mismatches are expected if OKX trade history is limited to 3 months
+        but the account has been active for longer.

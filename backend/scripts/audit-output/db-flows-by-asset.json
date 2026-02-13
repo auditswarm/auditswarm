@@ -1,0 +1,398 @@
+[
+  {
+    "symbol": "BNB",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 0.1598,
+    "totalUsd": 92.95098333
+  },
+  {
+    "symbol": "BNB",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 0.16017831,
+    "totalUsd": 100
+  },
+  {
+    "symbol": "BNB",
+    "type": "EXCHANGE_DEPOSIT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 0.1598,
+    "totalUsd": 92.06078
+  },
+  {
+    "symbol": "BNB",
+    "type": "EXCHANGE_TRADE",
+    "direction": "IN",
+    "isFee": false,
+    "count": 4,
+    "totalAmount": 0.18,
+    "totalUsd": 60.1488
+  },
+  {
+    "symbol": "BNB",
+    "type": "EXCHANGE_TRADE",
+    "direction": "OUT",
+    "isFee": true,
+    "count": 6,
+    "totalAmount": 0.00014471,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "BNB",
+    "type": "EXCHANGE_TRADE",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 3,
+    "totalAmount": 0.049,
+    "totalUsd": 15.9981
+  },
+  {
+    "symbol": "BNB",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": true,
+    "count": 2,
+    "totalAmount": 0.0003,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "BNB",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 2,
+    "totalAmount": 0.15987831,
+    "totalUsd": 92.10589439
+  },
+  {
+    "symbol": "BRL",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 3,
+    "totalAmount": 294019.68,
+    "totalUsd": 51437.51918013
+  },
+  {
+    "symbol": "BRL",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 4,
+    "totalAmount": 272634.73,
+    "totalUsd": 47088.68436685
+  },
+  {
+    "symbol": "BRL",
+    "type": "EXCHANGE_TRADE",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 80.65,
+    "totalUsd": 14.2617153
+  },
+  {
+    "symbol": "BRL",
+    "type": "EXCHANGE_TRADE",
+    "direction": "OUT",
+    "isFee": true,
+    "count": 1,
+    "totalAmount": 0.08,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "BTC",
+    "type": "EXCHANGE_TRADE",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 0.00093,
+    "totalUsd": 19.9276029
+  },
+  {
+    "symbol": "BUSD",
+    "type": "EXCHANGE_TRADE",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 2,
+    "totalAmount": 31.782402899999997,
+    "totalUsd": 31.7824029
+  },
+  {
+    "symbol": "BUSD",
+    "type": "EXCHANGE_TRADE",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 10.8669,
+    "totalUsd": 10.8669
+  },
+  {
+    "symbol": "ETH",
+    "type": "EXCHANGE_TRADE",
+    "direction": "IN",
+    "isFee": false,
+    "count": 2,
+    "totalAmount": 0.0020512,
+    "totalUsd": 5.14278916
+  },
+  {
+    "symbol": "ETH",
+    "type": "EXCHANGE_TRADE",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 0.0020512,
+    "totalUsd": 5.14278915
+  },
+  {
+    "symbol": "SOL",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 8,
+    "totalAmount": 54.91185277,
+    "totalUsd": 11056.3663992
+  },
+  {
+    "symbol": "SOL",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 4,
+    "totalAmount": 9.62954636,
+    "totalUsd": 1554.341026
+  },
+  {
+    "symbol": "SOL",
+    "type": "EXCHANGE_DEPOSIT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 963,
+    "totalAmount": 3312.64050353,
+    "totalUsd": 656536.84573054
+  },
+  {
+    "symbol": "SOL",
+    "type": "EXCHANGE_TRADE",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 0.1,
+    "totalUsd": 14
+  },
+  {
+    "symbol": "SOL",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 3652,
+    "totalAmount": 3354.9357695,
+    "totalUsd": 674790.8996056
+  },
+  {
+    "symbol": "SOL",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": true,
+    "count": 3651,
+    "totalAmount": 3.66,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "USD1",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 0.53905674,
+    "totalUsd": 0.53905674
+  },
+  {
+    "symbol": "USD1",
+    "type": "EXCHANGE_DIVIDEND",
+    "direction": "IN",
+    "isFee": false,
+    "count": 47,
+    "totalAmount": 0.01115582,
+    "totalUsd": 0.01115582
+  },
+  {
+    "symbol": "USD1",
+    "type": "EXCHANGE_INTEREST",
+    "direction": "IN",
+    "isFee": false,
+    "count": 151,
+    "totalAmount": 0,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "USD1",
+    "type": "EXCHANGE_STAKE",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 48,
+    "totalAmount": 0.5502125600000001,
+    "totalUsd": 0.55021256
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 8,
+    "totalAmount": 52142.029873,
+    "totalUsd": 52142.02987358
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 5,
+    "totalAmount": 47784.626336,
+    "totalUsd": 47784.62633658
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_DEPOSIT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 200,
+    "totalUsd": 200
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_DIVIDEND",
+    "direction": "IN",
+    "isFee": false,
+    "count": 43,
+    "totalAmount": 19.73937,
+    "totalUsd": 19.73937
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_STAKE",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 2,
+    "totalAmount": 0,
+    "totalUsd": 3.8e-7
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 15,
+    "totalAmount": 61975.722417,
+    "totalUsd": 61975.722417
+  },
+  {
+    "symbol": "USDC",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": true,
+    "count": 10,
+    "totalAmount": 12.7485,
+    "totalUsd": 12.7485
+  },
+  {
+    "symbol": "USDT",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 9512.32873,
+    "totalUsd": 9512.32873
+  },
+  {
+    "symbol": "USDT",
+    "type": "EXCHANGE_DEPOSIT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 2,
+    "totalAmount": 12312.32873,
+    "totalUsd": 12312.32873
+  },
+  {
+    "symbol": "USDT",
+    "type": "EXCHANGE_TRADE",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 2,
+    "totalAmount": 43.1628,
+    "totalUsd": 43.1628
+  },
+  {
+    "symbol": "USDT",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": true,
+    "count": 1,
+    "totalAmount": 0.03,
+    "totalUsd": 0.03
+  },
+  {
+    "symbol": "USDT",
+    "type": "EXCHANGE_WITHDRAWAL",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 2799.97,
+    "totalUsd": 2799.97
+  },
+  {
+    "symbol": "WAL",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 2.36283842,
+    "totalUsd": 0.56353696
+  },
+  {
+    "symbol": "WAL",
+    "type": "EXCHANGE_CONVERT",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 2.37196193,
+    "totalUsd": 0.53905674
+  },
+  {
+    "symbol": "WAL",
+    "type": "EXCHANGE_INTEREST",
+    "direction": "IN",
+    "isFee": false,
+    "count": 18,
+    "totalAmount": 0,
+    "totalUsd": 0
+  },
+  {
+    "symbol": "WAL",
+    "type": "EXCHANGE_STAKE",
+    "direction": "OUT",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 2.36283842,
+    "totalUsd": 0.56353696
+  },
+  {
+    "symbol": "WAL",
+    "type": "EXCHANGE_UNSTAKE",
+    "direction": "IN",
+    "isFee": false,
+    "count": 1,
+    "totalAmount": 2.37196193,
+    "totalUsd": 0.53274265
+  }
+]

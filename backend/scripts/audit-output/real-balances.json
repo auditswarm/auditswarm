@@ -1,0 +1,34 @@
+{
+  "LDUSDC": {
+    "free": 3.6e-7,
+    "locked": 0,
+    "total": 3.6e-7,
+    "source": [
+      "SPOT"
+    ]
+  },
+  "LDUSD1": {
+    "free": 0.54637365,
+    "locked": 0,
+    "total": 0.54637365,
+    "source": [
+      "SPOT"
+    ]
+  },
+  "USD1": {
+    "free": 0.55044786,
+    "locked": 0,
+    "total": 0.55044786,
+    "source": [
+      "EARN_FLEXIBLE"
+    ]
+  },
+  "USDC": {
+    "free": 3.9e-7,
+    "locked": 0,
+    "total": 3.9e-7,
+    "source": [
+      "EARN_FLEXIBLE"
+    ]
+  }
+}
